@@ -34,17 +34,22 @@ del libs # Not required anymore
 sys.path.append('./features')
 from aclient import MyClient, PosNegView
 from cscraper import CScraper
-from catrescue import catRescue
+from catrescue import catRescue, catDownloader
 from ploterror import plotError, plot_process, plot_thread
 
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 dotenv.load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
 
-instanceURLs = [None, None, None, None, None, None] #Contains the last unique URL of 6 instances
+instanceCount = 11
+instanceURLs = [None] * instanceCount #Contains the last unique URL of 6 instances
 currentInstance = -1
+
+def timestamp() -> str:
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 @client.event
 async def on_ready():
@@ -84,6 +89,8 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
             emb.set_footer(text=catFact)
             emb.set_image(url=src)
             embed_list.append(emb)
+        # view = PosNegView(len(results))
+        # print(view.is_persistent())
         await interaction.response.send_message(embeds=embed_list, view=PosNegView(len(results)))
     except Exception as error:
         emb=discord.Embed(title="Error:", description=f"Error logged: {error}", color=0xff0000, timestamp=datetime.datetime.now())
@@ -129,18 +136,17 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
             if len(link) < 240:
                 try:
                     results, prompt = catRescue(link)
-                    timestamp = datetime.datetime.now()
                     if results == []:
-                        print(f'{timestamp.strftime("%Y-%m-%d %H:%M:%S")}: Empty result list')
-                        playsound.playsound('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\\tests\\vine-boom.wav')
+                        print(f'{timestamp()}: Empty result list')
+                        playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
                         continue
                     elif prompt == '':
-                        print(f'{timestamp.strftime("%Y-%m-%d %H:%M:%S")}: Empty prompt/couldnt get prompt')
-                        playsound.playsound('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\\tests\\vine-boom.wav')
+                        print(f'{timestamp()}: Empty prompt/couldnt get prompt')
+                        playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
                         continue
                     elif ex_prompt != '' and prompt != ex_prompt: # Empty string means no validation needed
-                        print(f'{timestamp.strftime("%Y-%m-%d %H:%M:%S")}: Prompt does not match channel')
-                        playsound.playsound('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\\tests\\vine-boom.wav')
+                        print(f'{timestamp()}: Prompt does not match channel')
+                        playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
                         continue
                     # btnView = buttonViewSave()
                     try:
@@ -166,6 +172,65 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
                 emb.set_footer(text=catFact)
                 await DUMP_CHANNEL.send(embed=emb)
 
+@client.tree.command(description='Owner only, to download all current unlabelled images')
+@discord.app_commands.describe(target='Target Channel')
+async def download_all(interaction: discord.Interaction, target:str=''): 
+    if target == '':
+        target = interaction.channel_id
+    if interaction.user.id != 494483880410349595:
+        await silly_message(interaction, "Not authorized to use this command")
+        return
+    else:
+        # TODO: add response here
+        await silly_message(interaction, "Downloading millions of cats from this channel now", 0x00ff00)
+        target = client.get_channel(int(target))
+        channel_name = target.name
+        history = target.history(limit=None) # Verified to have no loss for a channel with 48 results
+        start_time = time.time()
+        message_count = 0
+        image_count = 0
+
+        async for message in history:
+            message_count += 1
+            print(message_count)
+            view = discord.ui.View.from_message(message)
+            pos_labels = {}
+            labels = {}
+            for button in view.children:
+                if button.label[:-1] == "Negative" and not button.disabled:
+                    labels[button.label] = button
+                elif button.label[:-1] == "Positive":
+                    pos_labels[button.label] = button
+
+            # NOTE: I have commented out editing the view as it adds too many requests and its not too important
+            for label in labels: # for all Negative buttons that are not disabled
+                # labels[label].disabled = True # Disable current button
+                image_number = int(label[-1])
+                # view.remove_item(pos_labels["Positive" + label[-1]])
+                image_index = image_number - 1 # Labels are 1-4 attached to the end of the string
+                try:
+                    emb = message.embeds[image_index]
+                    res = f"Image {image_index+1}: {catDownloader(emb.image.url, channel_name, label)}\n"
+                    image_count += 1
+                except IndexError:
+                    res = f"Image {image_index+1}: Index out of range"
+                # await message.edit(view=view)
+                print(res)
+
+        
+        runtime_seconds = time.time() - start_time
+        hours = runtime_seconds // 3600
+        minutes = (runtime_seconds % 3600) // 60
+        remaining_seconds = runtime_seconds % 60
+
+        emb=discord.Embed(title="Download complete", 
+        description=f"Downloaded {image_count} images from {message_count} messages\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
+            color=0x00FF00, timestamp=datetime.datetime.now())
+        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
+        emb.set_footer(text="speckles")
+        emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
+        await interaction.followup.send(embed=emb) 
+        
 
 # @client.tree.command(description='Counts the number of negative reactions in a channel')
 # @discord.app_commands.describe(product='What product are you looking for?')
@@ -187,10 +252,10 @@ async def on_message(message):
     if message.author.id == 988090297131089922 or message.author.id == 494483880410349595: # TODO: rewrite condition to include input channels
         content = message.content
         global currentInstance
-        currentInstance = (currentInstance + 1) % 6
-        if len(content) > 200: # Filtered url/generating
+        currentInstance = (currentInstance + 1) % instanceCount
+        if content.startswith("https://") and len(content) > 200: # Filtered url/generating
             await message.delete() 
-            playsound.playsound('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\\tests\\vine-boom.wav')
+            playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
             plotError(None, True) # NOTE: either update the list or use plotError to update
         else:
             global instanceURLs
@@ -200,9 +265,8 @@ async def on_message(message):
                 # This also gives us 100% confidence which instance we are on. 
                 currentInstance = instanceIDX
                 await message.delete()
-                playsound.playsound('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\\tests\metal-alert.wav') # Feedback that the delay (in automation) is not enough and to raise an alert
-                timestamp = datetime.datetime.now()
-                print(f'{timestamp.strftime("%Y-%m-%d %H:%M:%S")}: Repeated')
+                playsound.playsound(f'{DIRECTORY}\\tests\metal-alert.wav') # Feedback that the delay (in automation) is not enough and to raise an alert
+                print(f'{timestamp()}: Repeated')
             except ValueError:
                 instanceURLs[currentInstance] = content
 
@@ -214,7 +278,7 @@ def monitor_performance(interval=300):
     while True:
         cpu_usage = psutil.cpu_percent(interval=1)
         memory_usage = get_memory_usage()
-        print(f'{datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}: CPU Usage {cpu_usage}%, Memory Usage {memory_usage} KB')
+        print(f'{timestamp()}: CPU Usage {cpu_usage}%, Memory Usage {memory_usage} KB')
         time.sleep(interval)
 
 if __name__ == "__main__":

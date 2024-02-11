@@ -70,7 +70,8 @@ Use requests
 -- Outputs --
 Response messages"""
     message = ""
-    os.chdir('C:\\Users\Dell\OneDrive - Singapore Polytechnic\Documents\compooting\CScraper-SpeckOS\sucorn_bot\images') # SENSTIVE!!!!!!!!!!
+    os.chdir(f'{os.path.dirname(os.path.realpath(__file__))}') 
+    os.chdir('..\images')
     try:
         if not os.path.exists(f'{folder_name}'):
             # If it doesn't exist, create the directory
