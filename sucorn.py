@@ -110,7 +110,6 @@ async def silly_message(interaction: discord.Interaction, msg: str, emb_color: h
 @discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
 async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str='', ex_prompt:str=''): 
     if target == '':
-        #Default value
         target = interaction.channel_id
     if not copy.isnumeric() or (type(target) != int and not target.isnumeric()):
         await silly_message(interaction, "Channel is not an integer.")
@@ -130,6 +129,7 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
 
         # This is the end of your channel
         history = COPY_CHANNEL.history(limit=None) # Verified to have no loss for a channel with 48 results
+        number = 0
         async for message in history: #TODO: use a stack?
             link = message.content
             embed_list = []
@@ -153,9 +153,10 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
                         catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
                     except Exception as e:
                         catFact = f"Meowerror: {e}"
+                    number += 1
                     for src in results:
-                        emb=discord.Embed(title=f"cats", url=link, 
-                        description="catto", color=0x00ff00, timestamp=datetime.datetime.now())
+                        emb=discord.Embed(title=f"#{number}", url=link, 
+                        description="cat", color=0x00ff00, timestamp=datetime.datetime.now())
                         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
                         emb.set_footer(text=catFact)
                         emb.set_image(url=src)
