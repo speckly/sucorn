@@ -52,7 +52,7 @@ List of embeddable hrefs of nyan, nyan be used in Discord, master."""
 
     return links, prompt
 
-def catDownloader(URL: str, folder_name: str, mode: str) -> str:
+def catDownloader(URL: str, folder_name: str, mode: str, placeholder: bool=False) -> str:
     """
 Author: @speckly
 https://github.com/speckly
@@ -88,7 +88,7 @@ Response messages"""
                 if filename.startswith(file_name):
                     message += f", Image {file_name} already exists"
                     return message[2:]
-            with open(f'{path}_{mode[:-1]}.jpg', 'wb') as file: # Mode Posneg(1-4)
+            with open(f'{path}_{"x" * 8 if placeholder else mode[:-1]}.jpg', 'wb') as file: # Mode Posneg(1-4)
                 file.write(response.content)
             message += ", Saved successfully"
         else:

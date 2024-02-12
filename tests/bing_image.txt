@@ -1,0 +1,12 @@
+1,Left Click,0,21,20,Instance
+2,Left Click,113,84,20,Reload
+3,Left Click,894,73,{RELOAD_TIME},Copy
+4,Ctrl + C,,,20,Copy
+5,Left Click,1362,248,20,Clear
+6,Left Click,1043,251,20,Box
+7,Prompt,,,20,Text
+8,Left Click,1575,260,20,Create
+9,Left Click,{DISCORD_X},{DISCORD_Y},20,Discord
+10,Ctrl + V,,,20,Discord
+11,Press Enter,,,20,Discord
+12,Left Click,1202,1041,20,Discord

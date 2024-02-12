@@ -68,7 +68,7 @@ async def gay(interaction: discord.Interaction, text_to_send: str):
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == 494483880410349595:
         await client.tree.sync()
-        print('Command tree synced.')
+        await interaction.response.send_message('Command tree synced.')
     else:
         await interaction.response.send_message('You must be the owner to use this command!')
     
@@ -77,14 +77,14 @@ async def sync(interaction: discord.Interaction):
 async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
     embed_list = []
     try:
-        results, _ = catRescue(link)
+        results, prompt = catRescue(link)
         try:
             catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
         except Exception as e:
             catFact = f"Meowerror: {e}"
         for src in results:
             emb=discord.Embed(title=f"Nyan #", url=link, 
-            description="Cat", color=0x00ff00, timestamp=datetime.datetime.now())
+            description=prompt, color=0x00ff00, timestamp=datetime.datetime.now())
             emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
             emb.set_footer(text=catFact)
             emb.set_image(url=src)
@@ -102,7 +102,7 @@ async def silly_message(interaction: discord.Interaction, msg: str, emb_color: h
     emb=discord.Embed(title=msg, 
             color=emb_color, timestamp=datetime.datetime.now())
     emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
-    emb.set_footer(text="Baka")
+    emb.set_footer(text="speckles")
     emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
     await interaction.response.send_message(embed=emb)
 
@@ -174,8 +174,8 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
                 await DUMP_CHANNEL.send(embed=emb)
 
 @client.tree.command(description='Owner only, to download all current unlabelled images')
-@discord.app_commands.describe(target='Target Channel')
-async def download_all(interaction: discord.Interaction, target:str=''): 
+@discord.app_commands.describe(target='Target Channel', placeholder='Use placeholders in last 8 characters of file name')
+async def download_all(interaction: discord.Interaction, target:str='', placeholder:bool=False): 
     if target == '':
         target = interaction.channel_id
     if interaction.user.id != 494483880410349595:
@@ -193,7 +193,6 @@ async def download_all(interaction: discord.Interaction, target:str=''):
 
         async for message in history:
             message_count += 1
-            print(message_count)
             view = discord.ui.View.from_message(message)
             pos_labels = {}
             labels = {}
@@ -211,7 +210,7 @@ async def download_all(interaction: discord.Interaction, target:str=''):
                 image_index = image_number - 1 # Labels are 1-4 attached to the end of the string
                 try:
                     emb = message.embeds[image_index]
-                    res = f"Image {image_index+1}: {catDownloader(emb.image.url, channel_name, label)}\n"
+                    res = f"Image {image_index+1}: {catDownloader(emb.image.url, channel_name, label, placeholder)}\n"
                     image_count += 1
                 except IndexError:
                     res = f"Image {image_index+1}: Index out of range"
@@ -232,11 +231,6 @@ async def download_all(interaction: discord.Interaction, target:str=''):
         emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
         await interaction.followup.send(embed=emb) 
         
-
-# @client.tree.command(description='Counts the number of negative reactions in a channel')
-# @discord.app_commands.describe(product='What product are you looking for?')
-# async def count_negatives(interaction: discord.Interaction, product: str = "RTX3080"): #Optional[]
-#     pass
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.
 # It always takes an interaction as its first parameter and a Member or Message as its second parameter.
@@ -252,13 +246,9 @@ async def on_message(message):
         return
     if message.author.id == 988090297131089922 or message.author.id == 494483880410349595: # TODO: rewrite condition to include input channels
         content = message.content
-        global currentInstance
-        currentInstance = (currentInstance + 1) % instanceCount
-        if content.startswith("https://") and len(content) > 200: # Filtered url/generating
-            await message.delete() 
-            playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
-            plotError(None, True) # NOTE: either update the list or use plotError to update
-        else:
+        if content.startswith("https://"):
+            global currentInstance
+            currentInstance = (currentInstance + 1) % instanceCount
             global instanceURLs
             try:
                 instanceIDX = instanceURLs.index(content)

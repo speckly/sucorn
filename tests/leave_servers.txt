@@ -1,0 +1,9 @@
+1,Right Click,80,452,450,Options
+2,Left Click,277,944,20,Leave
+3,Left Click,1278,711,50,Confirm
+4,Left Click,217,639,500,Exit
+
+Mouse Coordinates: (80, 452)
+Mouse Coordinates: (277, 944)
+Mouse Coordinates: (1278, 711)
+Mouse Coordinates: (217, 639)

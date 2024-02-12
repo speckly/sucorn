@@ -35,36 +35,36 @@ class PosNegView(discord.ui.View):
                  self.positive1, self.positive2, self.positive3, self.positive4]
         self.update_buttons(image_count)
 
-    @discord.ui.button(label='Negative1', row=0, style=discord.ButtonStyle.danger, custom_id='persistent_negative1')
+    @discord.ui.button(label='Negative1', row=0, style=discord.ButtonStyle.danger, custom_id='negative1')
     async def negative1(self, interaction: discord.Interaction, button: discord.ui.Button):
         print("test")
         await buttonCB(interaction, button, 'Negative1', self)
 
-    @discord.ui.button(label='Negative2', row=0, style=discord.ButtonStyle.danger, custom_id='persistent_negative2')
+    @discord.ui.button(label='Negative2', row=0, style=discord.ButtonStyle.danger, custom_id='negative2')
     async def negative2(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Negative2', self)
 
-    @discord.ui.button(label='Negative3', row=0, style=discord.ButtonStyle.danger, custom_id='persistent_negative3')
+    @discord.ui.button(label='Negative3', row=0, style=discord.ButtonStyle.danger, custom_id='negative3')
     async def negative3(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Negative3', self)
 
-    @discord.ui.button(label='Negative4', row=0, style=discord.ButtonStyle.danger, custom_id='persistent_negative4')
+    @discord.ui.button(label='Negative4', row=0, style=discord.ButtonStyle.danger, custom_id='negative4')
     async def negative4(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Negative4', self)
 
-    @discord.ui.button(label='Positive1', row=1, style=discord.ButtonStyle.success, custom_id='persistent_positive1')
+    @discord.ui.button(label='Positive1', row=1, style=discord.ButtonStyle.success, custom_id='positive1')
     async def positive1(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Positive1', self)
 
-    @discord.ui.button(label='Positive2', row=1, style=discord.ButtonStyle.success, custom_id='persistent_positive2')
+    @discord.ui.button(label='Positive2', row=1, style=discord.ButtonStyle.success, custom_id='positive2')
     async def positive2(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Positive2', self)
 
-    @discord.ui.button(label='Positive3', row=1, style=discord.ButtonStyle.success, custom_id='persistent_positive3')
+    @discord.ui.button(label='Positive3', row=1, style=discord.ButtonStyle.success, custom_id='positive3')
     async def positive3(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Positive3', self)
 
-    @discord.ui.button(label='Positive4', row=1, style=discord.ButtonStyle.success, custom_id='persistent_positive4')
+    @discord.ui.button(label='Positive4', row=1, style=discord.ButtonStyle.success, custom_id='positive4')
     async def positive4(self, interaction: discord.Interaction, button: discord.ui.Button):
         await buttonCB(interaction, button, 'Positive4', self)
 
