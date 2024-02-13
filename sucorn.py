@@ -148,7 +148,6 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
                         print(f'{timestamp()}: Prompt does not match channel')
                         playsound.playsound(f'{DIRECTORY}\\tests\\vine-boom.wav')
                         continue
-                    # btnView = buttonViewSave()
                     try:
                         catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
                     except Exception as e:
@@ -201,7 +200,8 @@ async def download_all(interaction: discord.Interaction, target:str='', placehol
                     labels[button.label] = button
                 elif button.label[:-1] == "Positive":
                     pos_labels[button.label] = button
-
+            print(message_count)
+            
             # NOTE: I have commented out editing the view as it adds too many requests and its not too important
             for label in labels: # for all Negative buttons that are not disabled
                 # labels[label].disabled = True # Disable current button
