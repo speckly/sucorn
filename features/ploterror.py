@@ -53,7 +53,7 @@ def plotError(frame: int or None, hours_mode=True):
     return timestamps
 
 def plot_process():
-    ani = FuncAnimation(plt.gcf(), plotError, interval=1000000) # ms interval for checking
+    ani = FuncAnimation(plt.gcf(), plotError, interval=100000) # ms interval for checking
     plt.show()
 
 def plot_thread():

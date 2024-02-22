@@ -35,7 +35,6 @@ sys.path.append('./features')
 from aclient import MyClient, PosNegView
 from cscraper import CScraper
 from catrescue import catRescue, catDownloader
-from ploterror import plotError, plot_process, plot_thread
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 dotenv.load_dotenv()
@@ -43,10 +42,6 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 client = MyClient(intents=intents)
-
-instanceCount = 11
-instanceURLs = [None] * instanceCount #Contains the last unique URL of 6 instances
-currentInstance = -1
 
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -240,26 +235,11 @@ async def show_join_date(interaction: discord.Interaction, member: discord.Membe
     # The format_dt function formats the date time into a human readable representation in the official client
     await interaction.response.send_message(f'{member} joined at {discord.utils.format_dt(member.joined_at)}')
 
-@client.event
-async def on_message(message):
-    if message.author.bot: 
-        return
-    if message.author.id == 988090297131089922 or message.author.id == 494483880410349595: # TODO: rewrite condition to include input channels
-        content = message.content
-        if content.startswith("https://"):
-            global currentInstance
-            currentInstance = (currentInstance + 1) % instanceCount
-            global instanceURLs
-            try:
-                instanceIDX = instanceURLs.index(content)
-                # A duplicate is found. Meaning that this current instance has not generated a new URL
-                # This also gives us 100% confidence which instance we are on. 
-                currentInstance = instanceIDX
-                await message.delete()
-                playsound.playsound(f'{DIRECTORY}\\tests\metal-alert.wav') # Feedback that the delay (in automation) is not enough and to raise an alert
-                print(f'{timestamp()}: Repeated')
-            except ValueError:
-                instanceURLs[currentInstance] = content
+# @client.event
+# async def on_message(message):
+#     if message.author.bot: 
+#         return
+    
 
 def get_memory_usage():
     process = psutil.Process(os.getpid())
@@ -275,5 +255,4 @@ def monitor_performance(interval=300):
 if __name__ == "__main__":
     performance_thread = threading.Thread(target=monitor_performance, args=(1000,))
     performance_thread.start()
-    plot_thread()
     client.run(os.getenv('TOKEN'))

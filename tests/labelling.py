@@ -11,7 +11,7 @@ import os
 class ImageLabeler:
     def __init__(self, folder_path):
         self.folder_path = folder_path
-        self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('xxxxxxxx.jpg'))]
         self.files = len(self.image_files)
         self.current_index = 0
 
