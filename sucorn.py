@@ -239,7 +239,10 @@ async def show_join_date(interaction: discord.Interaction, member: discord.Membe
 # async def on_message(message):
 #     if message.author.bot: 
 #         return
-    
+
+@client.event
+async def on_interaction(interaction):
+    print(f'{timestamp()}: {interaction.user.name} ({interaction.user.id}) used {interaction.command.qualified_name} with failed={interaction.command_failed}')
 
 def get_memory_usage():
     process = psutil.Process(os.getpid())

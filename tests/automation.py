@@ -81,7 +81,7 @@ def loop():
                 if delay:
                     x, y, delay = int(x) if x and x != " " else None, int(y) if y and y != " " else None, int(delay)
                     if comment == "Instance":
-                        x = 120 + 150 * i # X in the window pos is a placeholder, this formula depends on browser
+                        x = 120 + 140 * i # X in the window pos is a placeholder, this formula depends on browser
                     flag = perform_action(action, x, y, delay)
                     if flag:
                         playsound.playsound(f'{DIRECTORY}\\vine-boom.wav')
@@ -122,7 +122,7 @@ leave_servers = """1,Right Click,80,452,450,Options
 
 macro = bing_image
 lines = macro.strip().split('\n')
-INSTANCES = 10
+INSTANCES = 11
 instanceURLs = [None] * INSTANCES # Contains the last unique URL of 6 instances
 currentInstance = -1
 REPEATS = 500

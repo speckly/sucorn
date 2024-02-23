@@ -1,5 +1,5 @@
 from ntpath import basename
-from requests import get
+from requests import get, exceptions
 import os
 try: 
     from bs4 import BeautifulSoup
@@ -58,11 +58,15 @@ Author: @speckly
 https://github.com/speckly
 
 -- Cat Downloader --
-Simple downloading of images customized for the use with the sucorn bot, triggered when the Discord buttons
-are clicked. NOTE: ASSUMES THAT THE PAGE DOES NOT RETURN HTML BUT ONLY JPG!!!!!!!!
+Downloading of images customized for the use with the sucorn bot, triggered when the Discord buttons
+are clicked. Features customised filename suffix saving.
+NOTE: assumes that given page returns image only
 
 -- Inputs --
-URL embedded in Discord and the folder_name which is the Discord channel name
+URL: remote image
+folder_name: folder name to save image in ./images/{folder_name}
+mode: image suffix, starts with either Positive or Negative and ends with a number from 1-4
+placeholder: if true, uses xxxxxxxx as the suffix instead, else uses mode
 
 -- Process --
 Use requests
@@ -78,27 +82,34 @@ Response messages"""
             os.makedirs(f'{folder_name}')
             message += ", Directory created"
         
-        response = get(URL)
-        if response.status_code == 200:
-            URL = basename(URL)
-            query_start = URL.find('?')
-            file_name = URL[:query_start] if query_start != -1 else URL # Get rid of parameters
-            path = f'{folder_name}/{file_name}'
-            for filename in os.listdir(folder_name):
-                if filename.startswith(file_name):
-                    message += f", Image {file_name} already exists"
-                    return message[2:]
-            with open(f'{path}_{"x" * 8 if placeholder else mode[:-1]}.jpg', 'wb') as file: # Mode Posneg(1-4)
-                file.write(response.content)
-            message += ", Saved successfully"
+        
+        try:
+            response = get(URL)
+        except exceptions.MissingSchema:
+            message += ", **Missing protocol**"
+        except exceptions.ConnectionError:
+            message += ", **Unable to connect** check if host is up?"
         else:
-            message += ", **Request failed**"
+            if response.status_code == 200:
+                URL = basename(URL)
+                query_start = URL.find('?')
+                file_name = URL[:query_start] if query_start != -1 else URL # Get rid of parameters
+                path = f'{folder_name}/{file_name}'
+                for filename in os.listdir(folder_name):
+                    if filename.startswith(file_name):
+                        message += f", Image {file_name} already exists"
+                        return message[2:]
+                with open(f'{path}_{"x" * 8 if placeholder else mode[:-1]}.jpg', 'wb') as file: # Mode Posneg(1-4)
+                    file.write(response.content)
+                message += ", Saved successfully"
+            else:
+                message += ", **Request failed**"
 
         return message[2:]
-    except:
-        return "**Unknown error**"
+    except Exception as e:
+        return f"**Unknown error**: {e}"
 
 if __name__ == "__main__":
-    SAMPLE_URL = "https://www.bing.com/images/create/colored-drawing-of-an-anime-girl-with-cat-ears-and/1-6580752df8ad4d05ae377fd4cbd0482e?FORM=GENCRE"
+    SAMPLE_URL = "https://www.bing.com/images/create/colored-drawing-of-an-energetic-anime-girl-with-ca/1-65ca091f4af1405da5b2994f2b34733f?FORM=GENCRE"
     # print(catRescue(SAMPLE_URL))
-    print(catDownloader("https://th.bing.com/th/id/OIG.AS.gbMFww.HfRikyMMdB", "testfrommain"))
+    print(catDownloader("https://th.bing.com/th/id/OIG2.PgMogaZtNgh6wGg4Tz1e", "testfrommain", "positive1"))
