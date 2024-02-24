@@ -1,4 +1,4 @@
-tests/speckOS_legacy.py
+tests/
 .env
 images/
 **/__pycache__/
