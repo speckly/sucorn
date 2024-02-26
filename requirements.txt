@@ -3,3 +3,4 @@ python-dotenv
 playsound
 psutil
 matplotlib
+pandas

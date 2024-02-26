@@ -10,11 +10,14 @@ import os
 import argparse
 
 class ImageLabeler:
-    def __init__(self, folder_path, rewrite=False):
+    def __init__(self, folder_path, options={}):
         self.folder_path = folder_path
-        self.rewrite = rewrite
-        if rewrite:
+        self.rewrite = options.get("rewrite")
+        category = options.get("category")
+        if self.rewrite:
             self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]
+        elif category != None:
+            self.image_files = [f for f in os.listdir(folder_path) if category in f.lower() and (f.lower().endswith('.jpg') or f.lower().endswith('.jpeg'))]
         else:
             self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('xxxxxxxx.jpg') or f.lower().endswith('.jpeg') and len(f) < 13]
         self.files = len(self.image_files)
@@ -101,16 +104,18 @@ Progress: {self.current_index}/{self.files}"""
 
 
 def main():
-    """cli tool that launches a labelling program,
+    """cli tool that launches a labelling program, labels only files with a placeholder "xxxxxxxx"
     Press 0 for negative, 1 for positive and 2 for unsure
     Required positional argument: folder-name
     --rewrite: adds already labeled images to the labeller, will overwrite the old label"""
     parser = argparse.ArgumentParser(description='Image Labeling Program')
     parser.add_argument('folder_name', type=str, help='Folder name of images')
-    parser.add_argument('--rewrite', action='store_true', help='Rewrite images')
+    parser.add_argument('--rewrite', action='store_true', help='Rewrite all images regardlesss of label')
     parser.add_argument('--reset', action='store_true', help='Reset images')
+    parser.add_argument('-c', '--category', choices=['positive', 'negative', 'neutral'], help='Label images with the following category')
 
     args = parser.parse_args()
+    options = {"rewrite": args.rewrite, "category": args.category}
 
     folder_path = f"{os.path.dirname(os.path.realpath(__file__))}/../images/{args.folder_name}"
     if not os.path.isdir(folder_path):
@@ -133,8 +138,8 @@ def main():
                 os.rename(os.path.join(folder_path, current_file), os.path.join(folder_path, new_filename))
             print("Reset")
             return
-
-    image_labeler = ImageLabeler(folder_path, args.rewrite)
+    
+    image_labeler = ImageLabeler(folder_path=folder_path, options=options)
     image_labeler.show_image()
     image_labeler.root.mainloop()
 
