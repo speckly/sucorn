@@ -1,6 +1,7 @@
 from ntpath import basename
 from requests import get, exceptions
 import os
+
 try: 
     from bs4 import BeautifulSoup
 except ModuleNotFoundError:
@@ -8,6 +9,7 @@ except ModuleNotFoundError:
         os.system(f"pip install bs4")
     else:
         exit()
+        
 import re
 
 def catRescue(URL: str) -> list:

@@ -16,7 +16,7 @@ def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 def perform_action(action, x, y, delay):
-    PROMPT = "an anime girl with cat ears energetically jumping and leaping and bouncing on a big space hopper ball with a handle, both ball and handle must be of the same color, ball has a cartoon face print, girl is sitting on the ball and is holding onto its handle, girl's feet must be in front of the ball and pointing towards the floor, ball off the ground and very high up in the air, space hopper ball has a big handle, field of flowers, colored, closeup perspective from below the ball"
+    PROMPT = "an anime girl with cat ears energetically jumping and leaping and bouncing on a big space hopper ball with a handle, both ball and handle must be of the same color, ball has a cartoon face print, girl is sitting on the ball and is holding onto its handle, girl's feet must be in front of the ball and pointing towards the floor, ball off the ground and moving through the air, space hopper ball has a big handle, field of flowers, colored, closeup perspective from below the ball"
     time.sleep(delay / 1000)  # ms to s
     if x and y:  # Check if x and y are provided
         pyautogui.moveTo(x, y, duration=0.1)
@@ -125,8 +125,8 @@ lines = macro.strip().split('\n')
 INSTANCES = 11
 instanceURLs = [None] * INSTANCES # Contains the last unique URL of 6 instances
 currentInstance = -1
-REPEATS = 500
-CYCLE_DELAY = 0
+REPEATS = 2000
+CYCLE_DELAY = 30
 # 250 -> 4/5 instances broken after approximately 8-12 hours
 PRINT_CYCLE_TIME = True
 terminate_flag = False

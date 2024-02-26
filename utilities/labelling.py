@@ -7,11 +7,16 @@
 from tkinter import Tk, Canvas, Label, RIGHT
 from PIL import Image, ImageTk, ImageFilter
 import os
+import argparse
 
 class ImageLabeler:
-    def __init__(self, folder_path):
+    def __init__(self, folder_path, rewrite=False):
         self.folder_path = folder_path
-        self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('xxxxxxxx.jpg') or f.lower().endswith('xxxxxxxx.jpeg')]
+        self.rewrite = rewrite
+        if rewrite:
+            self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]
+        else:
+            self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('xxxxxxxx.jpg') or f.lower().endswith('.jpeg') and len(f) < 13]
         self.files = len(self.image_files)
         if self.files == 0:
             print("All images labeled. Quitting")
@@ -31,6 +36,7 @@ class ImageLabeler:
         self.canvas = Canvas(self.root)
         self.canvas.pack(expand=True, fill="both")
 
+        self.root.bind('2', lambda event: self.label_image('_ummmmmmm'))
         self.root.bind('1', lambda event: self.label_image('_positive'))
         self.root.bind('0', lambda event: self.label_image('_negative'))
         self.root.bind('<Escape>', self.escape)
@@ -48,7 +54,14 @@ class ImageLabeler:
     def label_image(self, label):
         current_file = self.image_files[self.current_index]
         base_name, extension = os.path.splitext(current_file)
-        new_filename = base_name.replace("_xxxxxxxx", "") + label + extension
+        print
+        new_base = base_name.replace("_xxxxxxxx", "")
+        if self.rewrite:
+            new_base = new_base.replace("_Positive", "")
+            new_base = new_base.replace("_Negative", "")
+            new_base = new_base.replace("_positive", "")
+            new_base = new_base.replace("_negative", "")
+        new_filename = new_base + label + extension
         os.rename(os.path.join(self.folder_path, current_file), os.path.join(self.folder_path, new_filename))
 
         self.next_image()
@@ -88,14 +101,40 @@ Progress: {self.current_index}/{self.files}"""
 
 
 def main():
-    while True:
-        folder_path = f"../images/{input('Input folder name of images: ')}"
-        if os.path.isdir(folder_path):
-            break
-        else:
-            print('Directory not found')
+    """cli tool that launches a labelling program,
+    Press 0 for negative, 1 for positive and 2 for unsure
+    Required positional argument: folder-name
+    --rewrite: adds already labeled images to the labeller, will overwrite the old label"""
+    parser = argparse.ArgumentParser(description='Image Labeling Program')
+    parser.add_argument('folder_name', type=str, help='Folder name of images')
+    parser.add_argument('--rewrite', action='store_true', help='Rewrite images')
+    parser.add_argument('--reset', action='store_true', help='Reset images')
 
-    image_labeler = ImageLabeler(folder_path)
+    args = parser.parse_args()
+
+    folder_path = f"{os.path.dirname(os.path.realpath(__file__))}/../images/{args.folder_name}"
+    if not os.path.isdir(folder_path):
+        print('Directory not found')
+        return
+
+    if args.reset:
+        confirmation = input(f"Are you sure you wish to reset the labels of the following directory? {args.folder_name} (N) ")
+        if confirmation.lower() != "y":
+            print("Quitting")
+            return
+        else:
+            for current_file in [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]:
+                base_name, extension = os.path.splitext(current_file)
+                new_base = base_name.replace("_Positive", "")
+                new_base = new_base.replace("_Negative", "")
+                new_base = new_base.replace("_positive", "")
+                new_base = new_base.replace("_negative", "")
+                new_filename = new_base + "_xxxxxxxx" + extension
+                os.rename(os.path.join(folder_path, current_file), os.path.join(folder_path, new_filename))
+            print("Reset")
+            return
+
+    image_labeler = ImageLabeler(folder_path, args.rewrite)
     image_labeler.show_image()
     image_labeler.root.mainloop()
 

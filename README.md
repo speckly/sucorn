@@ -1,18 +1,11 @@
 # sucorn_bot
 
-A front-end utility to store/display images created on Bing Image Creator. Makes use of Discord API
+A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator. 
+The focus is more towards displaying these results on Discord and labelling these images from both remote (Discord) and local (tkinter)
 
-**NOTE:** The working directory will be changed to `/images`.
+# Usage
 
-## Dependencies
-This Discord bot has dependencies that need to be installed. The required libraries include:
-
-- `discord`
-- `python-dotenv`
-- `playsound`
-- `psutil`
-- `matplotlib`
-
-These dependencies can be installed using the following command:
+[.exe? What is that?](https://github.com/sherlock-project/sherlock/issues/2011)
 ```bash
 pip install -r requirements.txt
+```

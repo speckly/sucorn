@@ -9,9 +9,10 @@ import datetime
 import threading 
 import time
 
-# cat fact API
+# nonsense related to cats
 from requests import get
 from json import loads
+from random import choice
 
 # Requires pip install
 import importlib
@@ -35,6 +36,7 @@ sys.path.append('./features')
 from aclient import MyClient, PosNegView
 from cscraper import CScraper
 from catrescue import catRescue, catDownloader
+from sucorn_statistics import count_files
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 dotenv.load_dotenv()
@@ -93,13 +95,46 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
         emb.set_footer(text=catFact)
         await interaction.response.send_message(embed=emb)
 
-async def silly_message(interaction: discord.Interaction, msg: str, emb_color: hex = 0xff0000) -> None:
-    emb=discord.Embed(title=msg, 
+@client.tree.command(description='Owner only, generate statistics on the category')
+@discord.app_commands.describe()
+async def statistics(interaction: discord.Interaction, target:str=''): 
+    if target == '':
+        target = interaction.channel_id
+    if (type(target) != int and not target.isnumeric()):
+        await silly_message(interaction, title="Channel is not an integer.")
+        return
+
+    DUMP_CHANNEL = client.get_channel(int(target))
+    if DUMP_CHANNEL == None:
+        await silly_message(interaction, title="Channel is not a valid channel")
+        return
+
+    if interaction.user.id != 494483880410349595:
+        await silly_message(interaction, title="Not authorized to use this command")
+        return
+    else:
+        final_string = ""
+        ordered_dir = sorted(os.listdir(f"{DIRECTORY}/images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
+        for directory in ordered_dir:
+            final_string = count_files(f'{DIRECTORY}/images/{directory}')
+            await silly_message(interaction, title=directory, message=final_string, emb_color=0x00ff00, channel=DUMP_CHANNEL)
+
+async def silly_message(interaction: discord.Interaction, title: str="", message: str="", emb_color: hex = 0xff0000, channel: discord.channel = '') -> None:
+    with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
+        the_funnies = [gif.rstrip('\n') for gif in f]
+        
+    emb=discord.Embed(title=title, description=message,
             color=emb_color, timestamp=datetime.datetime.now())
     emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
     emb.set_footer(text="speckles")
-    emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
-    await interaction.response.send_message(embed=emb)
+    emb.set_image(url=choice(the_funnies))
+    if channel == "":
+        await interaction.response.send_message(embed=emb)
+    else:
+        try:
+            await channel.send(embed=emb)
+        except:
+            await silly_message(interaction, title="Error in parsing channel") # Will be termination case
 
 @client.tree.command(description='Owner only, to nuke a channel with a list of links fed into /embed_cat')
 @discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
@@ -107,20 +142,20 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
     if target == '':
         target = interaction.channel_id
     if not copy.isnumeric() or (type(target) != int and not target.isnumeric()):
-        await silly_message(interaction, "Channel is not an integer.")
+        await silly_message(interaction, title="Channel is not an integer.")
         return
 
     COPY_CHANNEL = client.get_channel(int(copy))
     DUMP_CHANNEL = client.get_channel(int(target))
     if COPY_CHANNEL == None or DUMP_CHANNEL == None:
-        await silly_message(interaction, "Channel is not a valid channel")
+        await silly_message(interaction, title="Channel is not a valid channel")
         return
 
     if interaction.user.id != 494483880410349595:
-        await silly_message(interaction, "Not authorized to use this command")
+        await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
-        await silly_message(interaction, "Sending millions of cats to this channel now", 0x00ff00)
+        await silly_message(interaction, title="Sending millions of cats to this channel now", emb_color=0x00ff00)
 
         # This is the end of your channel
         history = COPY_CHANNEL.history(limit=None) # Verified to have no loss for a channel with 48 results
@@ -169,15 +204,15 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
 
 @client.tree.command(description='Owner only, to download all current unlabelled images')
 @discord.app_commands.describe(target='Target Channel', placeholder='Use placeholders in last 8 characters of file name')
-async def download_all(interaction: discord.Interaction, target:str='', placeholder:bool=False): 
+async def download_all(interaction: discord.Interaction, target:str='', placeholder:bool=True): 
     if target == '':
         target = interaction.channel_id
     if interaction.user.id != 494483880410349595:
-        await silly_message(interaction, "Not authorized to use this command")
+        await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
         # TODO: add response here
-        await silly_message(interaction, "Downloading millions of cats from this channel now", 0x00ff00)
+        await silly_message(interaction, title="Downloading millions of cats from this channel now", emb_color=0x00ff00)
         target = client.get_channel(int(target))
         channel_name = target.name
         history = target.history(limit=None) # Verified to have no loss for a channel with 48 results
