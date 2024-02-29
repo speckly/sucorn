@@ -26,10 +26,13 @@ def count_files(directory, export_csv=False):
         total_labeled = positive_count + negative_count
         accuracy = positive_count / total_labeled * 100 if total_labeled != 0 else 0
         ex_accuracy = (positive_count + neutral_count) / total_labeled * 100 if total_labeled != 0 else 0
+        # For readability in visualisation programs
+        # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
+        directory = directory.split("\\")[-1].replace("catgirls", "cg").replace("anime-girls", "ag")
 
-        if export_csv: # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
+        if export_csv: 
             result = {
-                "directory": directory.split("\\")[-1],
+                "directory": directory,
                 "positive_count": positive_count,
                 "negative_count": negative_count,
                 "neutral_count": neutral_count,
@@ -77,26 +80,23 @@ def visualise(file):
         df[column] = df[column] / df['total_files'] * 100
         
     df['unlabelled'] = df['placeholder_count'] + df['unaccounted_files']
-    df_for_plot = df.drop(columns=['total_files', 'placeholder_count', 'unaccounted_files'])
-    df_for_plot.set_index('directory', inplace=True)
+    df = df.drop(columns=['total_files', 'placeholder_count', 'unaccounted_files'])
+    df.set_index('directory', inplace=True)
 
-    df_for_area_plot = df_for_plot.drop(columns=['accuracy', 'ex_accuracy'])
+    df_for_area_plot = df.drop(columns=['accuracy', 'ex_accuracy'])
 
-    fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(18, 10))
+    # fig, axes = plt.subplots(ncols=2, figsize=(18, 10))
+    # ax=axes[x,y]
+    df.plot(kind='bar', title="Bar Plot")
+    # df.plot(kind='line', ax=axes[0, 1], title="Line Plot")
+    plt.xticks(rotation=45)
 
-    df_for_plot.plot(kind='bar', ax=axes[0, 0], title="Bar Plot")
-    df_for_plot.plot(kind='line', ax=axes[0, 1], title="Line Plot")
-    df_for_area_plot.plot(kind='area', figsize=(10, 6), stacked=False)
-    
-    df_for_plot.plot(kind='scatter', x='ex_accuracy', y='accuracy', ax=axes[1, 0], title="Scatter Plot for accuracy")
-    df_for_plot.plot(kind='hist', bins=10, ax=axes[1, 1], title="Histogram")
-    # df_for_plot['accuracy'].plot(kind='pie', autopct='%1.1f%%', ax=axes[1, 2], title="Pie Chart")
+    df_for_area_plot.plot(kind='area', stacked=True, title="Area Plot")
+    # df.plot(kind='scatter', x='ex_accuracy', y='accuracy', ax=axes[1, 0], title="Scatter Plot for accuracy")
+    # df.plot(kind='hist', bins=10, ax=axes[1, 1], title="Histogram")
+    # df['accuracy'].plot(kind='pie', autopct='%1.1f%%', ax=axes[1, 2], title="Pie Chart")
 
-    # Adjust layout
-    plt.tight_layout()
-    # plt.xticks(rotation=45)
-
-    # Show the plot
+    plt.xticks(rotation=45)
     plt.show()
 
 if __name__ == "__main__":
