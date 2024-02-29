@@ -33,12 +33,12 @@ def count_files(directory, export_csv=False):
         if export_csv: 
             result = {
                 "directory": directory,
-                "positive_count": positive_count,
-                "negative_count": negative_count,
-                "neutral_count": neutral_count,
-                "placeholder_count": placeholder_count,
-                "unaccounted_files": unaccounted_files,
-                "total_files": total_files,
+                "positive": positive_count,
+                "negative": negative_count,
+                "neutral": neutral_count,
+                "placeholder": placeholder_count,
+                "unaccounted": unaccounted_files,
+                "total": total_files,
                 "accuracy": round(accuracy, 4),
                 "ex_accuracy": round(ex_accuracy, 4)
             }
@@ -77,26 +77,35 @@ def visualise(file):
     # Normalize all numeric columns based on the 'total_files' column
     numeric_columns = df.select_dtypes(include='number').columns
     for column in numeric_columns:
-        df[column] = df[column] / df['total_files'] * 100
+        df[column] = df[column] / df['total'] * 100
         
-    df['unlabelled'] = df['placeholder_count'] + df['unaccounted_files']
-    df = df.drop(columns=['total_files', 'placeholder_count', 'unaccounted_files'])
+    df['unlabelled'] = df['placeholder'] + df['unaccounted']
+    df = df.drop(columns=['total', 'placeholder', 'unaccounted'])
     df.set_index('directory', inplace=True)
 
-    df_for_area_plot = df.drop(columns=['accuracy', 'ex_accuracy'])
+    df_combined = df.drop(columns=['accuracy', 'ex_accuracy'])
+    df_accuracy = df.drop(columns=['positive', 'negative', 'neutral', 'unlabelled'])
 
     # fig, axes = plt.subplots(ncols=2, figsize=(18, 10))
     # ax=axes[x,y]
-    df.plot(kind='bar', title="Bar Plot")
+    # df.plot(kind='bar', title="Bar Plot")
     # df.plot(kind='line', ax=axes[0, 1], title="Line Plot")
+    # plt.xticks(rotation=45)
+    colors = ['green', 'red', 'blue', 'purple']
+    ax = df_combined.plot(kind='bar', stacked=True, title="Type of labels", color=colors)
+    ax.legend(loc='center', bbox_to_anchor=(1, 1))
+
+    ax = df_accuracy.plot(kind='line', title="Accuracy")
+    ax.legend(loc='center', bbox_to_anchor=(1, 1))
+
     plt.xticks(rotation=45)
 
-    df_for_area_plot.plot(kind='area', stacked=True, title="Area Plot")
+    # df_combined.plot(kind='area', stacked=True, title="Area Plot")
     # df.plot(kind='scatter', x='ex_accuracy', y='accuracy', ax=axes[1, 0], title="Scatter Plot for accuracy")
     # df.plot(kind='hist', bins=10, ax=axes[1, 1], title="Histogram")
     # df['accuracy'].plot(kind='pie', autopct='%1.1f%%', ax=axes[1, 2], title="Pie Chart")
 
-    plt.xticks(rotation=45)
+    # plt.xticks(rotation=45)
     plt.show()
 
 if __name__ == "__main__":

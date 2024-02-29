@@ -1,4 +1,4 @@
-directory,positive_count,negative_count,neutral_count,placeholder_count,unaccounted_files,total_files,accuracy,ex_accuracy
+directory,positive,negative,neutral,placeholder,unaccounted,total,accuracy,ex_accuracy
 cg-0,17,58,1,61,0,137,22.6667,24.0
 ag-1,28,9,0,0,0,37,75.6757,75.6757
 cg-1,0,116,5,0,0,121,0.0,4.3103
@@ -21,4 +21,4 @@ cg-18,108,749,0,0,0,857,12.6021,12.6021
 cg-19,81,503,0,3965,0,4549,13.8699,13.8699
 cg-20,167,1407,101,0,0,1675,10.6099,17.0267
 cg-21,248,1104,111,5593,7,7063,18.3432,26.5533
-cg-22,0,0,0,0,305,305,0,0
+cg-22,0,0,0,671,313,984,0,0
