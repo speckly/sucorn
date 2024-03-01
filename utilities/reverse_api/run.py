@@ -14,10 +14,10 @@ def open_console_window(account, token, prompt, out_path):
     return process
 
 def organize_windows(dummy):
-    rows = 3  # Adjust the number of rows based on your preference
-    columns = 4  # Adjust the number of columns based on your preference
-    window_width = 450  # Adjust the width of each window based on your preference
-    window_height = 270  # Adjust the height of each window based on your preference
+    rows = 3
+    columns = 2
+    window_width = 450
+    window_height = 270
 
     windows = gw.getWindowsWithTitle('reverse_api')
 
@@ -42,10 +42,10 @@ def terminate():
     print("Terminated")
 
 if __name__ == "__main__":
-    OUT_PATH = "..\..\\images\\catgirls-24"
+    OUT_PATH = "..\..\\images\\catgirls-25"
     with open('prompt.txt') as f:
         PROMPT = ''.join(f.readlines()).replace('\n', '')
-    with open("test_cookies.json") as f:
+    with open("cookies.json") as f:
         cookies = json.load(f)
 
     if len(PROMPT) > 480:

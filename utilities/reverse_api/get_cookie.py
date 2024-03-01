@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from dotenv import load_dotenv
 import os
 import json
+import copy
 
 def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
     driver.get("https://www.bing.com/images/create")
@@ -77,6 +78,7 @@ def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
     u_cookie = driver.get_cookie("_U")["value"]
 
     # Finish up
+    driver.get("https://www.bing.com/images/create")
     profile = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "id_l")))
     profile.click()
     signout = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "id_signout")))
@@ -99,28 +101,35 @@ if __name__ == "__main__":
     load_dotenv()
     PASSWORD = os.getenv("PASSWORD")
     usernames = []
-    with open("usernames.txt") as ufile:
-        for line in ufile:
-            if "#" in line:
-                break
-            else:
-                usernames.append(line.strip())
+    with open("usernames.json") as ufile:
+        usernames = json.load(ufile)
 
     JSON_FILE = 'cookies.json'
-    for username in usernames:
-        cookie = get_cookie(driver, username, PASSWORD)
-        print(f'Cookie acquired for {username}')
+    for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
         try:
-            with open(JSON_FILE, 'r') as file:
-                data = json.load(file)
-            data[username] = cookie
-            with open(JSON_FILE, 'w') as file:
-                json.dump(data, file, indent=4)
-        except FileNotFoundError:
+            cookie = get_cookie(driver, username, PASSWORD)
+        except:
+            print("Unknown exception")
+            driver.quit()
+        
+        if os.path.exists(JSON_FILE):
+            try:
+                with open(JSON_FILE, 'r') as file:
+                    data = json.load(file)
+                data[username] = cookie
+                with open(JSON_FILE, 'w') as file:
+                    json.dump(data, file, indent=4)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON in '{JSON_FILE}': {e}")
+        else:
             with open(JSON_FILE, 'w') as file:
                 json.dump({username: cookie}, file, indent=4)
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON in '{JSON_FILE}': {e}")
-    
+        
+        usernames["cookie"].append(usernames["normal"].pop(usernames["normal"].index(username)))
+        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+            json.dump(usernames, uFile, indent=4)
+
+        print(f'Cookie acquired for {username}')
+
     driver.quit()
     print("Mission accomplished")
