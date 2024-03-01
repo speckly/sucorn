@@ -57,7 +57,6 @@ class ImageLabeler:
     def label_image(self, label):
         current_file = self.image_files[self.current_index]
         base_name, extension = os.path.splitext(current_file)
-        print
         new_base = base_name.replace("_xxxxxxxx", "")
         if self.rewrite:
             new_base = new_base.replace("_Positive", "")
