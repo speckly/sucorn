@@ -60,7 +60,7 @@ def count_files(directory, export_csv=False):
         return f"Directory not found: {directory}"
 
 def export_to_csv(file, result):
-    with open(file, mode='a', newline='') as csv_file:  # Change 'w' to 'a' for append mode
+    with open(file, mode='a', newline='') as csv_file: 
         fieldnames = result.keys()
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
@@ -137,9 +137,13 @@ if __name__ == "__main__":
             else:
                 print("File does not exist")
         else:
+            if file:
+                with open(file, mode='w', newline='') as csv_file: # Clear
+                    csv_file.write("")
             for folder in sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf')):
                 if file:
                     result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
+                    
                     export_to_csv(file, result)
                     print(f"Results for {folder} exported to CSV file: {file}")
                 else:
