@@ -48,18 +48,32 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+async def silly_message(interaction: discord.Interaction, title: str="", message: str="", emb_color: hex = 0xff0000, channel: discord.channel = '') -> None:
+    with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
+        the_funnies = [gif.rstrip('\n') for gif in f]
+        
+    emb=discord.Embed(title=title, description=message,
+            color=emb_color, timestamp=datetime.datetime.now())
+    emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
+    emb.set_footer(text="speckles")
+    emb.set_image(url=choice(the_funnies))
+    if channel == "":
+        await interaction.response.send_message(embed=emb)
+    else:
+        try:
+            await channel.send(embed=emb)
+        except:
+            await silly_message(interaction, title="Error in parsing channel") # Will be termination case
+
 @client.event
 async def on_ready():
-    print(f'Logged in as {client.user} (ID: {client.user.id})')
+    print(f'{timestamp()}: Logged in as {client.user} (ID: {client.user.id})')
 
-# The rename decorator allows us to change the display of the parameter on Discord.
-# In this example, even though we use `text_to_send` in the code, the client will use `text` instead.
-# Note that other decorators will still refer to it as `text_to_send` in the code.
-@client.tree.command(description='Calls the person gay')
-@discord.app_commands.rename(text_to_send='name')
-@discord.app_commands.describe(text_to_send='Your name')
-async def gay(interaction: discord.Interaction, text_to_send: str):
-    await interaction.response.send_message(f'{text_to_send} is gay lmao!!!')
+@client.tree.command(description='Embed message with a silly gif')
+@discord.app_commands.describe(message='Message', title='Title')
+async def silly_embed(interaction: discord.Interaction, message: str, title: str = "sucorn"):
+    emb_color: hex = 0x00ff00 # TODO: Make this flexible, discord does not support hex
+    await silly_message(interaction, title, message, emb_color)
 
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
 async def sync(interaction: discord.Interaction):
@@ -86,8 +100,6 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
             emb.set_footer(text=catFact)
             emb.set_image(url=src)
             embed_list.append(emb)
-        # view = PosNegView(len(results))
-        # print(view.is_persistent())
         await interaction.response.send_message(embeds=embed_list, view=PosNegView(len(results)))
     except Exception as error:
         emb=discord.Embed(title="Error:", description=f"Error logged: {error}", color=0xff0000, timestamp=datetime.datetime.now())
@@ -119,22 +131,6 @@ async def statistics(interaction: discord.Interaction, target:str=''):
             final_string = count_files(f'{DIRECTORY}/images/{directory}')
             await silly_message(interaction, title=directory, message=final_string, emb_color=0x00ff00, channel=DUMP_CHANNEL)
 
-async def silly_message(interaction: discord.Interaction, title: str="", message: str="", emb_color: hex = 0xff0000, channel: discord.channel = '') -> None:
-    with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
-        the_funnies = [gif.rstrip('\n') for gif in f]
-        
-    emb=discord.Embed(title=title, description=message,
-            color=emb_color, timestamp=datetime.datetime.now())
-    emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
-    emb.set_footer(text="speckles")
-    emb.set_image(url=choice(the_funnies))
-    if channel == "":
-        await interaction.response.send_message(embed=emb)
-    else:
-        try:
-            await channel.send(embed=emb)
-        except:
-            await silly_message(interaction, title="Error in parsing channel") # Will be termination case
 
 @client.tree.command(description='Owner only, to nuke a channel with a list of links fed into /embed_cat')
 @discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
@@ -160,7 +156,7 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
         # This is the end of your channel
         history = COPY_CHANNEL.history(limit=None) # Verified to have no loss for a channel with 48 results
         number = 0
-        async for message in history: #TODO: use a stack?
+        async for message in history: # TODO: use a stack?
             link = message.content
             embed_list = []
             if len(link) < 240:
@@ -211,7 +207,6 @@ async def download_all(interaction: discord.Interaction, target:str='', placehol
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
-        # TODO: add response here
         await silly_message(interaction, title="Downloading millions of cats from this channel now", emb_color=0x00ff00)
         target = client.get_channel(int(target))
         channel_name = target.name
@@ -234,9 +229,7 @@ async def download_all(interaction: discord.Interaction, target:str='', placehol
             
             # NOTE: I have commented out editing the view as it adds too many requests and its not too important
             for label in labels: # for all Negative buttons that are not disabled
-                # labels[label].disabled = True # Disable current button
                 image_number = int(label[-1])
-                # view.remove_item(pos_labels["Positive" + label[-1]])
                 image_index = image_number - 1 # Labels are 1-4 attached to the end of the string
                 try:
                     emb = message.embeds[image_index]
@@ -244,9 +237,7 @@ async def download_all(interaction: discord.Interaction, target:str='', placehol
                     image_count += 1
                 except IndexError:
                     res = f"Image {image_index+1}: Index out of range"
-                # await message.edit(view=view)
                 print(res)
-
         
         runtime_seconds = time.time() - start_time
         hours = runtime_seconds // 3600
