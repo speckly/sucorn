@@ -13,8 +13,8 @@ The goals of this project include
 and labelling these images from both remote (Discord) and local (tkinter)
 
 # Usage
-
-[.exe? What is that?](https://github.com/sherlock-project/sherlock/issues/2011)
+![WARNING]
+> There is no .exe file because I am a [stupid smelly nerd](https://github.com/sherlock-project/sherlock/issues/2011)
 ```bash
 pip install -r requirements.txt
 ```
