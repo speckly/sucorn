@@ -111,6 +111,7 @@ if __name__ == "__main__":
         except:
             print("Unknown exception")
             driver.quit()
+            quit()
         
         if os.path.exists(JSON_FILE):
             try:

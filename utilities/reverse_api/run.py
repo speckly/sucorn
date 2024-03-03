@@ -4,10 +4,11 @@ import pygetwindow as gw
 import ctypes
 import time
 import keyboard
+import argparse
 
-def open_console_window(account, token, prompt, out_path):
+def open_console_window(account, token, prompt, out_path, delay=0):
     process = subprocess.Popen(
-        ['start', 'cmd', '/k', 'python', 'sub.py', account, token, prompt, out_path],
+        ['start', 'cmd', '/k', 'python', 'sub.py', account, token, prompt, out_path, str(delay)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
     )
@@ -15,7 +16,7 @@ def open_console_window(account, token, prompt, out_path):
 
 def organize_windows(dummy):
     rows = 3
-    columns = 2
+    columns = 4
     window_width = 450
     window_height = 270
 
@@ -42,6 +43,10 @@ def terminate():
     print("Terminated")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='kitty farm')
+    parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
+    args = parser.parse_args()
+
     OUT_PATH = "..\..\\images\\catgirls-25"
     with open('prompt.txt') as f:
         PROMPT = ''.join(f.readlines()).replace('\n', '')
@@ -51,7 +56,7 @@ if __name__ == "__main__":
     if len(PROMPT) > 480:
         input("Prompt is over 480, continue? ")
     for account, token in cookies.items():
-        open_console_window(account, token, PROMPT, OUT_PATH)
+        open_console_window(account, token, PROMPT, OUT_PATH, args.delay)
 
     keyboard.on_press_key('ins', organize_windows)
 

@@ -5,11 +5,10 @@ import ctypes
 import subprocess
 import json
 
-def run_command(account, token, prompt, out_path):
+def run_command(account, token, prompt, out_path, DELAY):
     cmd = f"py BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
     count = combo = 0
     MAX = 20
-    DELAY = 8
 
     while combo < MAX:
         time.sleep(DELAY)
@@ -50,10 +49,10 @@ def run_command(account, token, prompt, out_path):
         json.dump(usernames, file, indent=4)  
 
     input(f"Terminated at {time.asctime()} due to {MAX} consecutive redirects. Press any key to quit ")
-    os.system('exit')
+    exit()
 
 if __name__ == '__main__':
-    account, token, prompt, out_path = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+    account, token, prompt, out_path, delay = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
     ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
-    run_command(account, token, prompt, out_path)
+    run_command(account, token, prompt, out_path, float(delay))
 
