@@ -28,8 +28,16 @@ pip install -r requirements.txt
 ```/utilities/reverse_api/test_cookies.json```
 
 ### features/sucorn_statistics.py
-This is both a feature and utility, feature used for the ```/statistics``` slash command in Discord, utility can be used in the command line. Default option will iterate through all subfolders in ```./images```
-```sucorn_statistics```
+This is both a feature and utility, feature used for the ```/statistics``` slash command in Discord, utility can be used in the command line. 
+
+```bash
+python sucorn_statistics.py
+```
+Providing no options will iterate through all subfolders in ```./images```
+```bash
+python sucorn_statistics.py --csv sample_statistics.csv --mode write
+```
+Writes these results out to a given csv file, ommitting the ```--mode``` flag will read the csv and display it using [matplotlib](https://pypi.org/project/matplotlib/)
 
 ### utilities/reverse_api/get_cookie.py
 
