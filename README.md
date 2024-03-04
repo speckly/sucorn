@@ -22,10 +22,7 @@ pip install -r requirements.txt
 - ```.env``` with ```TOKEN=<your discord token here>```
 - ```/images```
 - ```/utilities/reverse_api/.env``` with ```PASSWORD=<your password here>```
-- ```/utilities/reverse_api/usernames.json```
 - ```/utilities/reverse_api/prompt.txt```
-- ```/utilities/reverse_api/cookies.json```
-- ```/utilities/reverse_api/test_cookies.json```
 
 ### features/sucorn_statistics.py
 This is both a feature and utility, feature used for the ```/statistics``` slash command in Discord, utility can be used in the command line. 

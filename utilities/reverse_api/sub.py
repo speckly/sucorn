@@ -28,25 +28,32 @@ def run_command(account, token, prompt, out_path, DELAY):
         
         print(f"{time.time() - s}s")
 
-    with open('cookies.json', 'r') as file:
-        data = json.load(file)
-    if account in data:
-        del data[account]
-        print(f"Account {account} removed successfully.")
+    if os.path.exists('cookies.json'):
+        with open('cookies.json', 'r') as file:
+            data = json.load(file)
+        if account in data:
+            del data[account]
+            print(f"Account {account} removed successfully.")
+        else:
+            print(f"Account {account} not found")
+            quit()
+        with open('cookies.json', 'w') as file:
+            json.dump(data, file, indent=4)  
     else:
-        print(f"Account {account} not found")
-    with open('cookies.json', 'w') as file:
-        json.dump(data, file, indent=4)  
-
-    with open('usernames.json', 'r') as file:
-        usernames = json.load(file)
-    if account in usernames["cookie"] and account not in usernames["unusable"]:
-        usernames["unusable"].append(usernames["cookie"].pop(usernames["cookie"].index(account)))
-        print(f"Account {account} moved to unusable")
+        print("cookies.json not found, unable to remove cookie associated with this account, run get_cookie to restore this file")
+    
+    if os.path.exists('usernames.json'):
+        with open('usernames.json', 'r') as file:
+            usernames = json.load(file)
+        if account in usernames["cookie"] and account not in usernames["unusable"]:
+            usernames["unusable"].append(usernames["cookie"].pop(usernames["cookie"].index(account)))
+            print(f"Account {account} moved to unusable")
+        else:
+            print(f"Account {account}, not modified in usernames.json, please check")
+        with open('usernames.json', 'w') as file:
+            json.dump(usernames, file, indent=4)  
     else:
-        print(f"Account {account}, not modified in usernames.json, please check")
-    with open('usernames.json', 'w') as file:
-        json.dump(usernames, file, indent=4)  
+        print("usernames.json not found, unable to move account to unusable category, run get_cookie to restore this file")
 
     input(f"Terminated at {time.asctime()} due to {MAX} consecutive redirects. Press any key to quit ")
     exit()

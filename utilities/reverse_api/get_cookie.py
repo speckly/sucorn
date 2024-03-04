@@ -101,8 +101,14 @@ if __name__ == "__main__":
     load_dotenv()
     PASSWORD = os.getenv("PASSWORD")
     usernames = []
-    with open("usernames.json") as ufile:
-        usernames = json.load(ufile)
+    if os.path.exists("usernames.json"):
+        with open("usernames.json") as ufile:
+            usernames = json.load(ufile)
+    else:
+        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+            print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
+            usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}
+            json.dump(usernames, uFile, indent=4)
 
     JSON_FILE = 'cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
@@ -110,7 +116,6 @@ if __name__ == "__main__":
             cookie = get_cookie(driver, username, PASSWORD)
         except:
             print("Unknown exception")
-            driver.quit()
             quit()
         
         if os.path.exists(JSON_FILE):

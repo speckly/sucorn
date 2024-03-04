@@ -5,6 +5,7 @@ import ctypes
 import time
 import keyboard
 import argparse
+import os
 
 def open_console_window(account, token, prompt, out_path, delay=0):
     process = subprocess.Popen(
@@ -48,18 +49,29 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     OUT_PATH = "..\..\\images\\catgirls-25"
-    with open('prompt.txt') as f:
-        PROMPT = ''.join(f.readlines()).replace('\n', '')
-    with open("cookies.json") as f:
-        cookies = json.load(f)
+    if os.path.exists('prompt.txt'):
+        with open('prompt.txt') as f:
+            PROMPT = ''.join(f.readlines()).replace('\n', '')
+    else:
+        PROMPT = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
+        with open("prompt.txt") as f:
+            f.write(PROMPT)
+    if os.path.exists('cookies.json'):
+        with open("cookies.json") as f:
+            cookies = json.load(f)
+    else:
+        print("cookies.json does not exist, quitting since no cookies were found.")
+        quit()
 
     if len(PROMPT) > 480:
-        input("Prompt is over 480, continue? ")
-    for account, token in cookies.items():
-        open_console_window(account, token, PROMPT, OUT_PATH, args.delay)
+        if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
+            quit()
+    else:
+        for account, token in cookies.items():
+            open_console_window(account, token, PROMPT, OUT_PATH, args.delay)
 
-    keyboard.on_press_key('ins', organize_windows)
+        keyboard.on_press_key('ins', organize_windows)
+        keyboard.wait('end')
 
-    keyboard.wait('end')
-    terminate()
+        terminate()
     
