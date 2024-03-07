@@ -7,9 +7,9 @@ import keyboard
 import argparse
 import os
 
-def open_console_window(account, token, prompt, out_path, delay=0):
+def open_console_window(account, token, prompt, out_path, delay=0, maximum=10):
     process = subprocess.Popen(
-        ['start', 'cmd', '/k', 'python', 'sub.py', account, token, prompt, out_path, str(delay)],
+        ['start', 'cmd', '/k', 'python', 'sub.py', account, token, prompt, out_path, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
     )
@@ -46,6 +46,7 @@ def terminate():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm')
     parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
+    parser.add_argument('-m', '--max', type=float, default=10, help='Maximum number of failed redirects before killing process (default is 10)')
     args = parser.parse_args()
 
     OUT_PATH = "..\..\\images\\catgirls-25"
@@ -68,7 +69,7 @@ if __name__ == "__main__":
             quit()
     else:
         for account, token in cookies.items():
-            open_console_window(account, token, PROMPT, OUT_PATH, args.delay)
+            open_console_window(account, token, PROMPT, OUT_PATH, args.delay, args.max)
 
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')

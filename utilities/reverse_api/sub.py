@@ -59,7 +59,6 @@ def run_command(account, token, prompt, out_path, DELAY):
     exit()
 
 if __name__ == '__main__':
-    account, token, prompt, out_path, delay = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5]
+    account, token, prompt, out_path, delay, maximum = sys.argv[1:] # Unpack all of the args, no argparser required as it is validated on run.py
     ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
     run_command(account, token, prompt, out_path, float(delay))
-
