@@ -4,3 +4,9 @@ playsound
 psutil
 matplotlib
 pandas
+pygetwindow
+keyboard
+aiohttp
+regex
+requests
+pyautogui

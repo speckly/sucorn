@@ -1,11 +1,12 @@
-#Button view for incrementing/decrementing page numbers and updating embeds
-results = [] #sorry i cant somehow pass it into buttonView
+import discord
+
+results = [] # sorry i cant somehow pass it into buttonView
 @client.tree.command(description='Scraper for predefined keys (WIP as classes change daily)')
 @discord.app_commands.describe(product='What product are you looking for?')
 async def scrape(ictLocal: discord.Interaction, product: str = "RTX3080"): #Optional[]
     global results
     try:
-        results = CScraper(product) #title, url, desc
+        results = CScraper(product) # title, url, desc
         btnView = buttonView()
         emb=discord.Embed(title=results[buttonView.pageno][0], url=results[buttonView.pageno][1], 
         description=results[buttonView.pageno][2], color=0x00ff00, timestamp=datetime.datetime.now())

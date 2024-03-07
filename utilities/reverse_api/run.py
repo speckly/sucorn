@@ -2,7 +2,6 @@ import json
 import subprocess
 import pygetwindow as gw
 import ctypes
-import time
 import keyboard
 import argparse
 import os
@@ -47,6 +46,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm')
     parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=float, default=10, help='Maximum number of failed redirects before killing process (default is 10)')
+    parser.add_argument('-t', '--test', type=bool, default=False, help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 
     OUT_PATH = "..\..\\images\\catgirls-25"
@@ -57,8 +57,9 @@ if __name__ == "__main__":
         PROMPT = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
         with open("prompt.txt") as f:
             f.write(PROMPT)
-    if os.path.exists('cookies.json'):
-        with open("cookies.json") as f:
+    cookie_file = 'cookies.json' if args.test == False else 'test_cookies.json'
+    if os.path.exists(cookie_file):
+        with open(cookie_file) as f:
             cookies = json.load(f)
     else:
         print("cookies.json does not exist, quitting since no cookies were found.")
