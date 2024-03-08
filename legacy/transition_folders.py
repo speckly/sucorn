@@ -21,7 +21,7 @@ def process_file(filename, directory, MANUAL=True):
     labels = ["negative", "positive", "neutral", "ummmmmmm"]
     folder = ""
     for label in labels:
-        if label in filename:
+        if label in filename.lower():
             folder = f'{directory}/{label}' if label != 'ummmmmmm' else f'{directory}/neutral'
             break
     if folder == "":

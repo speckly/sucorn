@@ -216,7 +216,7 @@ class ImageGen:
                 links = links[:download_count]
             for link in links:
                 while os.path.exists(
-                    os.path.join(output_dir, f"{fn}{jpeg_index}_xxxxxxxx.jpeg")
+                    os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg")
                 ):
                     jpeg_index += 1
                 response = self.session.get(link)
@@ -224,7 +224,7 @@ class ImageGen:
                     raise Exception("Could not download image")
                 # save response to file
                 with open(
-                    os.path.join(output_dir, f"{fn}{jpeg_index}_xxxxxxxx.jpeg"), "wb"
+                    os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg"), "wb"
                 ) as output_file:
                     output_file.write(response.content)
                 jpeg_index += 1
@@ -375,7 +375,7 @@ class ImageGenAsync:
 
             for link in links[:download_count]:
                 while os.path.exists(
-                    os.path.join(output_dir, f"{fn}{jpeg_index}_xxxxxxxx.jpeg")
+                    os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg")
                 ):
                     jpeg_index += 1
                 response = await self.session.get(link)
@@ -383,7 +383,7 @@ class ImageGenAsync:
                     raise Exception("Could not download image")
                 # save response to file
                 with open(
-                    os.path.join(output_dir, f"{fn}{jpeg_index}_xxxxxxxx.jpeg"), "wb"
+                    os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg"), "wb"
                 ) as output_file:
                     output_file.write(response.content)
                 jpeg_index += 1

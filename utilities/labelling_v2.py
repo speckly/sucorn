@@ -26,11 +26,9 @@ class ImageLabeler:
                                 if os.path.isdir(dirpath) and category in os.path.basename(dirpath).lower()
                                 and (filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'))]
         else:
-            self.image_files = [os.path.join(dirpath, filename)
-                                for dirpath, _, filenames in os.walk(folder_path)
-                                for filename in filenames
-                                if os.path.isdir(dirpath)
-                                and (filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'))]
+            self.image_files = [filename
+                                for filename in os.listdir(folder_path)
+                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
         self.files = len(self.image_files)
         if self.files == 0:
             print("All images labeled. Quitting")

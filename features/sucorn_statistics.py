@@ -7,48 +7,44 @@ import re
 
 def count_files(directory, export_csv=False):
     try:
-        positive_count = negative_count = placeholder_count = neutral_count = 0
+        positive_count = negative_count = unlabelled = neutral_count = 0
 
-        for file_name in os.listdir(directory):
-            if file_name.endswith(('.jpg', '.jpeg')):
-                f = file_name.lower()
-                if "positive" in f:
-                    positive_count += 1
-                elif "negative" in f:
-                    negative_count += 1
-                elif "xxxxxxxx" in f:
-                    placeholder_count += 1
-                elif "ummmmmmm" in f:
-                    neutral_count += 1
+        positive_dir = os.path.join(directory, "positive")
+        negative_dir = os.path.join(directory, "negative")
+        neutral_dir = os.path.join(directory, "neutral")
 
-        total_files = len(os.listdir(directory))
-        unaccounted_files = total_files - positive_count - negative_count - placeholder_count - neutral_count
+        positive_count = sum(1 for file_name in os.listdir(positive_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        negative_count = sum(1 for file_name in os.listdir(negative_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        neutral_count = sum(1 for file_name in os.listdir(neutral_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
+
+        total_files = positive_count + negative_count + neutral_count + unlabelled
         total_labeled = positive_count + negative_count
+
         accuracy = positive_count / total_labeled * 100 if total_labeled != 0 else 0
         ex_accuracy = (positive_count + neutral_count) / total_labeled * 100 if total_labeled != 0 else 0
-        # For readability in visualisation programs
-        # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
-        directory = directory.split("\\")[-1].replace("catgirls", "cg").replace("anime-girls", "ag")
 
-        if export_csv: 
+        # For readability in visualization programs
+        # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
+        directory_name = directory.split("\\")[-1].replace("catgirls", "cg").replace("anime-girls", "ag")
+
+        if export_csv:
             result = {
-                "directory": directory,
+                "directory": directory_name,
                 "positive": positive_count,
                 "negative": negative_count,
                 "neutral": neutral_count,
-                "placeholder": placeholder_count,
-                "unaccounted": unaccounted_files,
+                "unlabelled": unlabelled,
                 "total": total_files,
                 "accuracy": round(accuracy, 4),
                 "ex_accuracy": round(ex_accuracy, 4)
             }
-        else: # Omitted the directory as it is passed as a separate argument
+        else:  # Omitted the directory as it is passed as a separate argument
             result = (
                 f"Number of positive images: {positive_count}\n"
                 f"Number of negative images: {negative_count}\n"
                 f"Number of ummmmmmm images (neutral, review again): {neutral_count}\n"
-                f"Number of unlabelled images (placeholder): {placeholder_count}\n"
-                f"Unaccounted images: {unaccounted_files}\n"
+                f"Number of unlabelled images: {unlabelled}\n"
                 f"Total number of files: {total_files}\n"
                 f"**Accuracy**: {accuracy:.4f}%\n"
                 f"Ex-Accuracy (including neutral): {ex_accuracy:.4f}%"
@@ -57,7 +53,7 @@ def count_files(directory, export_csv=False):
         return result
 
     except FileNotFoundError:
-        return f"Directory not found: {directory}"
+        return "Directory not found"
 
 def export_to_csv(file, result):
     with open(file, mode='a', newline='') as csv_file: 
@@ -79,8 +75,7 @@ def visualise(file):
     for column in numeric_columns:
         df[column] = df[column] / df['total'] * 100
         
-    df['unlabelled'] = df['placeholder'] + df['unaccounted']
-    df = df.drop(columns=['total', 'placeholder', 'unaccounted'])
+    df = df.drop(columns=['total'])
     df.set_index('directory', inplace=True)
 
     df_combined = df.drop(columns=['accuracy', 'ex_accuracy'])
@@ -143,7 +138,9 @@ if __name__ == "__main__":
             for folder in sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf')):
                 if file:
                     result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
-                    
+                    if result == "Directory not found":
+                        continue
+
                     export_to_csv(file, result)
                     print(f"Results for {folder} exported to CSV file: {file}")
                 else:
