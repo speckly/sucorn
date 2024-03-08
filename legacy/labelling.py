@@ -1,13 +1,13 @@
 # Author: Andrew Higgins
 # https://github.com/speckly
 
-# TODO: correctly get the right images
+# NOTE: Hardcoded image offset
+# TODO: what i just said above
 
 from tkinter import Tk, Canvas, Label, RIGHT
 from PIL import Image, ImageTk, ImageFilter
 import os
 import argparse
-import shutil
 
 class ImageLabeler:
     def __init__(self, folder_path, options={}):
@@ -15,20 +15,11 @@ class ImageLabeler:
         self.rewrite = options.get("rewrite")
         category = options.get("category")
         if self.rewrite:
-            self.image_files = [os.path.join(dirpath, filename)
-                                for dirpath, _, filenames in os.walk(folder_path)
-                                for filename in filenames
-                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
-        elif category is not None:
-            self.image_files = [os.path.join(dirpath, filename)
-                                for dirpath, _, filenames in os.walk(folder_path)
-                                for filename in filenames
-                                if os.path.isdir(dirpath) and category in os.path.basename(dirpath).lower()
-                                and (filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'))]
+            self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]
+        elif category != None:
+            self.image_files = [f for f in os.listdir(folder_path) if category in f.lower() and (f.lower().endswith('.jpg') or f.lower().endswith('.jpeg'))]
         else:
-            self.image_files = [filename
-                                for filename in os.listdir(folder_path)
-                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
+            self.image_files = [f for f in os.listdir(folder_path) if f.lower().endswith('xxxxxxxx.jpg') or f.lower().endswith('.jpeg') and len(f) < 13]
         self.files = len(self.image_files)
         if self.files == 0:
             print("All images labeled. Quitting")
@@ -48,7 +39,7 @@ class ImageLabeler:
         self.canvas = Canvas(self.root)
         self.canvas.pack(expand=True, fill="both")
 
-        self.root.bind('2', lambda event: self.label_image('_neutral'))
+        self.root.bind('2', lambda event: self.label_image('_ummmmmmm'))
         self.root.bind('1', lambda event: self.label_image('_positive'))
         self.root.bind('0', lambda event: self.label_image('_negative'))
         self.root.bind('<Escape>', self.escape)
@@ -65,26 +56,15 @@ class ImageLabeler:
 
     def label_image(self, label):
         current_file = self.image_files[self.current_index]
-
-        source_path = os.path.join(self.folder_path, current_file)
-        destination_folder = None
-
-        if label == '_positive':
-            destination_folder = os.path.join(self.folder_path, 'positive')
-        elif label == '_negative':
-            destination_folder = os.path.join(self.folder_path, 'negative')
-        elif label == '_neutral':
-            destination_folder = os.path.join(self.folder_path, 'neutral')
-
-        if destination_folder:
-            destination_path = os.path.join(destination_folder, current_file)
-
-            if not os.path.exists(destination_folder):
-                os.makedirs(destination_folder)
-
-            shutil.move(source_path, destination_path)
-        else:
-            print(f"Invalid label: {label}")
+        base_name, extension = os.path.splitext(current_file)
+        new_base = base_name.replace("_xxxxxxxx", "")
+        if self.rewrite:
+            new_base = new_base.replace("_Positive", "")
+            new_base = new_base.replace("_Negative", "")
+            new_base = new_base.replace("_positive", "")
+            new_base = new_base.replace("_negative", "")
+        new_filename = new_base + label + extension
+        os.rename(os.path.join(self.folder_path, current_file), os.path.join(self.folder_path, new_filename))
 
         self.next_image()
 
