@@ -5,40 +5,39 @@
 # Therefore it is deprecated as labels in the filename are also discontinued, use subfolders instead
 
 import os
+import shutil
 
 def move_files(directory=".", MANUAL=True):
     for filename in os.listdir(directory):
         current = os.path.join(directory, filename)
         if current.endswith(".jpg") or current.endswith(".jpeg"):
-            new_filename = process_filename(filename, MANUAL)
-            if new_filename != -1:
-                os.rename(os.path.join(directory, filename), os.path.join(directory, new_filename))
-            
+            status = process_file(filename, directory, MANUAL)
+            if status == -1:
+                print(f"{filename} was not moved successfully")
+            else:
+                print(f"{filename} was moved successfully")           
 
-def process_filename(filename, MANUAL=True):
+def process_file(filename, directory, MANUAL=True):
+    labels = ["negative", "positive", "neutral", "ummmmmmm"]
+    folder = ""
+    for label in labels:
+        if label in filename:
+            folder = f'{directory}/{label}' if label != 'ummmmmmm' else f'{directory}/neutral'
+            break
+    if folder == "":
+        return -1
+
     if MANUAL == False:
-        user_input = input(f"\n{filename} has duplicate labels, enter the new filename or press enter for the default fix, 0 to quit: ")
+        user_input = input(f"\n{filename} will be moved to {folder}, enter 0 to abort this action")
         if user_input.strip() == "0":
-            exit()
-
-    if MANUAL == False and user_input.strip().lower() != "":
-        new_filename = user_input 
-    else:
-        parts = filename.split('_')
-        labels = ["negative", "positive", "neutral", "ummmmmmm"]
-        preserved_label = parts.pop(-1)
-        new_parts = list(filter(lambda part: all(label not in part for label in labels), parts)) + ["_" + preserved_label]
-        new_filename = "".join(new_parts)
-        if MANUAL == False and input(f"Confirm the new filename is {new_filename}? (Y): ").lower().strip() == "n":
-            print("Ignoring this file")
             return -1
 
-    print(f"Renamed to {new_filename}")
-    return new_filename
+    shutil.move(f'{directory}/{filename}', folder)
+    return 0
 
 if __name__ == "__main__":
-    MANUAL = False
-    if MANUAL:
+    MANUAL = True
+    if MANUAL == False:
         target_directory = f"../images/{input('Input the directory: ')}"
         move_files(target_directory, MANUAL)
     else:
@@ -55,6 +54,6 @@ if __name__ == "__main__":
                     os.makedirs(subfolder_path)
                     print(f"Created subfolder: {subfolder_path}")
 
-            move_files(f"{cwd}")
+            move_files(cwd)
 
     print("File renaming completed.")

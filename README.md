@@ -7,7 +7,7 @@ The goals of this project include
 - displaying these images on Discord for remote labelling
 - **WIP** using Discord for persistent remote access of images by uploading blob instead of src which expires
 - downloading from Discord remote to local storage
-- **transitioning** images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
+- images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
 - **considering** use db 
 - labelling these images from both remote (Discord) and local (tkinter)
 - use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics
