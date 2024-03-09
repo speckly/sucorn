@@ -29,8 +29,8 @@ def organize_windows(dummy):
         row = i // columns
         col = i % columns
 
-        x_position = 10 + col * (window_width + 2)
-        y_position = 10 + row * (window_height + 2)
+        x_position = col * (window_width - 10)
+        y_position = row * (window_height + 2)
 
         window.moveTo(x_position, y_position)
         window.resizeTo(window_width, window_height)
@@ -44,12 +44,13 @@ def terminate():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm')
+    parser.add_argument('number', type=int, help='folder catgirls-n')
     parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=float, default=10, help='Maximum number of failed redirects before killing process (default is 10)')
     parser.add_argument('-t', '--test', type=bool, default=False, help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 
-    OUT_PATH = "..\..\\images\\catgirls-25"
+    OUT_PATH = f"..\..\\images\\catgirls-{args.number}"
     if os.path.exists('prompt.txt'):
         with open('prompt.txt') as f:
             PROMPT = ''.join(f.readlines()).replace('\n', '')

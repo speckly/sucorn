@@ -9,22 +9,30 @@ import os
 import argparse
 import shutil
 
+def map_path(abs_path):
+    # Input absolute path of residing folder
+    labels = ["positive", "negative", "neutral"]
+    for label in labels:
+        if label in abs_path:
+            return f"{label}/"
+    return ""
+
 class ImageLabeler:
     def __init__(self, folder_path, options={}):
         self.folder_path = folder_path
         self.rewrite = options.get("rewrite")
         category = options.get("category")
+
         if self.rewrite:
-            self.image_files = [os.path.join(dirpath, filename)
+            neutral_label = "\\neutral" # why doesnt fstrings allow backslashes
+            self.image_files = [f"{map_path(dirpath)}{filename}"
                                 for dirpath, _, filenames in os.walk(folder_path)
                                 for filename in filenames
                                 if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
-        elif category is not None:
-            self.image_files = [os.path.join(dirpath, filename)
-                                for dirpath, _, filenames in os.walk(folder_path)
-                                for filename in filenames
-                                if os.path.isdir(dirpath) and category in os.path.basename(dirpath).lower()
-                                and (filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg'))]
+        elif category != None:
+            self.image_files = [f"{category}/{filename}"
+                                for filename in os.listdir(f"{folder_path}/{category}")
+                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
         else:
             self.image_files = [filename
                                 for filename in os.listdir(folder_path)
@@ -77,14 +85,14 @@ class ImageLabeler:
             destination_folder = os.path.join(self.folder_path, 'neutral')
 
         if destination_folder:
-            destination_path = os.path.join(destination_folder, current_file)
+            destination_path = os.path.join(destination_folder, current_file.split("/")[-1]) # Get file name only
 
             if not os.path.exists(destination_folder):
                 os.makedirs(destination_folder)
 
             shutil.move(source_path, destination_path)
         else:
-            print(f"Invalid label: {label}")
+            print(f"Invalid label: {label}") # Should not happen
 
         self.next_image()
 
