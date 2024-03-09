@@ -54,3 +54,8 @@ Providing no options will iterate through all subfolders in ```./images```
 python sucorn_statistics.py --csv sample_statistics.csv --mode write
 ```
 Writes these results out to a given csv file, ommitting the ```--mode``` flag will read the csv and display it using [matplotlib](https://pypi.org/project/matplotlib/)
+
+### utilities/labelling.py
+For supervised learning, we need to label the images
+> [!WARNING]
+> Do not run this with reverse_api/run.py, as there will be duplicate file names and overwriting will occur, will fix this later
