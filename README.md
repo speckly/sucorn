@@ -40,7 +40,9 @@ Each instance here will have a cooldown of 10 seconds after downloading all imag
 
 ### utilities/automation.py
 > [!WARNING]
-> This feature is deprecated, use 
+> This feature is deprecated, use utilities/reverse_api
+
+Makes use of ```pyautogui``` to automatically navigate the GUI, using mouse clicks and keyboard presses. The output is links pasted in a Discord channel. Run the sucorn Discord bot slash command ```/nuclear_cat copy=<copy channel>``` **WIP** dynamically change the authorized user, currently hardcoded
 
 # Data preparation phase
 ### features/sucorn_statistics.py
