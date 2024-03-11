@@ -53,7 +53,7 @@ def count_files(directory, export_csv=False):
         return result
 
     except FileNotFoundError:
-        return "Directory not found"
+        return "Skipped as it contains missing subdirectories"
 
 def export_to_csv(file, result):
     with open(file, mode='a', newline='') as csv_file: 
@@ -140,7 +140,7 @@ if __name__ == "__main__":
             for folder in di:
                 if file:
                     result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
-                    if result == "Directory not found":
+                    if result == "Skipped as it contains missing subdirectories":
                         print(f"{folder} has been skipped as it contains missing subdirectories")
                         continue
 
