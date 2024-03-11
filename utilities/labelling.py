@@ -111,11 +111,9 @@ class ImageLabeler:
         original_image = Image.open(image_path)
         aspect_ratio = original_image.width / original_image.height
 
-        # Calculate the new width and height to maintain 1:1 aspect ratio
         new_width = min(self.root.winfo_width(), int(self.root.winfo_height() * aspect_ratio))
         new_height = int(new_width / aspect_ratio)
 
-        # Resize the image using LANCZOS method
         resized_image = original_image.resize((new_width, new_height), Image.LANCZOS)
         self.photo = ImageTk.PhotoImage(resized_image)
 
@@ -148,6 +146,12 @@ def main():
     if not os.path.isdir(folder_path):
         print('Directory not found')
         return
+    else:
+        for subfolder in ['positive', 'neutral', 'negative']:
+            subfolder_path = os.path.join(folder_path, subfolder)
+            if not os.path.exists(subfolder_path):
+                os.makedirs(subfolder_path)
+                print(f"Created folder as it does not exist: {subfolder_path}") 
 
     if args.reset:
         confirmation = input(f"Are you sure you wish to reset the labels of the following directory? {args.folder_name} (N) ")

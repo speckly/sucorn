@@ -135,10 +135,13 @@ if __name__ == "__main__":
             if file:
                 with open(file, mode='w', newline='') as csv_file: # Clear
                     csv_file.write("")
-            for folder in sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf')):
+            di = sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
+            print(di)
+            for folder in di:
                 if file:
                     result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
                     if result == "Directory not found":
+                        print(f"{folder} has been skipped as it contains missing subdirectories")
                         continue
 
                     export_to_csv(file, result)

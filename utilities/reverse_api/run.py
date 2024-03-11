@@ -44,13 +44,19 @@ def terminate():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm')
-    parser.add_argument('number', type=int, help='folder catgirls-n')
+    parser.add_argument('number', type=str, help='folder catgirls-n')
     parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=float, default=10, help='Maximum number of failed redirects before killing process (default is 10)')
     parser.add_argument('-t', '--test', type=bool, default=False, help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 
-    OUT_PATH = f"..\..\\images\\catgirls-{args.number}"
+    OUT_PATH = f"..\..\\images\\catgirls-{args.number}\\"
+    for subfolder in ['positive', 'neutral', 'negative']:
+        subfolder_path = os.path.join(OUT_PATH, subfolder)
+        if not os.path.exists(subfolder_path):
+            os.makedirs(subfolder_path)
+            print(f"Created folder as it does not exist: {subfolder_path}")
+
     if os.path.exists('prompt.txt'):
         with open('prompt.txt') as f:
             PROMPT = ''.join(f.readlines()).replace('\n', '')
@@ -69,7 +75,7 @@ if __name__ == "__main__":
     if len(PROMPT) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
-    else:
+    elif len(cookies.items()):
         for account, token in cookies.items():
             open_console_window(account, token, PROMPT, OUT_PATH, args.delay, args.max)
 
