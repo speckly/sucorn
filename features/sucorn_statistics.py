@@ -19,7 +19,7 @@ def count_files(directory, export_csv=False):
         unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
 
         total_files = positive_count + negative_count + neutral_count + unlabelled
-        total_labeled = positive_count + negative_count
+        total_labeled = positive_count + negative_count + neutral_count
 
         accuracy = positive_count / total_labeled * 100 if total_labeled != 0 else 0
         ex_accuracy = (positive_count + neutral_count) / total_labeled * 100 if total_labeled != 0 else 0
@@ -43,7 +43,7 @@ def count_files(directory, export_csv=False):
             result = (
                 f"Number of positive images: {positive_count}\n"
                 f"Number of negative images: {negative_count}\n"
-                f"Number of ummmmmmm images (neutral, review again): {neutral_count}\n"
+                f"Number of neutral images: {neutral_count}\n"
                 f"Number of unlabelled images: {unlabelled}\n"
                 f"Total number of files: {total_files}\n"
                 f"**Accuracy**: {accuracy:.4f}%\n"
