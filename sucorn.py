@@ -198,15 +198,24 @@ async def nuclear_cat_legacy(interaction: discord.Interaction, copy: str, target
                 emb.set_footer(text=catFact)
                 await DUMP_CHANNEL.send(embed=emb)
 
-@client.tree.command(description='Owner only, to nuke a channel with a list of links fed into /embed_cat')
-@discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
-async def nuclear_cat_local(interaction: discord.Interaction, copy: str, target:str='', ex_prompt:str=''): 
+@client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
+@discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
+async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''): 
+    # Validation is done in ascending runtime complexity order
+    if mode.strip().lower() not in ['positive', 'negative', 'neutral', 'unlabelled']:
+        await silly_message(interaction, title="Invalid mode", message='Accepted modes are positive, negative, neutral, unlabelled')
+        return
     if target == '':
         target = interaction.channel_id
-    if not copy.isnumeric() or (type(target) != int and not target.isnumeric()):
+    elif type(target) != int and not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
-
+    
+    WDIR = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
+    if not os.path.exists(WDIR):
+        await silly_message(interaction, title=f"{folder_name} does not exist")
+        return
+    
     DUMP_CHANNEL = client.get_channel(int(target))
     if DUMP_CHANNEL == None:
         await silly_message(interaction, title="Channel is not a valid channel")
@@ -216,7 +225,14 @@ async def nuclear_cat_local(interaction: discord.Interaction, copy: str, target:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
-        await silly_message(interaction, title="Sending millions of cats to this channel now", emb_color=0x00ff00)
+        await silly_message(interaction, title="Sending millions of cats to this channel now (v2)", emb_color=0x00ff00)
+        number = 0
+        for folder in os.path.listdir(WDIR):
+            try:
+                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+            except Exception as e:
+                catFact = f"Meowerror: {e}"
+            number += 1
 
 @client.tree.command(description='Owner only, to download all current unlabelled images')
 @discord.app_commands.describe(target='Target Channel', placeholder='Use placeholders in last 8 characters of file name')
