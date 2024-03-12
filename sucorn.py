@@ -132,9 +132,9 @@ async def statistics(interaction: discord.Interaction, target:str=''):
             await silly_message(interaction, title=directory, message=final_string, emb_color=0x00ff00, channel=DUMP_CHANNEL)
 
 
-@client.tree.command(description='Owner only, to nuke a channel with a list of links fed into /embed_cat')
+@client.tree.command(description='DEPRECATED, owner only, reads the whole copy channel')
 @discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
-async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str='', ex_prompt:str=''): 
+async def nuclear_cat_legacy(interaction: discord.Interaction, copy: str, target:str='', ex_prompt:str=''): 
     if target == '':
         target = interaction.channel_id
     if not copy.isnumeric() or (type(target) != int and not target.isnumeric()):
@@ -197,6 +197,26 @@ async def nuclear_cat(interaction: discord.Interaction, copy: str, target:str=''
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
                 emb.set_footer(text=catFact)
                 await DUMP_CHANNEL.send(embed=emb)
+
+@client.tree.command(description='Owner only, to nuke a channel with a list of links fed into /embed_cat')
+@discord.app_commands.describe(copy='Copy channel', target='Target Channel', ex_prompt='Validate prompt (recommended after 19 Dec 2023, prompts get trunc)')
+async def nuclear_cat_local(interaction: discord.Interaction, copy: str, target:str='', ex_prompt:str=''): 
+    if target == '':
+        target = interaction.channel_id
+    if not copy.isnumeric() or (type(target) != int and not target.isnumeric()):
+        await silly_message(interaction, title="Channel is not an integer.")
+        return
+
+    DUMP_CHANNEL = client.get_channel(int(target))
+    if DUMP_CHANNEL == None:
+        await silly_message(interaction, title="Channel is not a valid channel")
+        return
+
+    if interaction.user.id != 494483880410349595:
+        await silly_message(interaction, title="Not authorized to use this command")
+        return
+    else:
+        await silly_message(interaction, title="Sending millions of cats to this channel now", emb_color=0x00ff00)
 
 @client.tree.command(description='Owner only, to download all current unlabelled images')
 @discord.app_commands.describe(target='Target Channel', placeholder='Use placeholders in last 8 characters of file name')
