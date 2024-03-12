@@ -3,6 +3,7 @@ A project to automate the creation of AI generated images using Dall-E 3 hosted 
 The goals of this project include
 - **deprecated** automatic collection of images using ```pyautogui```,
 - automatic collection of images through the [BingImageCreator reverse-engineered API](https://github.com/acheong08/BingImageCreator/tree/main)
+- **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
 - automatic collection of session cookies using ```WebDriver```
 - displaying these images on Discord for remote labelling, from local storage as API saves to it
 - **WIP** using Discord for persistent remote access of images by uploading blob instead of src which expires
