@@ -188,7 +188,7 @@ async def nuclear_cat_legacy(interaction: discord.Interaction, copy: str, target
                         embed_list.append(emb)
                     await DUMP_CHANNEL.send(embeds=embed_list, view=PosNegView(len(results)))
                 except Exception as error:
-                    emb=discord.Embed(title="Error", description=f"Error logged: {error}\n[link]({link}", color=0xff0000, timestamp=datetime.datetime.now())
+                    emb=discord.Embed(title="Error", description=f"Error: {error}\n[link]({link}", color=0xff0000, timestamp=datetime.datetime.now())
                     emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
                     emb.set_footer(text=catFact)
                     await DUMP_CHANNEL.send(embed=emb)
@@ -213,7 +213,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
     
     WDIR = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
     if not os.path.exists(WDIR):
-        await silly_message(interaction, title=f"{folder_name} does not exist")
+        await silly_message(interaction, title=f"{WDIR.replace(DIRECTORY, '')} does not exist")
         return
     
     DUMP_CHANNEL = client.get_channel(int(target))
@@ -227,14 +227,49 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
     else:
         await silly_message(interaction, title="Sending millions of cats to this channel now (v2)", emb_color=0x00ff00)
         number = 0
-        for folder in os.path.listdir(WDIR):
+        start_time = time.time()
+        files = [file for file in os.listdir(WDIR) if file.endswith(".jpg") or file.endswith(".jpeg")]
+        if files == []:
+            await silly_message(interaction, title=f"Provided folder {WDIR.replace(DIRECTORY, '')} is empty", emb_color=0x808080, channel=DUMP_CHANNEL)
+            return
+        for filename in files:
             try:
-                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
-            except Exception as e:
-                catFact = f"Meowerror: {e}"
-            number += 1
+                number += 1
+                try:
+                    catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                except Exception as e:
+                    catFact = f"Meowerror: {e}"
 
-@client.tree.command(description='Owner only, to download all current unlabelled images')
+                # What kind of black magic is involved here with local files?
+                file = discord.File(os.path.join(WDIR, filename), filename="output.png")
+                emb=discord.Embed(title=f"#{number}", url="https://http.cat/status/200", 
+                description="cat", color=0x00ff00, timestamp=datetime.datetime.now())
+                emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
+                emb.set_footer(text=catFact)
+                emb.set_image(url=f"attachment://output.png")
+                
+                await DUMP_CHANNEL.send(embed=emb, file=file)
+            except Exception as error:
+                emb=discord.Embed(title="Error", description=f"Error logged: {error}", color=0xff0000, 
+                                  timestamp=datetime.datetime.now(), url="https://http.cat/status/500")
+                emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
+                emb.set_footer(text=catFact)
+                await DUMP_CHANNEL.send(embed=emb)
+        
+        runtime_seconds = time.time() - start_time
+        hours = runtime_seconds // 3600
+        minutes = (runtime_seconds % 3600) // 60
+        remaining_seconds = runtime_seconds % 60
+
+        emb=discord.Embed(title="Download complete", 
+        description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
+            color=0x00FF00, timestamp=datetime.datetime.now())
+        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
+        emb.set_footer(text="speckles")
+        emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
+        await interaction.followup.send(embed=emb)
+
+@client.tree.command(description='Owner only, to download all current unlabelled images, DEPRECATED')
 @discord.app_commands.describe(target='Target Channel', placeholder='Use placeholders in last 8 characters of file name')
 async def download_all(interaction: discord.Interaction, target:str='', placeholder:bool=True): 
     if target == '':
@@ -286,7 +321,7 @@ async def download_all(interaction: discord.Interaction, target:str='', placehol
         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
         emb.set_footer(text="speckles")
         emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
-        await interaction.followup.send(embed=emb) 
+        await interaction.followup.send(embed=emb)
         
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.

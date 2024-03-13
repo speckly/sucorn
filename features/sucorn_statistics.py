@@ -67,40 +67,49 @@ def export_to_csv(file, result):
         writer.writerow(result)
 
 def visualise(file):
-    floatRe = re.compile(r'^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$')
+    # directory,positive,negative,neutral,unlabelled,total,accuracy,ex_accuracy
     df = pd.read_csv(file)
-
-    # Normalize all numeric columns based on the 'total_files' column
+    ticks = list(df['directory'])
+    
+    # Normalize all numeric columns except the total
     numeric_columns = df.select_dtypes(include='number').columns
-    for column in numeric_columns:
+    for column in [column for column in numeric_columns if column != "total"]: 
         df[column] = df[column] / df['total'] * 100
-        
-    df = df.drop(columns=['total'])
-    df.set_index('directory', inplace=True)
+   
+    df_combined = df.drop(columns=['accuracy', 'ex_accuracy', 'total'])
+    df_accuracy = df.drop(columns=['positive', 'negative', 'neutral', 'unlabelled', 'total'])
+    df_total = pd.DataFrame({'directory': df['directory'], 'total': df['total']})
 
-    df_combined = df.drop(columns=['accuracy', 'ex_accuracy'])
-    df_accuracy = df.drop(columns=['positive', 'negative', 'neutral', 'unlabelled'])
+    for dataframe in [df, df_combined, df_accuracy, df_total]:
+        dataframe.set_index('directory', inplace=True)
+    
+    colors = ['green', 'red', 'blue', 'purple']
+    ax = df_combined.plot(kind='bar', stacked=True, title="Type of labels", color=colors)
+    ax.legend(loc='center', bbox_to_anchor=(1, 1))
+    plt.xticks(rotation=90)
 
+    ax = df_accuracy.plot(kind='line', title="Accuracy")
+    ax.legend(loc='center', bbox_to_anchor=(1, 1))
+    ax.set_xticks(range(len(ticks)))
+    ax.set_xticklabels(ticks)
+    plt.xticks(rotation=90)
+
+    ax = df_total.plot(kind='line', title="Total files")
+    ax.legend(loc='center', bbox_to_anchor=(1,1))
+    ax.set_xticks(range(len(ticks)))
+    ax.set_xticklabels(ticks)
+    plt.xticks(rotation=90)
+    
     # fig, axes = plt.subplots(ncols=2, figsize=(18, 10))
     # ax=axes[x,y]
     # df.plot(kind='bar', title="Bar Plot")
     # df.plot(kind='line', ax=axes[0, 1], title="Line Plot")
     # plt.xticks(rotation=45)
-    colors = ['green', 'red', 'blue', 'purple']
-    ax = df_combined.plot(kind='bar', stacked=True, title="Type of labels", color=colors)
-    ax.legend(loc='center', bbox_to_anchor=(1, 1))
-
-    ax = df_accuracy.plot(kind='line', title="Accuracy")
-    ax.legend(loc='center', bbox_to_anchor=(1, 1))
-
-    plt.xticks(rotation=45)
 
     # df_combined.plot(kind='area', stacked=True, title="Area Plot")
     # df.plot(kind='scatter', x='ex_accuracy', y='accuracy', ax=axes[1, 0], title="Scatter Plot for accuracy")
     # df.plot(kind='hist', bins=10, ax=axes[1, 1], title="Histogram")
     # df['accuracy'].plot(kind='pie', autopct='%1.1f%%', ax=axes[1, 2], title="Pie Chart")
-
-    # plt.xticks(rotation=45)
     plt.show()
 
 if __name__ == "__main__":

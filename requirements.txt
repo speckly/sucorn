@@ -10,3 +10,4 @@ aiohttp
 regex
 requests
 pyautogui
+html5lib

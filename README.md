@@ -6,7 +6,7 @@ The goals of this project include
 - **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
 - automatic collection of session cookies using ```WebDriver```
 - displaying these images on Discord for remote labelling, from local storage as API saves to it
-- **WIP** using Discord for persistent remote access of images by uploading blob instead of src which expires
+- using Discord for persistent remote access of images by uploading blob instead of src which expires
 - downloading from Discord remote to local storage
 - images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
 - **considering** use db 
