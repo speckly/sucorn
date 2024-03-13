@@ -48,14 +48,16 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-async def silly_message(interaction: discord.Interaction, title: str="", message: str="", emb_color: hex = 0xff0000, channel: discord.channel = '') -> None:
+async def silly_message(interaction: discord.Interaction, title: str="", message: str=""
+                        , emb_color: hex = 0xff0000, channel: discord.channel = '', author: bool=True, footer: str='speckles') -> None:
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         
     emb=discord.Embed(title=title, description=message,
             color=emb_color, timestamp=datetime.datetime.now())
-    emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
-    emb.set_footer(text="speckles")
+    if author:
+        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
+    emb.set_footer(text=footer)
     emb.set_image(url=choice(the_funnies))
     if channel == "":
         await interaction.response.send_message(embed=emb)
@@ -125,11 +127,49 @@ async def statistics(interaction: discord.Interaction, target:str=''):
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
+        # Remove previous statistics
+        async for message in DUMP_CHANNEL.history(limit=None):
+            if message.author.bot:
+                await message.delete()
+
         final_string = ""
         ordered_dir = sorted(os.listdir(f"{DIRECTORY}/images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
         for directory in ordered_dir:
             final_string = count_files(f'{DIRECTORY}/images/{directory}')
-            await silly_message(interaction, title=directory, message=final_string, emb_color=0x00ff00, channel=DUMP_CHANNEL)
+            try:
+                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+            except Exception as e:
+                catFact = f"Meowerror: {e}"
+            await silly_message(interaction, title=directory, 
+                                message=final_string, emb_color=0x00ff00, 
+                                channel=DUMP_CHANNEL, footer=catFact, author=False)
+
+        try:
+            
+            for stat in os.listdir(f"{DIRECTORY}/statistics"):
+                try:
+                    catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                except Exception as e:
+                    catFact = f"Meowerror: {e}"
+                file = discord.File(os.path.join(f"{DIRECTORY}/statistics", stat), filename="output.png")
+                emb=discord.Embed(title=f"{stat.replace('.png', '')}", url="https://http.cat/status/200", 
+                color=0x00ff00, timestamp=datetime.datetime.now())
+                emb.set_footer(text=catFact)
+                emb.set_image(url=f"attachment://output.png")
+
+                await DUMP_CHANNEL.send(embed=emb, file=file)
+        except:
+            try:
+                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+            except Exception as e:
+                catFact = f"Meowerror: {e}"
+            emb=discord.Embed(title=f"Error", url="https://http.cat/status/500", 
+            description="cat", color=0x00ff00, timestamp=datetime.datetime.now())
+            emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
+            emb.set_footer(text=catFact)
+            emb.set_image(url=f"attachment://output.png")
+            
+            await DUMP_CHANNEL.send(embed=emb, file=file)
 
 
 @client.tree.command(description='DEPRECATED, owner only, reads the whole copy channel')

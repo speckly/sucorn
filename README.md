@@ -11,7 +11,7 @@ The goals of this project include
 - images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
 - **considering** use db 
 - labelling these images from both remote (Discord) and local (tkinter)
-- use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics
+- use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics locally and on Discord
 - **WIP** training of Keras classifier
 
 # Setup

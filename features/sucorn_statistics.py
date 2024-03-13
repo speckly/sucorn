@@ -3,7 +3,9 @@
 
 import os
 import csv
-import re
+import argparse
+import pandas as pd
+import matplotlib.pyplot as plt
 
 def count_files(directory, export_csv=False):
     try:
@@ -66,7 +68,9 @@ def export_to_csv(file, result):
 
         writer.writerow(result)
 
-def visualise(file):
+def visualise(file, main=False, render=True):
+    # main flag is so that sucorn bot can display a saved image onto Discord
+
     # directory,positive,negative,neutral,unlabelled,total,accuracy,ex_accuracy
     df = pd.read_csv(file)
     ticks = list(df['directory'])
@@ -87,18 +91,24 @@ def visualise(file):
     ax = df_combined.plot(kind='bar', stacked=True, title="Type of labels", color=colors)
     ax.legend(loc='center', bbox_to_anchor=(1, 1))
     plt.xticks(rotation=90)
+    if render:
+        plt.savefig(f'{DIRECTORY}/../statistics/types.png')
 
     ax = df_accuracy.plot(kind='line', title="Accuracy")
     ax.legend(loc='center', bbox_to_anchor=(1, 1))
     ax.set_xticks(range(len(ticks)))
     ax.set_xticklabels(ticks)
     plt.xticks(rotation=90)
+    if render:
+        plt.savefig(f'{DIRECTORY}/../statistics/accuracy.png')
 
     ax = df_total.plot(kind='line', title="Total files")
     ax.legend(loc='center', bbox_to_anchor=(1,1))
     ax.set_xticks(range(len(ticks)))
     ax.set_xticklabels(ticks)
     plt.xticks(rotation=90)
+    if render:
+        plt.savefig(f'{DIRECTORY}/../statistics/total.png')
     
     # fig, axes = plt.subplots(ncols=2, figsize=(18, 10))
     # ax=axes[x,y]
@@ -110,22 +120,25 @@ def visualise(file):
     # df.plot(kind='scatter', x='ex_accuracy', y='accuracy', ax=axes[1, 0], title="Scatter Plot for accuracy")
     # df.plot(kind='hist', bins=10, ax=axes[1, 1], title="Histogram")
     # df['accuracy'].plot(kind='pie', autopct='%1.1f%%', ax=axes[1, 2], title="Pie Chart")
-    plt.show()
+    if main:
+        plt.show()
+
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 if __name__ == "__main__":
-    import argparse
-    import pandas as pd
-    import matplotlib.pyplot as plt
-
-    DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
     parser = argparse.ArgumentParser(description='Image Labeling Program')
     parser.add_argument('--folder_name', type=str, help='Folder name of images')
     parser.add_argument('--csv', type=str, help='CSV file name')
     parser.add_argument('--mode', choices=['read', 'write'], default='read', help='Operation mode (read or write)')
+    parser.add_argument('--no-save', action='store_true', help='Disable rendering and saving of image to /statistics')
     args = parser.parse_args()
     file = args.csv
-
+    no_save = args.no_save
+    
+    if not no_save and not os.path.exists(f'{DIRECTORY}\..\statistics'):
+        os.makedirs(f'{DIRECTORY}\..\statistics')
+        print("Created folder ..\statistics")
     if args.folder_name:  # For one folder
         if file:
             result = count_files(f'{DIRECTORY}\..\images\{args.folder_name}', export_csv=True)
@@ -137,7 +150,7 @@ if __name__ == "__main__":
     else:  # Iterate through images folder
         if file and args.mode == 'read':  # Display table if the mode is 'r'
             if os.path.exists(file):
-                visualise(file)
+                visualise(file, main=True, render=not no_save)
             else:
                 print("File does not exist")
         else:
@@ -145,7 +158,7 @@ if __name__ == "__main__":
                 with open(file, mode='w', newline='') as csv_file: # Clear
                     csv_file.write("")
             di = sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
-            print(di)
+
             for folder in di:
                 if file:
                     result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
