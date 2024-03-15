@@ -244,7 +244,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         minutes = (runtime_seconds % 3600) // 60
         remaining_seconds = runtime_seconds % 60
 
-        emb=discord.Embed(title="Download complete", 
+        emb=discord.Embed(title="Nuking complete", 
         description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
             color=0x00FF00, timestamp=datetime.datetime.now())
         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
