@@ -73,9 +73,13 @@ async def on_ready():
 
 @client.tree.command(description='Embed message with a silly gif')
 @discord.app_commands.describe(message='Message', title='Title')
-async def silly_embed(interaction: discord.Interaction, message: str, title: str = "sucorn"):
+async def silly_embed(interaction: discord.Interaction, message: str, title: str = "Message"):
     emb_color: hex = 0x00ff00 # TODO: Make this flexible, discord does not support hex
-    await silly_message(interaction, title, message, emb_color)
+    try:
+        catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+    except Exception as e:
+        catFact = f"Meowerror: {e}"
+    await silly_message(interaction, title, message, emb_color, footer=catFact)
 
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
 async def sync(interaction: discord.Interaction):

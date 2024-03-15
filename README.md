@@ -1,4 +1,5 @@
 # sucorn
+pronounced as [su-kon](https://fubuki.moe/mascots.html)
 
 A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
@@ -72,3 +73,7 @@ The following keys will label the image by moving it into its subfolder
 - 0 for negative
 - 1 for positive
 - 2 for neutral
+
+# Silly feature, not related to sucorn project
+You can use the sucorn Discord bot for sending a silly message ```/silly_embed```
+Keeping it because its is already there
