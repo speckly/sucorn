@@ -18,7 +18,7 @@ Author: @speckly
 https://github.com/speckly
 
 -- Cat Rescue --
-This gets the full image of the nya nya nyan (i mean ) from a Bing Image AI link with 1-4 nya images nyan
+This gets the full image of the nya nya nyan (i mean image) from a Bing Image AI link with 1-4 nya images nyan
 Uses Beautiful Soup 4
 
 -- Inputs --
@@ -83,7 +83,6 @@ Response messages"""
             # If it doesn't exist, create the directory
             os.makedirs(f'{folder_name}')
             message += ", Directory created"
-        
         
         try:
             response = get(URL)
