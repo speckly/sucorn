@@ -62,3 +62,12 @@ Writes these results out to a given csv file, ommitting the ```--mode``` flag wi
 For supervised learning, we need to label the images
 > [!WARNING]
 > Do not run this with reverse_api/run.py, as there will be duplicate file names and overwriting will occur, will fix this later
+
+```bash
+labelling.py foldername
+```
+Ensure that ```foldername``` is a valid foldername in ./images
+The following keys will label the image by moving it into its subfolder
+- 0 for negative
+- 1 for positive
+- 2 for neutral
