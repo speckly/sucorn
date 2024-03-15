@@ -1,7 +1,8 @@
 """Author: @speckly on Discord
 https://github.com/speckly
 
-NOTE: working directory will be changed to /images"""
+NOTE: working directory will be changed to /images
+BUG: Rate limits when using statistics"""
 
 import os
 import sys
@@ -34,7 +35,6 @@ del libs # Not required anymore
 # Features
 sys.path.append('./features')
 from aclient import MyClient, PosNegView
-from cscraper import CScraper
 from catrescue import catRescue, catDownloader
 from sucorn_statistics import count_files
 
@@ -175,7 +175,8 @@ async def statistics(interaction: discord.Interaction, target:str=''):
 @discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
 async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''): 
     # Validation is done in ascending runtime complexity order
-    if mode.strip().lower() not in ['positive', 'negative', 'neutral', 'unlabelled']:
+    mode = mode.strip().lower()
+    if mode not in ['positive', 'negative', 'neutral', 'unlabelled']:
         await silly_message(interaction, title="Invalid mode", message='Accepted modes are positive, negative, neutral, unlabelled')
         return
     if target == '':
@@ -200,6 +201,15 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
     else:
         await silly_message(interaction, title="Sending millions of cats to this channel now (v2)", emb_color=0x00ff00)
         number = 0
+        match mode:
+            case 'positive':
+                COLOR = 0x00ff00
+            case 'negative':
+                COLOR = 0xff0000
+            case 'neutral':
+                COLOR = 0x0000ff
+            case 'unlabelled':
+                COLOR = 0x808080
         start_time = time.time()
         files = [file for file in os.listdir(WDIR) if file.endswith(".jpg") or file.endswith(".jpeg")]
         if files == []:
@@ -216,7 +226,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
                 # What kind of black magic is involved here with local files?
                 file = discord.File(os.path.join(WDIR, filename), filename="output.png")
                 emb=discord.Embed(title=f"#{number}", url="https://http.cat/status/200", 
-                description="cat", color=0x00ff00, timestamp=datetime.datetime.now())
+                description="cat", color=COLOR, timestamp=datetime.datetime.now())
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
                 emb.set_footer(text=catFact)
                 emb.set_image(url=f"attachment://output.png")

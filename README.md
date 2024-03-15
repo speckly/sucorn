@@ -1,4 +1,5 @@
-# sucorn_bot
+# sucorn
+
 A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
 - **deprecated** automatic collection of images using ```pyautogui```,
