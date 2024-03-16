@@ -15,6 +15,7 @@ The goals of this project include
 - labelling these images from both remote (Discord) and local (tkinter)
 - use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics locally and on Discord
 - **WIP** training of Keras classifier
+- **WIP** training of Stable Diffusion LoRA (LoRA not included in this repo)
 
 # Setup
 > [!WARNING]
