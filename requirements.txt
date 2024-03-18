@@ -12,3 +12,4 @@ requests
 pyautogui
 html5lib
 selenium
+keyboard
