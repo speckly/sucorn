@@ -10,12 +10,10 @@ import datetime
 import threading 
 import time
 
-# nonsense related to cats
 from requests import get
 from json import loads
 from random import choice
 
-# Requires pip install
 import importlib
 libs = {"discord": None, "dotenv": None, "playsound": None, "psutil": None}
 for lib in libs:
@@ -30,15 +28,14 @@ for lib in libs:
             exit()
 
 discord, dotenv, playsound, psutil = libs["discord"], libs["dotenv"], libs["playsound"], libs["psutil"]
-del libs # Not required anymore
+del libs
 
-# Features
-sys.path.append('./features')
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(f'{DIRECTORY}/features')
 from aclient import MyClient, PosNegView
 from catrescue import catRescue, catDownloader
 from sucorn_statistics import count_files
 
-DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 dotenv.load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
