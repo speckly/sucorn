@@ -6,7 +6,7 @@ import subprocess
 import json
 
 def run_command(account, token, prompt, out_path, DELAY):
-    cmd = f"py BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
+    cmd = f"python BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
     count = combo = 0
     MAX = 20
 
