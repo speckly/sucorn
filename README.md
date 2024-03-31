@@ -34,6 +34,10 @@ pip install -r requirements.txt
 > Use this ethically, as this makes requests to BingImageCreator. Avoid using too many instances as it will result in executing a DoS attack on this host.
 
 ### utilities/reverse_api/get_cookie.py
+> [!INFO]
+> Does not support multiple passwords as of now
+
+Load account names in the ```normal``` list in ```cookies.json``` and run this file. This will automatically get the session cookie for each account
 
 ### utilities/reverse_api/run.py
 Creates n-number of instances that will use the reverse engineered API to generate images from ```prompt.txt```. n-number of instances depends on how many pairs are found in ```cookies.json```
