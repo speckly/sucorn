@@ -5,11 +5,11 @@ import ctypes
 import subprocess
 import json
 
-def run_command(account, token, prompt, out_path, DELAY):
+def run_command(account, token, prompt, out_path, DELAY, MAX):
     cmd = f"python BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
     count = combo = 0
-    MAX = 20
-
+    MAX = int(MAX)
+    
     while combo < MAX:
         time.sleep(DELAY)
         s = time.time()
@@ -61,4 +61,4 @@ def run_command(account, token, prompt, out_path, DELAY):
 if __name__ == '__main__':
     account, token, prompt, out_path, delay, maximum = sys.argv[1:] # Unpack all of the args, no argparser required as it is validated on run.py
     ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
-    run_command(account, token, prompt, out_path, float(delay))
+    run_command(account, token, prompt, out_path, float(delay), maximum)
