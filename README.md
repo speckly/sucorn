@@ -50,7 +50,7 @@ Each instance here will have a cooldown of 10 seconds after downloading all imag
 > [!WARNING]
 > This feature is deprecated, use utilities/reverse_api
 
-Makes use of ```pyautogui``` to automatically navigate the GUI, using mouse clicks and keyboard presses. The output is links pasted in a Discord channel. Run the sucorn Discord bot slash command ```/nuclear_cat copy=<copy channel>``` **WIP** dynamically change the authorized user, currently hardcoded
+Makes use of ```pyautogui``` to automatically navigate the GUI, using mouse clicks and keyboard presses. The output is links pasted in a Discord channel. Run the Discord slash command ```/nuclear_cat copy=<copy channel>```
 
 # Data preparation phase
 ### features/sucorn_statistics.py
@@ -78,7 +78,3 @@ The following keys will label the image by moving it into its subfolder
 - 0 for negative
 - 1 for positive
 - 2 for neutral
-
-# Silly feature, not related to sucorn project
-You can use the sucorn Discord bot for sending a silly message ```/silly_embed```
-Keeping it because its is already there
