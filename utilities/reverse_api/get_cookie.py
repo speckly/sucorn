@@ -40,10 +40,13 @@ def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
             signin = driver.find_element(By.ID, "primaryButton")
             signin.click()
 
-    if pass_mode:
+    if pass_mode: # Input password if available
         text_box.send_keys(PASSWORD)
         next_btn = driver.find_element(By.ID, "idSIButton9")
         next_btn.click()
+    
+    if driver.find_element(By.ID, "i0118Error"):
+        return -1
 
     try:
         accept_btn = driver.find_element(By.ID, "acceptButton")
@@ -99,7 +102,8 @@ if __name__ == "__main__":
     driver.implicitly_wait(5)
 
     load_dotenv()
-    PASSWORD = os.getenv("PASSWORD")
+    GENERAL_PASS = os.getenv("GENERAL")
+
     usernames = []
     if os.path.exists("usernames.json"):
         with open("usernames.json") as ufile:
@@ -112,10 +116,20 @@ if __name__ == "__main__":
 
     JSON_FILE = 'cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
+        if GENERAL_PASS:
+            password = GENERAL_PASS
+        else:
+            password = os.getenv(username.split("@")[0]) # Not case sensitive
+            if not password:
+                print(f"Missing password for {username}, skipping, check /utilities/reverse_api/.env")
+                continue
         try:
-            cookie = get_cookie(driver, username, PASSWORD)
-        except:
-            print("Unknown exception")
+            cookie = get_cookie(driver, username, password)
+            if cookie == -1:
+                print(f"Incorrect password for user {username}. Check /utilities/reverse_api/.env")
+                continue
+        except Exception as e:
+            print(f"Unknown exception: {e}")
             quit()
         
         if os.path.exists(JSON_FILE):

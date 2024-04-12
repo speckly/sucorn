@@ -24,10 +24,10 @@ The goals of this project include
 pip install -r requirements.txt
 ```
 **WIP automating these** Required files and folders:
-- ```.env``` with ```TOKEN=<your discord token here>```
-- ```/images```
-- ```/utilities/reverse_api/.env``` with ```PASSWORD=<your password here>```
-- ```/utilities/reverse_api/prompt.txt```
+- `.env` with `TOKEN=<your discord token here>`
+- `/images`
+- `/utilities/reverse_api/.env` with `PASSWORD=<your password here>`
+- `/utilities/reverse_api/prompt.txt`
 
 # Data collection phase
 > [!WARNING]
@@ -37,10 +37,10 @@ pip install -r requirements.txt
 > [!INFO]
 > Does not support multiple passwords as of now
 
-Load account names in the ```normal``` list in ```cookies.json``` and run this file. This will automatically get the session cookie for each account
+Load account names in the `normal` list in `cookies.json` and run this file. This will automatically get the session cookie for each account
 
 ### utilities/reverse_api/run.py
-Creates n-number of instances that will use the reverse engineered API to generate images from ```prompt.txt```. n-number of instances depends on how many pairs are found in ```cookies.json```
+Creates n-number of instances that will use the reverse engineered API to generate images from `prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
 ```bash
 python run.py --delay 10 --max 20
 ```
@@ -50,20 +50,20 @@ Each instance here will have a cooldown of 10 seconds after downloading all imag
 > [!WARNING]
 > This feature is deprecated, use utilities/reverse_api
 
-Makes use of ```pyautogui``` to automatically navigate the GUI, using mouse clicks and keyboard presses. The output is links pasted in a Discord channel. Run the Discord slash command ```/nuclear_cat copy=<copy channel>```
+Makes use of `pyautogui` to automatically navigate the GUI, using mouse clicks and keyboard presses. The output is links pasted in a Discord channel. Run the Discord slash command `/nuclear_cat copy=<copy channel>`
 
 # Data preparation phase
 ### features/sucorn_statistics.py
-This is both a feature and utility, feature used for the ```/statistics``` slash command in Discord, utility can be used in the command line. 
+This is both a feature and utility, feature used for the `/statistics` slash command in Discord, utility can be used in the command line. 
 
 ```bash
 python sucorn_statistics.py
 ```
-Providing no options will iterate through all subfolders in ```./images```
+Providing no options will iterate through all subfolders in `./images`
 ```bash
 python sucorn_statistics.py --csv sample_statistics.csv --mode write
 ```
-Writes these results out to a given csv file, ommitting the ```--mode``` flag will read the csv and display it using [matplotlib](https://pypi.org/project/matplotlib/)
+Writes these results out to a given csv file, ommitting the `--mode` flag will read the csv and display it using [matplotlib](https://pypi.org/project/matplotlib/)
 
 ### utilities/labelling.py
 For supervised learning, we need to label the images
@@ -73,7 +73,7 @@ For supervised learning, we need to label the images
 ```bash
 labelling.py foldername
 ```
-Ensure that ```foldername``` is a valid foldername in ./images
+Ensure that `foldername` is a valid foldername in ./images
 The following keys will label the image by moving it into its subfolder
 - 0 for negative
 - 1 for positive
