@@ -5,20 +5,26 @@ import ctypes
 import keyboard
 import argparse
 import os
+import platform
 
-def open_console_window(account, token, prompt, out_path, delay=0, maximum=10):
+def open_console_window(account, token, prompt, out_path, delay, maximum):
+    if platform.system() == 'Windows':
+        spawn = ['start', 'cmd', '/k']
+    elif platform.system() == "Darwin":
+        spawn = ['open', '-a', 'Terminal.app']
     process = subprocess.Popen(
-        ['start', 'cmd', '/k', 'python', 'sub.py', account, token, prompt, out_path, str(delay), str(maximum)],
+        spawn + ['python', 'sub.py', account, token, prompt, out_path, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
     )
     return process
 
 def organize_windows(dummy):
-    rows = 3
-    columns = 4
+    # TODO: Dynamic for all resolutions
+    rows = 6
+    columns = 5
     window_width = 450
-    window_height = 270
+    window_height = 240
 
     windows = gw.getWindowsWithTitle('reverse_api')
 
@@ -31,9 +37,9 @@ def organize_windows(dummy):
 
         x_position = col * (window_width - 10)
         y_position = row * (window_height + 2)
-
-        window.moveTo(x_position, y_position)
+        
         window.resizeTo(window_width, window_height)
+        window.moveTo(x_position, y_position)
         
 
 def terminate():
@@ -46,7 +52,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm')
     parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
     parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
-    parser.add_argument('-m', '--max', type=int, default=10, help='Maximum number of failed redirects before killing process (default is 10)')
+    parser.add_argument('-m', '--max', type=int, default=80, help='Maximum number of failed redirects before killing process (default is 10)')
     parser.add_argument('-t', '--test', type=bool, default=False, help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 

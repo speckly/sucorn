@@ -45,8 +45,11 @@ def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
         next_btn = driver.find_element(By.ID, "idSIButton9")
         next_btn.click()
     
-    if driver.find_element(By.ID, "i0118Error"):
-        return -1
+    try:
+        if driver.find_element(By.ID, "i0118Error"):
+            return -1
+    except:
+        pass
 
     try:
         accept_btn = driver.find_element(By.ID, "acceptButton")

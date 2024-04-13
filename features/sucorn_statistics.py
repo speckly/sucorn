@@ -87,7 +87,7 @@ def visualise(file, main=False, render=True):
     for dataframe in [df, df_combined, df_accuracy, df_total]:
         dataframe.set_index('directory', inplace=True)
     
-    colors = ['green', 'red', 'blue', 'purple']
+    colors = ['green', 'red', 'blue', 'gray']
     ax = df_combined.plot(kind='bar', stacked=True, title="Type of labels", color=colors)
     ax.legend(loc='center', bbox_to_anchor=(1, 1))
     plt.xticks(rotation=90)

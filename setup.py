@@ -32,5 +32,14 @@ if not os.path.exists("./utilities/reverse_api/prompt.txt"):
     with open("./utilities/reverse_api/prompt.txt", "w") as f:
         f.write(pair)
 
+if os.path.exists("./utilities/reverse_api/usernames.json"):
+    with open("./utilities/reverse_api/usernames.json") as ufile:
+        usernames = json.load(ufile)
+else:
+    with open("./utilities/reverse_api/usernames.json", 'w') as uFile:
+        print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
+        usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}
+        json.dump(usernames, uFile, indent=4)
+
 os.system("pip install -r requirements.txt")
 print("Setup complete!")
