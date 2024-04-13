@@ -23,11 +23,6 @@ The goals of this project include
 ```bash
 pip install -r requirements.txt
 ```
-**WIP automating these** Required files and folders:
-- `.env` with `TOKEN=<your discord token here>`
-- `/images`
-- `/utilities/reverse_api/.env` with `PASSWORD=<your password here>`
-- `/utilities/reverse_api/prompt.txt`
 
 # Data collection phase
 > [!WARNING]
