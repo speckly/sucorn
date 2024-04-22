@@ -3,7 +3,7 @@ import getpass
 
 if not os.path.exists(".env"):
     token = getpass.getpass("Input Discord token (hidden, enter to quit): ")
-    if username.strip() != "":
+    if token.strip() != "":
         with open(".env", "w") as env_f:
             env_f.write(f"TOKEN={token}")
         print("Written Discord Token to .env")
