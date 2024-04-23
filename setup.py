@@ -17,7 +17,7 @@ if not os.path.exists("./images"):
 
 if not os.path.exists("./utilities/reverse_api/.env"):
     while True:
-        username = input("Input Microsoft username for reverse API if needed (press enter to quit): ")
+        username = input("Microsoft email for reverse API if needed (press enter to quit): ")
         if username.strip() == "":
             break
         password = getpass.getpass("Input your password (hidden): ")
