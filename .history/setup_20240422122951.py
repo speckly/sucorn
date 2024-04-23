@@ -1,12 +1,13 @@
 import os
 import getpass
+import json
 
 if not os.path.exists(".env"):
     token = getpass.getpass("Input Discord token (hidden, enter to quit): ")
-    if token.strip() != "":
+    if token.strip()!= "":
         with open(".env", "w") as env_f:
             env_f.write(f"TOKEN={token}")
-        print("Written Discord Token to .env")
+        print("Written Discord Token to.env")
 
 if not os.path.exists("./images"):
     try:
@@ -34,7 +35,7 @@ if not os.path.exists("./utilities/reverse_api/prompt.txt"):
 
 if os.path.exists("./utilities/reverse_api/usernames.json"):
     with open("./utilities/reverse_api/usernames.json") as ufile:
-        usernames = json.load(ufile)
+        usernames: dict = json.load(ufile)
 else:
     with open("./utilities/reverse_api/usernames.json", 'w') as uFile:
         print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
