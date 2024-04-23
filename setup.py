@@ -1,5 +1,6 @@
 import os
 import getpass
+import json
 
 if not os.path.exists(".env"):
     token = getpass.getpass("Input Discord token (hidden, enter to quit): ")
@@ -28,9 +29,10 @@ if not os.path.exists("./utilities/reverse_api/.env"):
         print(f"Written {pair}")
 
 if not os.path.exists("./utilities/reverse_api/prompt.txt"):
-    prompt = input("Input username (press enter to quit): ")
-    with open("./utilities/reverse_api/prompt.txt", "w") as f:
-        f.write(pair)
+    prompt = input("Input prompt (press enter to quit): ")
+    if not prompt == "":
+        with open("./utilities/reverse_api/prompt.txt", "w") as f:
+            f.write(prompt)
 
 if os.path.exists("./utilities/reverse_api/usernames.json"):
     with open("./utilities/reverse_api/usernames.json") as ufile:
