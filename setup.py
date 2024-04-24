@@ -34,10 +34,7 @@ if not os.path.exists("./utilities/reverse_api/prompt.txt"):
         with open("./utilities/reverse_api/prompt.txt", "w") as f:
             f.write(prompt)
 
-if os.path.exists("./utilities/reverse_api/usernames.json"):
-    with open("./utilities/reverse_api/usernames.json") as ufile:
-        usernames = json.load(ufile)
-else:
+if not os.path.exists("./utilities/reverse_api/usernames.json"):
     with open("./utilities/reverse_api/usernames.json", 'w') as uFile:
         print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
         usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}

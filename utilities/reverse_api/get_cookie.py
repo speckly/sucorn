@@ -94,6 +94,7 @@ def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
 
 if __name__ == "__main__":
 
+    JSON_FILE = 'cookies.json'
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
 
@@ -116,8 +117,19 @@ if __name__ == "__main__":
             print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
             usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}
             json.dump(usernames, uFile, indent=4)
+    
+    if usernames['cookie'] == []:
+        if input(f"No cookies found in {JSON_FILE}, proceed to input usernames/email addresses? (default N): ").strip().lower() == "n":
+            while True:
+                username = input(f"Enter username/email address: ").strip()
+                if username == "":
+                    break
+                else:
+                    usernames["normal"].append(username)
+            with open("usernames.json", "w") as uFile:
+                json.dump(usernames, uFile, indent=4)
+        quit()
 
-    JSON_FILE = 'cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
         if GENERAL_PASS:
             password = GENERAL_PASS
