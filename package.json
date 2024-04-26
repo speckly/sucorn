@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot/issues"
   },
-  "homepage": "https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot#readme"
+  "homepage": "https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot#readme",
+  "dependencies": {
+    "discord.js": "^13.17.1"
+  }
 }
