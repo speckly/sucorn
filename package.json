@@ -1,0 +1,19 @@
+{
+  "name": "sucorndalledjbotenter",
+  "version": "1.0.0",
+  "description": "pronounced as [su-kon](https://fubuki.moe/mascots.html)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot.git"
+  },
+  "author": "DJLPCopilot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot/issues"
+  },
+  "homepage": "https://github.com/DJLPCopilot/Sucorn-Dj-DALLE-Bot#readme"
+}
