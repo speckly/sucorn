@@ -1,4 +1,4 @@
-from selenium import webdriver;
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -160,4 +160,11 @@ if __name__ == "__main__":
             with open(JSON_FILE, 'w') as file:
                 json.dump({username: cookie}, file, indent=4)
         
-        usernames["cookie"].append(usernames["normal"].pop(usernames["normal"].index()))
+        usernames["cookie"].append(usernames["normal"].pop(usernames["normal"].index(username)))
+        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+            json.dump(usernames, uFile, indent=4)
+
+        print(f'Cookie acquired for {username}')
+
+    driver.quit()
+    print("Mission accomplished")
