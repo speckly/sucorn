@@ -113,8 +113,8 @@ if __name__ == "__main__":
         with open("usernames.json") as ufile:
             usernames = json.load(ufile)
     else:
-        with open("cookies.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
-            print("intialised cookies.json as it does not exist, please use this file for loading of accounts (in the normal key)")
+        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+            print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
             usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}
             json.dump(usernames, uFile, indent=4)
     
