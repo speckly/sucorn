@@ -89,7 +89,7 @@ if __name__ == "__main__":
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
-    out_path = f'"{out_path}"' # Must use double quote
+    out_path = f'\\..\\..\\images\\{args.folder}\\' # BUG: The trolling done here
 
     PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
     if os.path.exists(PROMPT_FILE):
