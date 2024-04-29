@@ -94,6 +94,7 @@ def get_cookie(driver: webdriver, USERNAME: str, PASSWORD: str):
 
 if __name__ == "__main__":
 
+    JSON_FILE = 'cookies.json'
     chrome_options = Options()
     chrome_options.add_experimental_option("detach", True)
 
