@@ -23,7 +23,7 @@ def run_command(account: str, token: str, prompt: str, out_path: str, delay: str
     count = combo = 0
     max_attempts = int(max_attempts)
     delay = float(delay)
-   
+
     while combo < max_attempts:
         time.sleep(delay)
         s = time.time()

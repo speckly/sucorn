@@ -132,11 +132,11 @@ class ImageLabeler:
         new_width = min(self.root.winfo_width(), int(self.root.winfo_height() * aspect_ratio))
         new_height = int(new_width / aspect_ratio)
 
-        resized_image = original_image.resize((new_width, new_height), Image.LANCZOS)
-        self.photo = ImageTk.PhotoImage(resized_image)
+        resized_image = original_image.resize((new_width, new_height)) # Image.LANCZOS does not exist
+        photo = ImageTk.PhotoImage(resized_image)
 
-        self.label.config(image=self.photo)
-        self.label.image = self.photo
+        self.label.config(image=photo)
+        self.label.image = photo
         info = f"""
 Current file: {current_file}
 Progress: {self.current_index}/{self.files}"""

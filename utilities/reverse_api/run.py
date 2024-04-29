@@ -16,7 +16,7 @@ import pygetwindow as gw
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
-def open_console_window(name: str, account_token: str, prompt: str, out_path: str, delay: float, maximum: int):
+def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int):
     """Author: Andrew Higgins
     https://github.com/speckly
 
@@ -28,7 +28,7 @@ def open_console_window(name: str, account_token: str, prompt: str, out_path: st
         spawn = ['open', '-a', 'Terminal.app']
     process = subprocess.Popen(
         spawn + ['python', f'{DIRECTORY}\\sub.py', name, account_token,
-            prompt, out_path, str(delay), str(maximum)],
+            prompt, out_folder, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
     )
