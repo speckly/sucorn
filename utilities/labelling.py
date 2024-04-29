@@ -1,16 +1,27 @@
-# Author: Andrew Higgins
-# https://github.com/speckly
+"""
+Author: Andrew Higgins
+https://github.com/speckly
 
-# labelling.py V2
+labelling.py V2, makes use of folders to label images.
+This is a GUI tool that shows the current image being labelled and moves it to
+its respective folder depending on the keyboard input
+0 is negative, 1 is positive, 2 is neutral
+"""
 
-from tkinter import Tk, Canvas, Label, RIGHT
-from PIL import Image, ImageTk, ImageFilter
 import os
 import argparse
 import shutil
+from tkinter import Tk, Canvas, Label, RIGHT
+from PIL import Image, ImageTk
 
-def map_path(abs_path):
-    # Input absolute path of residing folder
+def map_path(abs_path: str) -> str:
+    """
+    Author: Andrew Higgins
+    https://github.com/speckly
+
+    Input: path to the file
+    Output: prefix folder to this  
+    """
     labels = ["positive", "negative", "neutral"]
     for label in labels:
         if label in abs_path:
@@ -18,18 +29,25 @@ def map_path(abs_path):
     return ""
 
 class ImageLabeler:
+    """
+    Author: Andrew Higgins
+    https://github.com/speckly
+
+    Tkinter labeller that shows the current image being labelled and moves it to
+    its respective folder depending on the keyboard input
+    0 is negative, 1 is positive, 2 is neutral
+    """
     def __init__(self, folder_path, options={}):
         self.folder_path = folder_path
         self.rewrite = options.get("rewrite")
         category = options.get("category")
 
         if self.rewrite:
-            neutral_label = "\\neutral" # why doesnt fstrings allow backslashes
             self.image_files = [f"{map_path(dirpath)}{filename}"
                                 for dirpath, _, filenames in os.walk(folder_path)
                                 for filename in filenames
                                 if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
-        elif category != None:
+        elif category is not None:
             self.image_files = [f"{category}/{filename}"
                                 for filename in os.listdir(f"{folder_path}/{category}")
                                 if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
@@ -144,7 +162,7 @@ def main():
 
     folder_path = f"{os.path.dirname(os.path.realpath(__file__))}/../images/{args.folder_name}"
     if not os.path.isdir(folder_path):
-        print('Directory not found')
+        print(f'Directory not found: {folder_path}')
         return
     else:
         for subfolder in ['positive', 'neutral', 'negative']:
