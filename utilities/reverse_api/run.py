@@ -14,6 +14,8 @@ import platform
 import keyboard
 import pygetwindow as gw
 
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
 def open_console_window(name: str, account_token: str, prompt: str, out_path: str, delay: float, maximum: int):
     """Author: Andrew Higgins
     https://github.com/speckly
@@ -25,7 +27,7 @@ def open_console_window(name: str, account_token: str, prompt: str, out_path: st
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
     process = subprocess.Popen(
-        spawn + ['python', 'sub.py', name, account_token,
+        spawn + ['python', f'{DIRECTORY}\\sub.py', name, account_token,
             prompt, out_path, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
@@ -55,9 +57,9 @@ def organize_windows(dummy):
 
         x_position = col * (window_width - 10)
         y_position = row * (window_height + 2)
-      
+
         window.resizeTo(window_width, window_height)
-        window.moveTo(x_position, y_position)   
+        window.moveTo(x_position, y_position)
 
 def terminate():
     """Author: Andrew Higgins
@@ -76,28 +78,31 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--delay', type=float, default=0,
         help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=int, default=80,
-        help='Maximum number of failed redirects before killing process (default is 10)')
+        help='Maximum number of failed redirects before killing process (default is 80)')
     parser.add_argument('-t', '--test', type=bool, default=False,
         help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 
-    OUT_PATH = f"..\\..\\images\\{args.folder}\\"
+    out_path = f"{DIRECTORY}\\..\\..\\images\\{args.folder}\\"
     for subfolder in ['positive', 'neutral', 'negative']:
-        subfolder_path = os.path.join(OUT_PATH, subfolder)
+        subfolder_path = f"{out_path}\\{subfolder}"
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
+    out_path = f'"{out_path}"' # Must use double quote
 
-    if os.path.exists('prompt.txt'):
-        with open('prompt.txt', encoding="utf-8") as f:
+    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
+    if os.path.exists(PROMPT_FILE):
+        with open(PROMPT_FILE, encoding="utf-8") as f:
             PROMPT = ''.join(f.readlines()).replace('\n', '')
     else:
         PROMPT = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
-        with open("prompt.txt", encoding="utf-8") as f:
+        with open(PROMPT_FILE, encoding="utf-8") as f:
             f.write(PROMPT)
-    cookie_file = 'cookies.json' if args.test is False else 'test_cookies.json'
-    if os.path.exists(cookie_file):
-        with open(cookie_file, encoding="utf-8") as f:
+
+    COOKIE_FILE = f'{DIRECTORY}/cookies.json' if args.test is False else f'{DIRECTORY}/test_cookies.json'
+    if os.path.exists(COOKIE_FILE):
+        with open(COOKIE_FILE, encoding="utf-8") as f:
             cookies = json.load(f)
     else:
         print("cookies.json does not exist, quitting since no cookies were found.")
@@ -108,7 +113,7 @@ if __name__ == "__main__":
             quit()
     elif len(cookies.items()):
         for account, token in cookies.items():
-            open_console_window(account, token, PROMPT, OUT_PATH, args.delay, args.max)
+            open_console_window(account, token, PROMPT, out_path, args.delay, args.max)
 
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')

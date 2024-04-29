@@ -11,6 +11,7 @@ import ctypes
 import subprocess
 import json
 
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 def run_command(account: str, token: str, prompt: str, out_path: str, delay: str, max_attempts: str):
     """Author: Andrew Higgins
     https://github.com/speckly
