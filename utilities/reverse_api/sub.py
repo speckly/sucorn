@@ -11,13 +11,13 @@ import ctypes
 import subprocess
 import json
 
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
 def run_command(account: str, token: str, prompt: str, out_path: str, delay: str, max_attempts: str):
     """Author: Andrew Higgins
     https://github.com/speckly
 
     sucorn project data preparation phase
     This is the function to be executed per child process to automate the image creation process"""
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
     cmd = f"python BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
     count = combo = 0
