@@ -106,18 +106,19 @@ if __name__ == "__main__":
 
     load_dotenv()
     GENERAL_PASS = os.getenv("GENERAL")
+    DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
     usernames = []
-    if os.path.exists("usernames.json"):
-        with open("usernames.json") as ufile:
+    if os.path.exists(f"{DIRECTORY}/usernames.json"):
+        with open(f"{DIRECTORY}/usernames.json") as ufile:
             usernames = json.load(ufile)
     else:
-        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+        with open(f"{DIRECTORY}/usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
             print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
-            usernames = {"normal": [], "cookie": [], "unusable": [], "otp": []}
+            usernames = {"normal": [], "loaded": [], "unusable": [], "otp": []}
             json.dump(usernames, uFile, indent=4)
 
-    JSON_FILE = 'cookies.json'
+    JSON_FILE = f'{DIRECTORY}/cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
         if GENERAL_PASS:
             password = GENERAL_PASS
@@ -148,8 +149,8 @@ if __name__ == "__main__":
             with open(JSON_FILE, 'w') as file:
                 json.dump({username: cookie}, file, indent=4)
         
-        usernames["cookie"].append(usernames["normal"].pop(usernames["normal"].index(username)))
-        with open("usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
+        usernames["loaded"].append(usernames["normal"].pop(usernames["normal"].index(username)))
+        with open(f"{DIRECTORY}/usernames.json", 'w') as uFile: # NOTE: Done for each username in case the webdriver crashes
             json.dump(usernames, uFile, indent=4)
 
         print(f'Cookie acquired for {username}')

@@ -45,8 +45,8 @@ def run_command(account, token, prompt, out_path, DELAY, MAX):
     if os.path.exists('usernames.json'):
         with open('usernames.json', 'r') as file:
             usernames = json.load(file)
-        if account in usernames["cookie"] and account not in usernames["unusable"]:
-            usernames["unusable"].append(usernames["cookie"].pop(usernames["cookie"].index(account)))
+        if account in usernames["loaded"] and account not in usernames["unusable"]:
+            usernames["unusable"].append(usernames["loaded"].pop(usernames["loaded"].index(account)))
             print(f"Account {account} moved to unusable")
         else:
             print(f"Account {account}, not modified in usernames.json, please check")

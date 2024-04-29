@@ -30,7 +30,7 @@ python setup.py
 
 ### utilities/reverse_api/get_cookie.py
 
-Load account names in the `normal` list in `cookies.json` and run this file. This will automatically get the session cookie for each account. Credentials are taken from `.env`
+Load account names in the `normal` list in `usernames.json` and run this file. This will automatically get the session cookie for each account and store it into `cookies.json`. Credentials are taken from `.env`. The `loaded` list contains account names with the cookie acquired and stored
 
 ### utilities/reverse_api/run.py
 Creates n-number of instances that will use the reverse engineered API to generate images from `prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
