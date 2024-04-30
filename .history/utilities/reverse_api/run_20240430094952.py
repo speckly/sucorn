@@ -34,7 +34,7 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
     )
     return process
 
-def organize_windows():
+def organize_windows(dummy):
     """Author: Andrew Higgins
     https://github.com/speckly
 
