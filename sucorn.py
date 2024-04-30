@@ -7,25 +7,25 @@ BUG: Rate limits when using statistics"""
 import os
 import sys
 import datetime
-import threading 
+import threading
 import time
+import importlib
 
-from requests import get
 from json import loads
 from random import choice
+from requests import get
 
-import importlib
 libs = {"discord": None, "dotenv": None, "playsound": None, "psutil": None}
 for lib in libs:
-    try: 
+    try:
         libs[lib] = importlib.import_module(lib)
     except ModuleNotFoundError:
         if input(f"{lib} is required to run this program, execute pip install {lib}? (Y): ").lower().strip() in ["", "y"]:
-            installation = lib if lib != "dotenv" else "python-dotenv" # Pip install python-dotenv and import as dotenv
+            installation = lib if lib != "dotenv" else "python-dotenv"
             os.system(f"pip install {installation}")
             libs[lib] = importlib.import_module(lib)
         else:
-            exit()
+            sys.exit(0)
 
 discord, dotenv, playsound, psutil = libs["discord"], libs["dotenv"], libs["playsound"], libs["psutil"]
 del libs
@@ -33,7 +33,7 @@ del libs
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{DIRECTORY}/features')
 from aclient import MyClient, PosNegView
-from catrescue import catRescue, catDownloader
+from catrescue import catRescue
 from sucorn_statistics import count_files
 
 dotenv.load_dotenv()
@@ -61,7 +61,7 @@ async def silly_message(interaction: discord.Interaction, title: str="", message
     else:
         try:
             await channel.send(embed=emb)
-        except:
+        except Exception:
             await silly_message(interaction, title="Error in parsing channel") # Will be termination case
 
 @client.event
@@ -73,10 +73,10 @@ async def on_ready():
 async def silly_embed(interaction: discord.Interaction, message: str, title: str = "Message"):
     emb_color: hex = 0x00ff00 # TODO: Make this flexible, discord does not support hex
     try:
-        catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+        cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
     except Exception as e:
-        catFact = f"Meowerror: {e}"
-    await silly_message(interaction, title, message, emb_color, footer=catFact)
+        cat_fact = f"Meowerror: {e}"
+    await silly_message(interaction, title, message, emb_color, footer=cat_fact)
 
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
 async def sync(interaction: discord.Interaction):
@@ -93,34 +93,34 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
     try:
         results, prompt = catRescue(link)
         try:
-            catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+            cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
         except Exception as e:
-            catFact = f"Meowerror: {e}"
+            cat_fact = f"Meowerror: {e}"
         for src in results:
-            emb=discord.Embed(title=f"Nyan #", url=link, 
-            description=prompt, color=0x00ff00, timestamp=datetime.datetime.now())
+            emb=discord.Embed(title="Nyan", url=link,
+                description=prompt, color=0x00ff00, timestamp=datetime.datetime.now())
             emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
-            emb.set_footer(text=catFact)
+            emb.set_footer(text=cat_fact)
             emb.set_image(url=src)
             embed_list.append(emb)
         await interaction.response.send_message(embeds=embed_list, view=PosNegView(len(results)))
     except Exception as error:
         emb=discord.Embed(title="Error:", description=f"Error logged: {error}", color=0xff0000, timestamp=datetime.datetime.now())
         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
-        emb.set_footer(text=catFact)
+        emb.set_footer(text=cat_fact)
         await interaction.response.send_message(embed=emb)
 
 @client.tree.command(description='Owner only, generate statistics on the category')
 @discord.app_commands.describe()
-async def statistics(interaction: discord.Interaction, target:str=''): 
+async def statistics(interaction: discord.Interaction, target:str=''):
     if target == '':
-        target = interaction.channel_id
-    if (type(target) != int and not target.isnumeric()):
+        target: int = interaction.channel_id
+    elif not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
 
     DUMP_CHANNEL = client.get_channel(int(target))
-    if DUMP_CHANNEL == None:
+    if DUMP_CHANNEL is None:
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
@@ -138,38 +138,38 @@ async def statistics(interaction: discord.Interaction, target:str=''):
         for directory in ordered_dir:
             final_string = count_files(f'{DIRECTORY}/images/{directory}')
             try:
-                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
             except Exception as e:
-                catFact = f"Meowerror: {e}"
+                cat_fact = f"Meowerror: {e}"
             await silly_message(interaction, title=directory, 
                                 message=final_string, emb_color=0x00ff00, 
-                                channel=DUMP_CHANNEL, footer=catFact, author=False)
+                                channel=DUMP_CHANNEL, footer=cat_fact, author=False)
 
         try:
             
             for stat in os.listdir(f"{DIRECTORY}/statistics"):
                 try:
-                    catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                    cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
                 except Exception as e:
-                    catFact = f"Meowerror: {e}"
+                    cat_fact = f"Meowerror: {e}"
                 file = discord.File(os.path.join(f"{DIRECTORY}/statistics", stat), filename="output.png")
-                emb=discord.Embed(title=f"{stat.replace('.png', '')}", url="https://http.cat/status/200", 
+                emb=discord.Embed(title=f"{stat.replace('.png', '')}", url="https://http.cat/status/200",
                 color=0x00ff00, timestamp=datetime.datetime.now())
-                emb.set_footer(text=catFact)
-                emb.set_image(url=f"attachment://output.png")
+                emb.set_footer(text=cat_fact)
+                emb.set_image(url="attachment://output.png")
 
                 await DUMP_CHANNEL.send(embed=emb, file=file)
-        except:
+        except Exception:
             try:
-                catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
             except Exception as e:
-                catFact = f"Meowerror: {e}"
-            emb=discord.Embed(title=f"Error", url="https://http.cat/status/500", 
+                cat_fact = f"Meowerror: {e}"
+            emb=discord.Embed(title="Error", url="https://http.cat/status/500", 
             description="cat", color=0x00ff00, timestamp=datetime.datetime.now())
             emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
-            emb.set_footer(text=catFact)
-            emb.set_image(url=f"attachment://output.png")
-            
+            emb.set_footer(text=cat_fact)
+            emb.set_image(url="attachment://output.png")
+          
             await DUMP_CHANNEL.send(embed=emb, file=file)
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
@@ -220,24 +220,24 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
             try:
                 number += 1
                 try:
-                    catFact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
+                    cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
                 except Exception as e:
-                    catFact = f"Meowerror: {e}"
+                    cat_fact = f"Meowerror: {e}"
 
                 # What kind of black magic is involved here with local files?
                 file = discord.File(os.path.join(WDIR, filename), filename="output.png")
                 emb=discord.Embed(title=f"#{number}", url="https://http.cat/status/200", 
                 description="cat", color=COLOR, timestamp=datetime.datetime.now())
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
-                emb.set_footer(text=catFact)
+                emb.set_footer(text=cat_fact)
                 emb.set_image(url=f"attachment://output.png")
-                
+            
                 await DUMP_CHANNEL.send(embed=emb, file=file)
             except Exception as error:
                 emb=discord.Embed(title="Error", description=f"Error logged: {error}", color=0xff0000, 
                                   timestamp=datetime.datetime.now(), url="https://http.cat/status/500")
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
-                emb.set_footer(text=catFact)
+                emb.set_footer(text=cat_fact)
                 await DUMP_CHANNEL.send(embed=emb)
         
         runtime_seconds = time.time() - start_time
@@ -252,7 +252,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         emb.set_footer(text="speckles")
         emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
         await interaction.followup.send(embed=emb)
-        
+   
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.
 # It always takes an interaction as its first parameter and a Member or Message as its second parameter.
@@ -261,11 +261,6 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
 async def show_join_date(interaction: discord.Interaction, member: discord.Member):
     # The format_dt function formats the date time into a human readable representation in the official client
     await interaction.response.send_message(f'{member} joined at {discord.utils.format_dt(member.joined_at)}')
-
-# @client.event
-# async def on_message(message):
-#     if message.author.bot: 
-#         return
 
 @client.event
 async def on_interaction(interaction):

@@ -39,6 +39,10 @@ python run.py --delay 10 --max 20
 ```
 Each instance here will have a cooldown of 10 seconds after downloading all images from the query before 
 
+Keys:
+- Tab: Brings the child processes to front
+- End: Terminates all child processes
+
 ### utilities/automation.py
 > [!WARNING]
 > This feature is deprecated, use utilities/reverse_api
