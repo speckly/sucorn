@@ -16,6 +16,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from dotenv import load_dotenv
 
+from selenium.webdriver import webdriver # Add this line
+
 def get_cookie(driver: webdriver, username: str, password: str):
     """Author: Andrew Higgins
     https://github.com/speckly

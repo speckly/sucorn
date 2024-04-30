@@ -46,8 +46,7 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-async def silly_message(interaction, title="", message=""
-                        , emb_color=0xff0000, channel='', author=True, footer='speckles'):
+async def silly_message(interaction, title="", message="", emb_color=0xff0000, channel='', author=True, footer='speckles'):
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         
@@ -175,7 +174,7 @@ async def statistics(interaction, target=''):
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
 @discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
-async def nuclear_cat_new(interaction, folder_name: str, mode: str, target:str=''): 
+async def nuclear_cat_new(interaction, folder_name: str, mode: str, target=''):
     # Validation is done in ascending runtime complexity order
     mode = mode.strip().lower()
     if mode not in ['positive', 'negative', 'neutral', 'unlabelled']:

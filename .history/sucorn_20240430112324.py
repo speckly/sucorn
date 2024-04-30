@@ -1,9 +1,3 @@
-"""Author: @speckly on Discord
-https://github.com/speckly
-
-NOTE: working directory will be changed to /images
-BUG: Rate limits when using statistics"""
-
 import os
 import sys
 import datetime
@@ -15,6 +9,7 @@ from json import loads
 from random import choice
 
 import importlib
+
 libs = {"discord": None, "dotenv": None, "playsound": None, "psutil": None}
 for lib in libs:
     try: 
@@ -46,8 +41,7 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-async def silly_message(interaction, title="", message=""
-                        , emb_color=0xff0000, channel='', author=True, footer='speckles'):
+async def silly_message(interaction, title="", message="", emb_color=0xff0000, channel='', author=True, footer='speckles'):
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         
@@ -247,42 +241,6 @@ async def nuclear_cat_new(interaction, folder_name: str, mode: str, target:str='
         remaining_seconds = runtime_seconds % 60
 
         emb=discord.Embed(title="Nuking complete", 
-        description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
-            color=0x00FF00, timestamp=datetime.datetime.now())
-        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
-        emb.set_footer(text="speckles")
-        emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
-        await interaction.followup.send(embed=emb)
-        
-# A Context Menu command is an app command that can be run on a member or on a message by
-# accessing a menu within the client, usually via right clicking.
-# It always takes an interaction as its first parameter and a Member or Message as its second parameter.
-@client.tree.context_menu(name='Show Join Date')
-async def show_join_date(interaction, member):
-    # The format_dt function formats the date time into a human readable representation in the official client
-    await interaction.response.send_message(f'{member} joined at {discord.utils.format_dt(member.joined_at)}')
+        description="Nuking process completed successfully.",
+        color=0x00ff00)  # Add closing parenthesis here
 
-# @client.event
-# async def on_message(message):
-#     if message.author.bot: 
-#         return
-
-@client.event
-async def on_interaction(interaction):
-    print(f'{timestamp()}: {interaction.user.name} ({interaction.user.id}) used {interaction.command.qualified_name} with failed={interaction.command_failed}')
-
-def get_memory_usage():
-    process = psutil.Process(os.getpid())
-    return process.memory_info().rss / 1024  # in kilobytes
-
-def monitor_performance(interval=300):
-    while True:
-        cpu_usage = psutil.cpu_percent(interval=1)
-        memory_usage = get_memory_usage()
-        print(f'{timestamp()}: CPU Usage {cpu_usage}%, Memory Usage {memory_usage} KB')
-        time.sleep(interval)
-
-if __name__ == "__main__":
-    performance_thread = threading.Thread(target=monitor_performance, args=(1000,))
-    performance_thread.start()
-    client.run(os.getenv('TOKEN'))

@@ -46,8 +46,7 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-async def silly_message(interaction, title="", message=""
-                        , emb_color=0xff0000, channel='', author=True, footer='speckles'):
+async def silly_message(interaction, title="", message="", emb_color=0xff0000, channel='', author=True, footer='speckles'):
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         

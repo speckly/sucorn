@@ -10,11 +10,11 @@ except ModuleNotFoundError:
     exit()
 from datetime import datetime, timedelta
 import threading
-from typing import Optional
-from typing import Union
 
 unfinished_timestamps = []
-def plotError(frame: Union[int, None], hours_mode=True):
+
+def plotError(frame: int or None, hours_mode=True):
+    # NOTE: Using default value for argument timestamp in multithreading uses the snaphshot datetime
     global unfinished_timestamps
     timestamps = unfinished_timestamps
     timestamp = datetime.now()
