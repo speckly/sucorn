@@ -10,10 +10,9 @@ import json
 import subprocess
 import ctypes
 import argparse
+import platform
 import keyboard
 import pygetwindow as gw
-from sys import exit
-import platform
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
@@ -107,11 +106,11 @@ if __name__ == "__main__":
             cookies = json.load(f)
     else:
         print("cookies.json does not exist, quitting since no cookies were found.")
-        exit()
+        quit()
 
     if len(PROMPT) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
-            exit()
+            quit()
     elif len(cookies.items()):
         for account, token in cookies.items():
             open_console_window(account, token, PROMPT, out_path, args.delay, args.max)
