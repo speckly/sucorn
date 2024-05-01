@@ -71,13 +71,7 @@ def run_command(account: str, token: str, prompt: str, out_path: str, delay: str
 
     input(f"Terminated at {time.asctime()} due to {max_attempts} consecutive redirects. Press any key to quit ")
     sys.exit(0)
-if __name__ == '__main__':
-    # Provide the necessary arguments to the run_command function
-    account = "your_account"
-    token = "your_token"
-    prompt = "your_prompt"
-    out_path = "your_output_path"
-    delay = "your_delay"
-    max_attempts = "your_max_attempts"
 
-    run_command(account, token, prompt, out_path, delay, max_attempts)
+if __name__ == '__main__':
+    # Unpack all of the args, no argparser required as it is validated on run.py
+    run_command(*sys.argv[1:])
