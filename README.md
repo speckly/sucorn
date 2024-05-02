@@ -24,6 +24,12 @@ The goals of this project include
 python setup.py
 ```
 
+# Bot
+Requires your bot token in `.env`, follow the setup guide
+```bash
+python sucorn.py
+```
+
 # Data collection phase
 > [!WARNING]
 > Use this ethically, as this makes requests to BingImageCreator. Avoid using too many instances as it will result in executing a DoS attack on this host.
