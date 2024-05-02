@@ -13,3 +13,4 @@ pyautogui
 html5lib
 selenium
 keyboard
+httpx
