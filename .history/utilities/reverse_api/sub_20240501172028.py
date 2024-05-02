@@ -1,10 +1,15 @@
+"""Author: Andrew Higgins
+https://github.com/speckly
+
+sucorn project data preparation phase
+This file contains the workflow used per child process to automate the image creation process"""
+
 import os
 import sys
 import time
 import ctypes
 import subprocess
 import json
-import platform
 
 def run_command(account: str, token: str, prompt: str, out_path: str, delay: str, max_attempts: str):
     """Author: Andrew Higgins
@@ -13,10 +18,7 @@ def run_command(account: str, token: str, prompt: str, out_path: str, delay: str
     sucorn project data preparation phase
     This is the function to be executed per child process to automate the image creation process"""
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    
-    if platform.system() == 'Windows':
-        ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
-    
+    ctypes.windll.kernel32.SetConsoleTitleW(f"reverse_api - {account}")
     cmd = f"python BingImageCreator.py -U {token} --prompt \"{prompt}\" --output-dir {out_path}"
     count = combo = 0
     max_attempts = int(max_attempts)
@@ -69,8 +71,13 @@ def run_command(account: str, token: str, prompt: str, out_path: str, delay: str
 
     input(f"Terminated at {time.asctime()} due to {max_attempts} consecutive redirects. Press any key to quit ")
     sys.exit(0)
-
 if __name__ == '__main__':
-    # Unpack all of the args, no argparser required as it is validated on run.py
-    run_command(*sys.argv[1:])
+    # Provide the necessary arguments to the run_command function
+    account = "your_account"
+    token = "your_token"
+    prompt = "your_prompt"
+    out_path = "your_output_path"
+    delay = "your_delay"
+    max_attempts = "your_max_attempts"
 
+    run_command(account, token, prompt, out_path, delay, max_attempts)

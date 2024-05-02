@@ -27,8 +27,6 @@ for lib in libs:
         else:
             sys.exit(0)
 
-from catrescue import catRescue
-
 discord, dotenv, playsound, psutil = libs["discord"], libs["dotenv"], libs["playsound"], libs["psutil"]
 del libs
 
@@ -37,9 +35,6 @@ sys.path.append(f'{DIRECTORY}/features')
 from aclient import MyClient, PosNegView
 from catrescue import catRescue
 from sucorn_statistics import count_files
-from discord import Interaction
-import discord
-import psutil
 
 dotenv.load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -50,8 +45,8 @@ client = MyClient(intents=intents)
 def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-async def silly_message(interaction, title, message,
-                        emb_color=0xff0000, channel='', author=True, footer='speckles') -> None:
+async def silly_message(interaction: discord.Interaction, title: str="", message: str=""
+                        , emb_color: hex = 0xff0000, channel: discord.channel = '', author: bool=True, footer: str='speckles') -> None:
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         
@@ -75,25 +70,25 @@ async def on_ready():
 
 @client.tree.command(description='Embed message with a silly gif')
 @discord.app_commands.describe(message='Message', title='Title')
-async def silly_embed(interaction, message: str, title: str):
-    emb_color = 0x00ff00 # TODO: Make this flexible, discord does not support hex
+async def silly_embed(interaction: discord.Interaction, message: str, title: str = "Message"):
+    emb_color: hex = 0x00ff00 # TODO: Make this flexible, discord does not support hex
     try:
         cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
     except Exception as e:
         cat_fact = f"Meowerror: {e}"
     await silly_message(interaction, title, message, emb_color, footer=cat_fact)
+
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
-async def sync(interaction: Interaction):
+async def sync(interaction: discord.Interaction):
     if interaction.user.id == 494483880410349595:
         await client.tree.sync()
         await interaction.response.send_message('Command tree synced.')
     else:
         await interaction.response.send_message('You must be the owner to use this command!')
-        # Add an indented block of code here if needed
     
 @client.tree.command(description='Bing Image Generator URL to Discord Embed in full resolution')
 @discord.app_commands.describe(link='Bing Image Generator URL')
-async def embed_cat(interaction: Interaction, link: str):
+async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
     embed_list = []
     try:
         results, prompt = catRescue(link)
@@ -117,7 +112,7 @@ async def embed_cat(interaction: Interaction, link: str):
 
 @client.tree.command(description='Owner only, generate statistics on the category')
 @discord.app_commands.describe()
-async def statistics(interaction, target=''):
+async def statistics(interaction: discord.Interaction, target:str=''):
     if target == '':
         target: int = interaction.channel_id
     elif not target.isnumeric():
@@ -179,7 +174,7 @@ async def statistics(interaction, target=''):
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
 @discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
-async def nuclear_cat_new(interaction, folder_name: str, mode: str):
+async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''): 
     # Validation is done in ascending runtime complexity order
     mode = mode.strip().lower()
     if mode not in ['positive', 'negative', 'neutral', 'unlabelled']:
@@ -261,20 +256,19 @@ async def nuclear_cat_new(interaction, folder_name: str, mode: str):
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.
 # It always takes an interaction as its first parameter and a Member or Message as its second parameter.
+# This context menu command only works on members
 @client.tree.context_menu(name='Show Join Date')
-async def show_join_date(interaction, member):
+async def show_join_date(interaction: discord.Interaction, member: discord.Member):
     # The format_dt function formats the date time into a human readable representation in the official client
     await interaction.response.send_message(f'{member} joined at {discord.utils.format_dt(member.joined_at)}')
 
 @client.event
 async def on_interaction(interaction):
-    async def on_interaction(interaction):
-        print(f'{timestamp()}: {interaction.user.name} ({interaction.user.id}) used {interaction.command.qualified_name} with failed={interaction.command_failed}')
-    # Add an indented block of code here
-    pass
-def get_memory_usage():
-    return psutil.virtual_memory().used // 1024
+    print(f'{timestamp()}: {interaction.user.name} ({interaction.user.id}) used {interaction.command.qualified_name} with failed={interaction.command_failed}')
 
+def get_memory_usage():
+    process = psutil.Process(os.getpid())
+    return process.memory_info().rss / 1024  # in kilobytes
 
 def monitor_performance(interval=300):
     while True:

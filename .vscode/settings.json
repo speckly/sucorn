@@ -1,0 +1,9 @@
+{
+    "dbt.queryLimit": 500,
+    "python.analysis.extraPaths": [
+        "./features"
+    ],
+    "cSpell.words": [
+        "WDIR"
+    ]
+}
