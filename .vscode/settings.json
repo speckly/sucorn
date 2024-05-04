@@ -3,5 +3,8 @@
     "cSpell.words": [
         "customised",
         "mmimg"
+    ],
+    "python.analysis.extraPaths": [
+        "./features"
     ]
 }

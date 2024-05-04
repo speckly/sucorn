@@ -47,7 +47,7 @@ def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 async def silly_message(interaction: discord.Interaction, title: str="", message: str="",
-                        emb_color: int = 0xff0000, channel = None, author: bool=True, footer: str='speckles') -> None:
+                        emb_color: int = 0xff0000, channel: discord.TextChannel | None = None, author: bool=True, footer: str='speckles') -> None:
     with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
         

@@ -26,13 +26,21 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
         spawn = ['start', 'cmd', '/k']
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
-    process = subprocess.Popen(
-        spawn + ['python', f'{DIRECTORY}\\sub.py', name, account_token,
-            prompt, out_folder, str(delay), str(maximum)],
+    return subprocess.Popen(
+        spawn
+        + [
+            'python',
+            f'{DIRECTORY}\\sub.py',
+            name,
+            account_token,
+            prompt,
+            out_folder,
+            str(delay),
+            str(maximum),
+        ],
         shell=True,
-        creationflags=subprocess.CREATE_NEW_CONSOLE
+        creationflags=subprocess.CREATE_NEW_CONSOLE,
     )
-    return process
 
 def organize_windows(dummy):
     """Author: Andrew Higgins
