@@ -27,7 +27,7 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
     return subprocess.Popen(
-        spawn + ['python', f'{DIRECTORY}//sub.py', name, account_token,
+        spawn + ['python', f'{DIRECTORY}\\sub.py', name, account_token,
             prompt, out_folder, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
@@ -82,9 +82,9 @@ if __name__ == "__main__":
         help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     args = parser.parse_args()
 
-    out_path = f"{DIRECTORY}//..//..//images//{args.folder}//"
+    out_path = f"{DIRECTORY}\\..\\..\\images\\{args.folder}\\"
     for subfolder in ['positive', 'neutral', 'negative']:
-        subfolder_path = f"{out_path}//{subfolder}"
+        subfolder_path = f"{out_path}\\{subfolder}"
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
