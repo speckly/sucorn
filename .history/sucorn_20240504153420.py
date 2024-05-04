@@ -27,13 +27,12 @@ for lib in libs:
         else:
             sys.exit(0)
 
-from aclient import MyClient, PosNegView
-
 discord, dotenv, playsound, psutil = libs["discord"], libs["dotenv"], libs["playsound"], libs["psutil"]
 del libs
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{DIRECTORY}/features')
+from aclient import MyClient, PosNegView
 from catrescue import catRescue
 from sucorn_statistics import count_files
 

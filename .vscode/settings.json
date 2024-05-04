@@ -1,3 +1,7 @@
 {
-    "dbt.queryLimit": 500
+    "dbt.queryLimit": 500,
+    "cSpell.words": [
+        "customised",
+        "mmimg"
+    ]
 }

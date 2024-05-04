@@ -5,13 +5,11 @@ import os
 try: 
     from bs4 import BeautifulSoup
 except ModuleNotFoundError:
-    if input(
-        "BeautifulSoup4 is required to run this program, execute pip install bs4? (Y): "
-    ).lower().strip() in ["", "y"]:
-        os.system("pip install bs4")
+    if input(f"BeautifulSoup4 is required to run this program, execute pip install bs4? (Y): ").lower().strip() in ["", "y"]:
+        os.system(f"pip install bs4")
     else:
         exit()
-
+        
 import re
 
 def catRescue(URL: str) -> list:
@@ -39,7 +37,9 @@ List of embeddable hrefs of nyan, nyan be used in Discord, master."""
     PREFIX = "https://th.bing.com/th/id/"
 
     # Don't worry about memory, its just up to 4 links
-    elements = soup.find_all('img', class_='mimg') or soup.find_all('img', class_='gir_mmimg')
+    elements = soup.find_all('img', class_='mimg') #get elements
+    if not elements:
+        elements = soup.find_all('img', class_='gir_mmimg') #get elements
     full_links = [link.get('src') for link in elements]
     #Thanks OpenAI for the regex for ID
     pattern = r'id/([^/?]+)'
@@ -47,7 +47,11 @@ List of embeddable hrefs of nyan, nyan be used in Discord, master."""
 
     # Assume only one element, I dont know why firefox shows input while here it is textarea
     textinput = soup.find('textarea', {'id': 'sb_form_q'})
-    prompt = textinput.text if textinput else ''
+    if textinput:
+        prompt = textinput.text
+    else:
+        prompt = ''
+
     return links, prompt
 
 def catDownloader(URL: str, folder_name: str, mode: str, placeholder: bool=False) -> str:
