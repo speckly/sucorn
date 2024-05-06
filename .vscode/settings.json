@@ -4,7 +4,8 @@
         "buisness",
         "customised",
         "httpx",
-        "mmimg"
+        "mmimg",
+        "Skylar"
     ],
     "python.analysis.extraPaths": [
         "./features"
