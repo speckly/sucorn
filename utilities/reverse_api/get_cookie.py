@@ -129,7 +129,7 @@ if __name__ == "__main__":
     else:
         with open(f"{DIRECTORY}/usernames.json", 'w',
         encoding="utf-8") as uFile: # NOTE: Done for each username in case the webdriver crashes
-            print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
+            print("intialised usernames.json as it does not exist, load accounts in the normal key")
             usernames = {"normal": [], "loaded": [], "unusable": [], "otp": []}
             json.dump(usernames, uFile, indent=4)
 
