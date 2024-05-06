@@ -14,7 +14,7 @@ import shutil
 from tkinter import Tk, Canvas, Label, RIGHT
 from PIL import Image, ImageTk
 
-def map_path(abs_path: str) -> str:  # sourcery skip: use-next
+def map_path(abs_path: str) -> str:
     """
     Author: Andrew Higgins
     https://github.com/speckly
@@ -37,9 +37,7 @@ class ImageLabeler:
     its respective folder depending on the keyboard input
     0 is negative, 1 is positive, 2 is neutral
     """
-    def __init__(self, folder_path, options=None):
-        if options is None:
-            options = {}
+    def __init__(self, folder_path, options={}):
         self.folder_path = folder_path
         self.rewrite = options.get("rewrite")
         category = options.get("category")
@@ -177,6 +175,7 @@ def main():
         confirmation = input(f"Are you sure you wish to reset the labels of the following directory? {args.folder_name} (N) ")
         if confirmation.lower() != "y":
             print("Quitting")
+            return
         else:
             for current_file in [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]:
                 base_name, extension = os.path.splitext(current_file)
@@ -187,7 +186,8 @@ def main():
                 new_filename = new_base + "_xxxxxxxx" + extension
                 os.rename(os.path.join(folder_path, current_file), os.path.join(folder_path, new_filename))
             print("Reset")
-        return
+            return
+    
     image_labeler = ImageLabeler(folder_path=folder_path, options=options)
     image_labeler.show_image()
     image_labeler.root.mainloop()

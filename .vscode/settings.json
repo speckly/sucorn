@@ -1,6 +1,7 @@
 {
     "dbt.queryLimit": 500,
     "cSpell.words": [
+        "buisness",
         "customised",
         "httpx",
         "mmimg"
