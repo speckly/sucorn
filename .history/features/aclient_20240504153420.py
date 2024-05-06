@@ -84,5 +84,5 @@ class MyClient(discord.Client):
 
     async def setup_hook(self):
         self.tree.copy_global_to(guild=MY_GUILD)
-        await self.tree.sync(guild=1213296530078048326)
+        await self.tree.sync(guild=MY_GUILD)
         self.add_view(PosNegView())
