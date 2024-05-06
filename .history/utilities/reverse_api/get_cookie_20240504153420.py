@@ -138,11 +138,10 @@ if __name__ == "__main__":
         if GENERAL_PASS:
             password = GENERAL_PASS
         else:
-            password = os.getenv(username.split("@")[0]) or input(f"Enter password for {username}: ")
+            password = os.getenv(username.split("@")[0]) # Not case sensitive
             if not password:
-                print(f"Missing password for {username}")
+                print(f"Missing password for {username}, check /utilities/reverse_api/.env")
                 continue
-        # ...
         try:
             cookie = get_cookie(session_driver, username, password)
             if cookie == -1:
