@@ -21,13 +21,16 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
     https://github.com/speckly
 
     sucorn project data preparation phase
-    Spawns a child process"""
+    Spawns a child process
+    name: Email address, will truncate the domain and send it to the child process
+    account_token: Microsoft Session cookie"""
+
     if platform.system() == 'Windows':
         spawn = ['start', 'cmd', '/k']
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
     process = subprocess.Popen(
-        spawn + ['python', f'{DIRECTORY}/sub.py', name, account_token,
+        spawn + ['python', f'{DIRECTORY}/sub.py', name.split("@")[0], account_token,
             prompt, out_folder, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
