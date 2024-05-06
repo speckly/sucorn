@@ -15,14 +15,10 @@ def count_files(directory, export_csv=False):
         negative_dir = os.path.join(directory, "negative")
         neutral_dir = os.path.join(directory, "neutral")
 
-        positive_count = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
-                         for file_name in os.listdir(positive_dir))
-        negative_count = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
-                         for file_name in os.listdir(negative_dir))
-        neutral_count = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
-                        for file_name in os.listdir(neutral_dir))
-        unlabelled = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
-                     for file_name in os.listdir(directory))
+        positive_count = sum(1 for file_name in os.listdir(positive_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        negative_count = sum(1 for file_name in os.listdir(negative_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        neutral_count = sum(1 for file_name in os.listdir(neutral_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
 
         total_files = positive_count + negative_count + neutral_count + unlabelled
         total_labeled = positive_count + negative_count + neutral_count
@@ -34,8 +30,8 @@ def count_files(directory, export_csv=False):
         # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
         directory_name = directory.split("\\")[-1].replace("catgirls", "cg").replace("anime-girls", "ag")
 
-        return (
-            {
+        if export_csv:
+            result = {
                 "directory": directory_name,
                 "positive": positive_count,
                 "negative": negative_count,
@@ -43,11 +39,21 @@ def count_files(directory, export_csv=False):
                 "unlabelled": unlabelled,
                 "total": total_files,
                 "accuracy": round(accuracy, 4),
-                "ex_accuracy": round(ex_accuracy, 4),
+                "ex_accuracy": round(ex_accuracy, 4)
             }
-            if export_csv
-            else f"Number of positive images: {positive_count}\nNumber of negative images: {negative_count}\nNumber of neutral images: {neutral_count}\nNumber of unlabelled images: {unlabelled}\nTotal number of files: {total_files}\n**Accuracy**: {accuracy:.4f}%\nEx-Accuracy (including neutral): {ex_accuracy:.4f}%"
-        )
+        else:  # Omitted the directory as it is passed as a separate argument
+            result = (
+                f"Number of positive images: {positive_count}\n"
+                f"Number of negative images: {negative_count}\n"
+                f"Number of neutral images: {neutral_count}\n"
+                f"Number of unlabelled images: {unlabelled}\n"
+                f"Total number of files: {total_files}\n"
+                f"**Accuracy**: {accuracy:.4f}%\n"
+                f"Ex-Accuracy (including neutral): {ex_accuracy:.4f}%"
+            )
+
+        return result
+
     except FileNotFoundError:
         return "Skipped as it contains missing subdirectories"
 
@@ -129,38 +135,39 @@ if __name__ == "__main__":
     args = parser.parse_args()
     file = args.csv
     no_save = args.no_save
-
+    
     if not no_save and not os.path.exists(f'{DIRECTORY}\..\statistics'):
-        os.makedirs(f'{DIRECTORY}/../statistics')
-        print("Created folder ../statistics")
+        os.makedirs(f'{DIRECTORY}\..\statistics')
+        print("Created folder ..\statistics")
     if args.folder_name:  # For one folder
         if file:
-            result = count_files(f'{DIRECTORY}/../images/{args.folder_name}', export_csv=True)
+            result = count_files(f'{DIRECTORY}\..\images\{args.folder_name}', export_csv=True)
             export_to_csv(file, result)
             print(f"Results exported to CSV file: {file}")
         else:
-            result = count_files(f'{DIRECTORY}/../images/{args.folder_name}')
+            result = count_files(f'{DIRECTORY}\..\images\{args.folder_name}')
             print(result)
-    elif file and args.mode == 'read':  # Display table if the mode is 'r'
-        if os.path.exists(file):
-            visualise(file, main=True, render=not no_save)
-        else:
-            print("File does not exist")
-    else:
-        if file:
-            with open(file, mode='w', newline='') as csv_file: # Clear
-                csv_file.write("")
-        di = sorted(os.listdir(f"{DIRECTORY}/../images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
-
-        for folder in di:
-            if file:
-                result = count_files(f'{DIRECTORY}/../images/{folder}', export_csv=True)
-                if result == "Skipped as it contains missing subdirectories":
-                    print(f"{folder} has been skipped as it contains missing subdirectories")
-                    continue
-
-                export_to_csv(file, result)
-                print(f"Results for {folder} exported to CSV file: {file}")
+    else:  # Iterate through images folder
+        if file and args.mode == 'read':  # Display table if the mode is 'r'
+            if os.path.exists(file):
+                visualise(file, main=True, render=not no_save)
             else:
-                result = count_files(f'{DIRECTORY}/../images/{folder}')
-                print(f"{folder}\n{result}", end="\n\n")
+                print("File does not exist")
+        else:
+            if file:
+                with open(file, mode='w', newline='') as csv_file: # Clear
+                    csv_file.write("")
+            di = sorted(os.listdir(f"{DIRECTORY}\..\images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
+
+            for folder in di:
+                if file:
+                    result = count_files(f'{DIRECTORY}\..\images\{folder}', export_csv=True)
+                    if result == "Skipped as it contains missing subdirectories":
+                        print(f"{folder} has been skipped as it contains missing subdirectories")
+                        continue
+
+                    export_to_csv(file, result)
+                    print(f"Results for {folder} exported to CSV file: {file}")
+                else:
+                    result = count_files(f'{DIRECTORY}\..\images\{folder}')
+                    print(f"{folder}\n{result}", end="\n\n")
