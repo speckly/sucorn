@@ -15,10 +15,14 @@ def count_files(directory, export_csv=False):
         negative_dir = os.path.join(directory, "negative")
         neutral_dir = os.path.join(directory, "neutral")
 
-        positive_count = sum(1 for file_name in os.listdir(positive_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
-        negative_count = sum(1 for file_name in os.listdir(negative_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
-        neutral_count = sum(1 for file_name in os.listdir(neutral_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
-        unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        tmp = []
+        for dr in [positive_dir, negative_dir, neutral_dir, directory]:
+            tmp.append(sum(1 for file_name in os.listdir(positive_dir) if file_name.lower().endswith(('.jpg', '.jpeg'))))
+        positive_count, negative_count, neutral_count, unlabelled = tmp
+        # positive_count = sum(1 for file_name in os.listdir(positive_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        # negative_count = sum(1 for file_name in os.listdir(negative_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        # neutral_count = sum(1 for file_name in os.listdir(neutral_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        # unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
 
         total_files = positive_count + negative_count + neutral_count + unlabelled
         total_labeled = positive_count + negative_count + neutral_count
