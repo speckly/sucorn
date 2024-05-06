@@ -11,11 +11,10 @@ from typing import Dict
 from typing import List
 from typing import Union
 
-import requests
+import httpx
 import pkg_resources
 import regex
 import requests
-import httpx
 
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
 # Generate random IP between range 13.104.0.0/14
@@ -264,8 +263,9 @@ class ImageGenAsync:
             self.session.cookies.update({"_U": auth_cookie})
         if all_cookies:
             for cookie in all_cookies:
-                self.session.cookies.update(cookie)
-        {cookie["name"]: cookie["value"]},
+                self.session.cookies.update(
+                    {cookie["name"]: cookie["value"]},
+                )
         self.quiet = quiet
         self.debug_file = debug_file
         if self.debug_file:

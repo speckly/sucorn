@@ -2,6 +2,7 @@
     "dbt.queryLimit": 500,
     "cSpell.words": [
         "customised",
+        "httpx",
         "mmimg"
     ],
     "python.analysis.extraPaths": [
