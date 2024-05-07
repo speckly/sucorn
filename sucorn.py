@@ -55,7 +55,7 @@ async def silly_message(interaction: discord.Interaction, title: str="", message
     emb=discord.Embed(title=title, description=message,
             color=emb_color, timestamp=datetime.datetime.now())
     if author:
-        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
+        emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
     emb.set_footer(text=footer)
     emb.set_image(url=choice(the_funnies))
     if channel == "":
@@ -64,7 +64,7 @@ async def silly_message(interaction: discord.Interaction, title: str="", message
         try:
             await channel.send(embed=emb)
         except Exception:
-            await silly_message(interaction, title="Error in parsing channel") # Will be termination case
+            await silly_message(interaction, title="Error in parsing channel") # Termination case
 
 @client.event
 async def on_ready():
@@ -136,7 +136,8 @@ async def statistics(interaction: discord.Interaction, target:str=''):
                 await message.delete()
 
         final_string = ""
-        ordered_dir = sorted(os.listdir(f"{DIRECTORY}/images"), key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
+        ordered_dir = sorted(os.listdir(f"{DIRECTORY}/images"),
+            key=lambda x: int(x.split('-')[-1]) if x.split('-')[-1].isdigit() else float('inf'))
         for directory in ordered_dir:
             final_string = count_files(f'{DIRECTORY}/images/{directory}')
             try:
@@ -148,7 +149,6 @@ async def statistics(interaction: discord.Interaction, target:str=''):
                                 channel=dump_channel, footer=cat_fact, author=False)
 
         try:
-         
             for stat in os.listdir(f"{DIRECTORY}/statistics"):
                 try:
                     cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
@@ -171,16 +171,21 @@ async def statistics(interaction: discord.Interaction, target:str=''):
             emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
             emb.set_footer(text=cat_fact)
             emb.set_image(url="attachment://output.png")
-          
+
             await dump_channel.send(embed=emb, file=file)
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
-@discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
-async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''): 
-    # Validation is done in ascending runtime complexity order
+@discord.app_commands.describe(target='Target Channel', folder_name='Folder name images are in')
+async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''):
+    """
+    Author: Andrew Higgins
+    https://github.com/speckly
+    
+    Validation is done in ascending runtime complexity order"""
     mode = mode.strip().lower()
     if mode not in ['positive', 'negative', 'neutral', 'unlabelled']:
-        await silly_message(interaction, title="Invalid mode", message='Accepted modes are positive, negative, neutral, unlabelled')
+        await silly_message(interaction, title="Invalid mode",
+            message='Accepted modes are positive, negative, neutral, unlabelled')
         return
     if target == '':
         target = interaction.channel_id
@@ -194,7 +199,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         return
     
     dump_channel = client.get_channel(int(target))
-    if dump_channel == None:
+    if dump_channel is None:
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
@@ -202,7 +207,8 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
-        await silly_message(interaction, title="Sending millions of cats to this channel now (v2)", emb_color=0x00ff00)
+        await silly_message(interaction,
+            title="Sending millions of cats to this channel now (v2)", emb_color=0x00ff00)
         number = 0
         match mode:
             case 'positive':
@@ -216,7 +222,8 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         start_time = time.time()
         files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
         if files == []:
-            await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty", emb_color=0x808080, channel=dump_channel)
+            await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
+                emb_color=0x808080, channel=dump_channel)
             return
         for filename in files:
             try:
@@ -233,11 +240,12 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
                 emb.set_footer(text=cat_fact)
                 emb.set_image(url="attachment://output.png")
-      
+
                 await dump_channel.send(embed=emb, file=file)
             except Exception as error:
-                emb=discord.Embed(title="Error", description=f"Error logged: {error}", color=0xff0000,
-                                  timestamp=datetime.datetime.now(), url="https://http.cat/status/500")
+                emb=discord.Embed(title="Error", description=f"Error logged: {error}",
+                    color=0xff0000, timestamp=datetime.datetime.now(),
+                    url="https://http.cat/status/500")
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
                 emb.set_footer(text=cat_fact)
                 await dump_channel.send(embed=emb)
@@ -248,13 +256,13 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         remaining_seconds = runtime_seconds % 60
 
         emb=discord.Embed(title="Nuking complete",
-        description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
+            description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
             color=0x00FF00, timestamp=datetime.datetime.now())
         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
         emb.set_footer(text="speckles")
         emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
         await interaction.followup.send(embed=emb)
- 
+
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.
 # It always takes an interaction as its first parameter and a Member or Message as its second parameter.
@@ -268,18 +276,5 @@ async def show_join_date(interaction: discord.Interaction, member: discord.Membe
 async def on_interaction(interaction):
     print(f'{timestamp()}: {interaction.user.name} ({interaction.user.id}) used {interaction.command.qualified_name} with failed={interaction.command_failed}')
 
-def get_memory_usage():
-    process = psutil.Process(os.getpid())
-    return process.memory_info().rss / 1024  # in kilobytes
-
-def monitor_performance(interval=300):
-    while True:
-        cpu_usage = psutil.cpu_percent(interval=1)
-        memory_usage = get_memory_usage()
-        print(f'{timestamp()}: CPU Usage {cpu_usage}%, Memory Usage {memory_usage} KB')
-        time.sleep(interval)
-
 if __name__ == "__main__":
-    performance_thread = threading.Thread(target=monitor_performance, args=(1000,))
-    performance_thread.start()
     client.run(os.getenv('TOKEN'))

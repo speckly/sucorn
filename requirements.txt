@@ -1,6 +1,5 @@
 discord
 python-dotenv
-psutil
 matplotlib
 pandas
 pygetwindow
