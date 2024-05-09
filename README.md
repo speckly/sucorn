@@ -3,16 +3,13 @@ pronounced as [su-kon](https://fubuki.moe/mascots.html)
 
 A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
-- **deprecated** automatic collection of images using ```pyautogui```,
+- **deprecated** automatic collection of images using `pyautogui`,
 - automatic collection of images through the [BingImageCreator reverse-engineered API](https://github.com/acheong08/BingImageCreator/tree/main)
 - **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
-- automatic collection of session cookies using ```WebDriver```
-- displaying these images on Discord for remote labelling, from local storage as API saves to it
-- using Discord for persistent remote access of images by uploading blob instead of src which expires
-- downloading from Discord remote to local storage
-- images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
-- **considering** use db 
-- labelling these images from both remote (Discord) and local (tkinter)
+- Automatic collection of Microsoft Session cookies using `WebDriver`
+- Displaying these images on Discord for remote labelling
+- Labelling these images from both remote (Discord) and local (tkinter) for training
+- Using Discord for easy, persistent remote access of images
 - use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics locally and on Discord
 - **WIP** training of Keras classifier
 - **WIP** training of Stable Diffusion LoRA (LoRA not included in this repo)
