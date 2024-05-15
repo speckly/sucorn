@@ -17,6 +17,8 @@ The goals of this project include
 # Setup
 > [!WARNING]
 > There is no .exe file because I am a [stupid smelly nerd](https://github.com/sherlock-project/sherlock/issues/2011)
+
+It is recommended that a venv is used as there are a lot of dependencies (50>)
 ```bash
 python setup.py
 ```
