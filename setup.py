@@ -6,11 +6,25 @@ sucorn project setup, for first time users"""
 import os
 import getpass
 import json
+import venv
+import sys
+import subprocess
 
-DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+def _create_venv() -> None:
+    try:
+        venv.create(f"{DIRECTORY}/venv", with_pip=True)
+    except Exception as e:
+        print(f"Error creating virtual environment: {e}")
+        sys.exit(1)
+
+def _venv_req():
+    pip = f"{DIRECTORY}/venv/{'bin' if os.name != "nt" else 'Scripts'}/pip"
+    subprocess.check_call([pip, "install", "-r", "requirements.txt"],cwd=DIRECTORY)
+
+DIRECTORY: str = os.path.dirname(os.path.realpath(__file__))
 
 if not os.path.exists(f"{DIRECTORY}/.env"):
-    token = getpass.getpass("Input Discord token (hidden, enter to quit): ")
+    token: str = getpass.getpass("\n/.env\nInput Discord token (enter to skip): ")
     if token.strip() != "":
         with open(".env", "w", encoding="utf-8") as env_f:
             env_f.write(f"TOKEN={token}")
@@ -24,30 +38,38 @@ if not os.path.exists(f"{DIRECTORY}/images"):
         pass # Happens for symbolic links?
 
 if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/.env"):
+    with open(f"{DIRECTORY}/utilities/reverse_api/.env", 'w', encoding="utf-8") as env_f:
+        general: str = getpass.getpass('Input general password, if all accounts share the same password (enter to skip): ')
+        env_f.write(f"GENERAL={general if general else ''}")
     while True:
-        username = input("/utilities/reverse_api/.env\nInput Microsoft username for reverse API if needed (press enter to quit): ")
+        username = input("\n/utilities/reverse_api/.env\nInput Microsoft username (enter to skip): ")
         if username.strip() == "":
             break
-        password = getpass.getpass("Input your password (hidden): ")
+        password = getpass.getpass(f"Password for {username} (enter to skip): ")
         if password.strip() == "":
             break
-        pair = f"{username}={password}"
+        pair: str = f"{username}={password}"
         with open(f"{DIRECTORY}/utilities/reverse_api/.env", "a", encoding="utf-8") as env_f:
             env_f.write(pair)
         print(f"Written {pair}")
 
 if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/prompt.txt"):
-    prompt = input("/reverse_api/prompt.txt\nInput prompt, can be changed later: ")
+    prompt: str = input("\n/reverse_api/prompt.txt\nInput prompt, can be changed later: ")
     with open(f"{DIRECTORY}/utilities/reverse_api/prompt.txt", "w", encoding="utf-8") as f:
         f.write(prompt)
 
 if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/usernames.json"):
     with open("./utilities/reverse_api/usernames.json", 'w', encoding="utf-8") as uFile:
-        print("intialised usernames.json as it does not exist, please use this file for loading of accounts (in the normal key)")
-        usernames = {"normal": [], "loaded": [], "unusable": [], "otp": []}
+        usernames: dict = {"normal": [], "loaded": [], "unusable": [], "otp": []}
         json.dump(usernames, uFile, indent=4)
+        print("initialised /utilities/reverse_api/usernames.json, use this file for loading of accounts in the normal key")
 
-if input("Install requirements? (Y): ").lower().strip() in ["", "y"]:
+if input("Create venv? (Y): ").lower().strip() in ["", "y"]:
+    _create_venv()
+    print("Creation complete")
+if input("Install requirements in venv? (Y): ").lower().strip() in ["", "y"]:
+    _venv_req()
+elif input("Install requirements without venv? (Y): ").lower().strip() in ["", "y"]:
     os.system("pip install -r requirements.txt")
 
 print("Setup complete!")
