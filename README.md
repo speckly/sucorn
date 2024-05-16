@@ -81,3 +81,4 @@ The following keys will label the image by moving it into its subfolder
 - 0 for negative
 - 1 for positive
 - 2 for neutral
+- ESC to quit
