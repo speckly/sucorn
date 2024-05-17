@@ -88,7 +88,7 @@ class ImageGen:
         if self.debug_file:
             self.debug = partial(debug, self.debug_file)
 
-    def get_images(self, prompt: str) -> list:
+    def get_images(self, prompt: str) -> list:    # sourcery skip: low-code-quality
         """
         Fetches image links from Bing
         Parameters:
@@ -132,10 +132,10 @@ class ImageGen:
             # if rt4 fails, try rt3
             url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=3&FORM=GENCRE"
             response = self.session.post(url, allow_redirects=False, timeout=200)
-            if response.status_code != 302:
-                if self.debug_file:
-                    self.debug(f"ERROR: {error_redirect}")
-                raise Exception(error_redirect)
+        if response.status_code != 302:
+            if self.debug_file:
+                self.debug(f"ERROR: {error_redirect}")
+            raise Exception(error_redirect)
         # Get redirect URL
         redirect_url = response.headers["Location"].replace("&nfy=1", "")
         request_id = redirect_url.split("id=")[-1]
@@ -160,11 +160,10 @@ class ImageGen:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_noresults}")
                 raise Exception(error_noresults)
-            if not response.text or response.text.find("errorMessage") != -1:
-                time.sleep(1)
-                continue
-            else:
+            if response.text and response.text.find("errorMessage") == -1:
                 break
+            time.sleep(1)
+            continue
         # Use regex to search for src=""
         image_links = regex.findall(r'src="([^"]+)"', response.text)
         # Remove size limit
@@ -172,7 +171,9 @@ class ImageGen:
         # Remove duplicates
         normal_image_links = list(set(normal_image_links))
         # Remove .svg
-        normal_image_links = list(filter(lambda e: True if e[-4:] != ".svg" else False, normal_image_links))
+        normal_image_links = list(
+            filter(lambda e: e[-4:] != ".svg", normal_image_links)
+        )
 
         # Bad images
         bad_images = [
@@ -186,7 +187,6 @@ class ImageGen:
         if not normal_image_links:
             raise Exception(error_no_images)
         return normal_image_links
-
     def save_images(
         self,
         links: list,
@@ -210,11 +210,9 @@ class ImageGen:
             os.mkdir(output_dir)
         try:
             fn = f"{file_name}_" if file_name else ""
-            jpeg_index = 0
-
             if download_count:
                 links = links[:download_count]
-            for link in links:
+            for jpeg_index, link in enumerate(links):
                 while os.path.exists(
                     os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg")
                 ):
@@ -227,8 +225,6 @@ class ImageGen:
                     os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg"), "wb"
                 ) as output_file:
                     output_file.write(response.content)
-                jpeg_index += 1
-
         except requests.exceptions.MissingSchema as url_exception:
             raise Exception(
                 "Inappropriate contents found in the generated images. Please try again or try another prompt.",
@@ -278,6 +274,7 @@ class ImageGenAsync:
         await self.session.aclose()
 
     async def get_images(self, prompt: str) -> list:
+        # sourcery skip: hoist-if-from-if
         """
         Fetches image links from Bing
         Parameters:
@@ -307,9 +304,9 @@ class ImageGenAsync:
                 follow_redirects=False,
                 timeout=200,
             )
-            if response.status_code != 302:
-                # print(f"ERROR: {response.text}")
-                raise Exception("Redirect failed")
+        if response.status_code != 302:
+            # print(f"ERROR: {response.text}")
+            raise Exception("Redirect failed")
         # Get redirect URL
         redirect_url = response.headers["Location"].replace("&nfy=1", "")
         request_id = redirect_url.split("id=")[-1]
@@ -338,7 +335,7 @@ class ImageGenAsync:
         normal_image_links = [link.split("?w=")[0] for link in image_links]
         # Remove duplicates
         normal_image_links = set(normal_image_links)
-    
+
         # Bad images
         bad_images = [
             "https://r.bing.com/rp/in-2zU3AJUdkgFe7ZKv19yPBHVs.png",
