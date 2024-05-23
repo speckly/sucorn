@@ -7,15 +7,7 @@ import os
 import getpass
 import json
 import venv
-import sys
 import subprocess
-
-def _create_venv() -> None:
-    try:
-        venv.create(f"{DIRECTORY}/venv", with_pip=True)
-    except Exception as e:
-        print(f"Error creating virtual environment: {e}")
-        sys.exit(1)
 
 def _venv_req():
     pip = f"{DIRECTORY}/venv/{'bin' if os.name != "nt" else 'Scripts'}/pip"
@@ -65,7 +57,7 @@ if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/usernames.json"):
         print("initialised /utilities/reverse_api/usernames.json, use this file for loading of accounts in the normal key")
 
 if input("Create venv? (Y): ").lower().strip() in ["", "y"]:
-    _create_venv()
+    venv.create(f"{DIRECTORY}/venv", with_pip=True)
     print("Creation complete")
 if input("Install requirements in venv? (Y): ").lower().strip() in ["", "y"]:
     _venv_req()
