@@ -7,6 +7,7 @@ This script is used to automate the login process into Microsoft Bing Image Crea
 import os
 import json
 import copy
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -99,8 +100,10 @@ def get_cookie(driver: webdriver, username: str, password: str):
     # Finish up # BUG: unstable
     driver.get("https://www.bing.com/images/create")
     profile = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "id_l")))
+    time.sleep(0.5)
     profile.click()
     signout = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "id_signout")))
+    time.sleep(0.5)
     signout.click()
     return u_cookie
 
