@@ -45,6 +45,7 @@ def get_cookie(driver: webdriver, username: str, password: str):
         try:
             password_switch = driver.find_element(By.ID, "idA_PWD_SwitchToPassword")
             password_switch.click()
+            text_box = driver.find_element(By.ID, "i0118")
             pass_mode = True
         except Exception:
             pass_mode = False
@@ -140,6 +141,7 @@ if __name__ == "__main__":
             usernames = {"normal": [], "loaded": [], "unusable": [], "otp": []}
             json.dump(usernames, uFile, indent=4)
 
+    print("Starting")
     JSON_FILE = f'{DIRECTORY}/cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
         if GENERAL_PASS:

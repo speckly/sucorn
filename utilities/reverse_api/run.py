@@ -104,15 +104,21 @@ if __name__ == "__main__":
         help='Logs all errors to /logs')
     args = parser.parse_args()
 
-    out_path = f"{DIRECTORY}/../../images/{args.folder}/"
+    out_path = f"{DIRECTORY}/../../images/{args.folder}"
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+        prompt = read_prompt()
+        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
+            p_file.write(prompt)
+    else:
+        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
+            prompt = p_file.read()
+
     for subfolder in ['positive', 'neutral', 'negative']:
         subfolder_path = f"{out_path}/{subfolder}"
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
-    out_path = f'../../images/{args.folder}' # BUG: The trolling done here
-
-    prompt = read_prompt()
 
     COOKIE_FILE = f'{DIRECTORY}/cookies.json' if args.test is False else f'{DIRECTORY}/test_cookies.json'
     if os.path.exists(COOKIE_FILE):
@@ -122,10 +128,12 @@ if __name__ == "__main__":
         print("cookies.json does not exist, quitting since no cookies were found.")
         quit()
 
+    
     if len(prompt) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
+        prompt = prompt.replace('\n', ' ').strip()
         for account, token in cookies.items():
             open_console_window(account, token, prompt, out_path, args.delay, args.max)
 
