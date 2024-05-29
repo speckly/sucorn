@@ -211,9 +211,11 @@ class ImageGen:
             os.mkdir(output_dir)
         try:
             fn = f"{file_name}_" if file_name else ""
+            jpeg_index = 0
+
             if download_count:
                 links = links[:download_count]
-            for jpeg_index, link in enumerate(links):
+            for link in links:
                 while os.path.exists(
                     os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg")
                 ):
@@ -226,6 +228,8 @@ class ImageGen:
                     os.path.join(output_dir, f"{fn}{jpeg_index}.jpeg"), "wb"
                 ) as output_file:
                     output_file.write(response.content)
+                jpeg_index += 1
+
         except requests.exceptions.MissingSchema as url_exception:
             raise Exception(
                 "Inappropriate contents found in the generated images. Please try again or try another prompt.",
@@ -304,9 +308,9 @@ class ImageGenAsync:
                 follow_redirects=False,
                 timeout=200,
             )
-        if response.status_code != 302:
-            # print(f"ERROR: {response.text}")
-            raise Exception("Redirect failed")
+            if response.status_code != 302:
+                # print(f"ERROR: {response.text}")
+                raise Exception("Redirect failed")
         # Get redirect URL
         redirect_url = response.headers["Location"].replace("&nfy=1", "")
         request_id = redirect_url.split("id=")[-1]
@@ -335,7 +339,7 @@ class ImageGenAsync:
         normal_image_links = [link.split("?w=")[0] for link in image_links]
         # Remove duplicates
         normal_image_links = set(normal_image_links)
-
+    
         # Bad images
         bad_images = [
             "https://r.bing.com/rp/in-2zU3AJUdkgFe7ZKv19yPBHVs.png",

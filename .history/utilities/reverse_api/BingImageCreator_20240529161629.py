@@ -304,9 +304,9 @@ class ImageGenAsync:
                 follow_redirects=False,
                 timeout=200,
             )
-        if response.status_code != 302:
-            # print(f"ERROR: {response.text}")
-            raise Exception("Redirect failed")
+            if response.status_code != 302:
+                # print(f"ERROR: {response.text}")
+                raise Exception("Redirect failed")
         # Get redirect URL
         redirect_url = response.headers["Location"].replace("&nfy=1", "")
         request_id = redirect_url.split("id=")[-1]
@@ -335,7 +335,7 @@ class ImageGenAsync:
         normal_image_links = [link.split("?w=")[0] for link in image_links]
         # Remove duplicates
         normal_image_links = set(normal_image_links)
-
+    
         # Bad images
         bad_images = [
             "https://r.bing.com/rp/in-2zU3AJUdkgFe7ZKv19yPBHVs.png",
