@@ -1,7 +1,5 @@
 discord
 python-dotenv
-playsound
-psutil
 matplotlib
 pandas
 pygetwindow
@@ -14,3 +12,4 @@ html5lib
 selenium
 keyboard
 httpx
+bs4

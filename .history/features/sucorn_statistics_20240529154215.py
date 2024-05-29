@@ -7,7 +7,6 @@ import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 def count_files(directory, export_csv=False):
     try:
         positive_count = negative_count = unlabelled = neutral_count = 0
@@ -16,36 +15,23 @@ def count_files(directory, export_csv=False):
         negative_dir = os.path.join(directory, "negative")
         neutral_dir = os.path.join(directory, "neutral")
 
-        positive_count = sum(
-            bool(file_name.lower().endswith((".jpg", ".jpeg")))
-            for file_name in os.listdir(positive_dir)
-        )
-        negative_count = sum(
-            bool(file_name.lower().endswith((".jpg", ".jpeg")))
-            for file_name in os.listdir(negative_dir)
-        )
-        neutral_count = sum(bool(file_name.lower().endswith((".jpg", ".jpeg")))
-                        for file_name in os.listdir(neutral_dir))
-        unlabelled = sum(bool(file_name.lower().endswith((".jpg", ".jpeg")))
-                     for file_name in os.listdir(directory))
+        positive_count = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
+                         for file_name in os.listdir(positive_dir))
+        negative_count = sum(bool(file_name.lower().endswith(('.jpg', '.jpeg')))
+                         for file_name in os.listdir(negative_dir))
+                         for file_name in os.listdir(negative_dir))
+        neutral_count = sum(1 for file_name in os.listdir(neutral_dir) if file_name.lower().endswith(('.jpg', '.jpeg')))
+        unlabelled = sum(1 for file_name in os.listdir(directory) if file_name.lower().endswith(('.jpg', '.jpeg')))
 
         total_files = positive_count + negative_count + neutral_count + unlabelled
         total_labeled = positive_count + negative_count + neutral_count
 
         accuracy = positive_count / total_labeled * 100 if total_labeled != 0 else 0
-        ex_accuracy = (
-            (positive_count + neutral_count) / total_labeled * 100
-            if total_labeled != 0
-            else 0
-        )
+        ex_accuracy = (positive_count + neutral_count) / total_labeled * 100 if total_labeled != 0 else 0
 
         # For readability in visualization programs
         # PLEASE DONT PASS IN A PATH WITH THE FORWARDS SLASH IM PRAYING
-        directory_name = (
-            directory.split("\\")[-1]
-            .replace("catgirls", "cg")
-            .replace("anime-girls", "ag")
-        )
+        directory_name = directory.split("\\")[-1].replace("catgirls", "cg").replace("anime-girls", "ag")
 
         return (
             {

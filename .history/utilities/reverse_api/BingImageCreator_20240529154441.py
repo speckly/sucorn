@@ -11,8 +11,40 @@ from typing import Dict
 from typing import List
 from typing import Union
 
+pass
+import requests
+import pkg_resources
+from typing import List
+
+def generate_image(prompt: str, num_images: int = 1) -> List[str]:
+    import os
+    import requests
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    subscription_key = os.environ["BING_IMAGE_SUBSCRIPTION_KEY"]
+    endpoint = os.environ["BING_IMAGE_ENDPOINT"]
+
+    headers = {
+        "Ocp-Apim-Subscription-Key": subscription_key,
+        "Content-Type": "application/json",
+    }
+
+    body = {
+        "numImages": num_images,
+        "prompt": prompt,
+    }
+
+    response = requests.post(endpoint, headers=headers, json=body)
+    response.raise_for_status()
+
+    image_urls = [image["url"] for image in response.json()["images"]]
+    return image_urls
+
 import httpx
 # import pkg_resources
+pass
 import regex
 import requests
 import httpx

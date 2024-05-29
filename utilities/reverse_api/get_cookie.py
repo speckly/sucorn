@@ -7,6 +7,7 @@ This script is used to automate the login process into Microsoft Bing Image Crea
 import os
 import json
 import copy
+import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -96,11 +97,13 @@ def get_cookie(driver: webdriver, username: str, password: str):
 
     u_cookie = driver.get_cookie("_U")["value"]
 
-    # Finish up
+    # Finish up # BUG: unstable
     driver.get("https://www.bing.com/images/create")
     profile = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "id_l")))
+    time.sleep(0.5)
     profile.click()
     signout = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "id_signout")))
+    time.sleep(0.5)
     signout.click()
     return u_cookie
 
@@ -124,8 +127,12 @@ if __name__ == "__main__":
 
     usernames = []
     if os.path.exists(f"{DIRECTORY}/usernames.json"):
-        with open(f"{DIRECTORY}/usernames.json", encoding="utf-8") as ufile:
-            usernames = json.load(ufile)
+        try: 
+            with open(f"{DIRECTORY}/usernames.json", encoding="utf-8") as ufile:
+                usernames = json.load(ufile)
+        except json.JSONDecodeError:
+            print("usernames.json decode error")
+            quit()
     else:
         with open(f"{DIRECTORY}/usernames.json", 'w',
         encoding="utf-8") as uFile: # NOTE: Done for each username in case the webdriver crashes
@@ -142,14 +149,10 @@ if __name__ == "__main__":
             if not password:
                 print(f"Missing password for {username}, check /utilities/reverse_api/.env")
                 continue
-        try:
-            cookie = get_cookie(session_driver, username, password)
-            if cookie == -1:
-                print(f"Incorrect password for user {username}. Check /utilities/reverse_api/.env")
-                continue
-        except Exception as e:
-            print(f"Unknown exception: {e}")
-            quit()
+        cookie = get_cookie(session_driver, username, password)
+        if cookie == -1:
+            print(f"Incorrect password for user {username}. Check /utilities/reverse_api/.env")
+            continue
 
         if os.path.exists(JSON_FILE):
             try:

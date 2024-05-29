@@ -35,7 +35,6 @@ sys.path.append(f'{DIRECTORY}/features')
 from aclient import MyClient, PosNegView
 from catrescue import catRescue
 from sucorn_statistics import count_files
-from discord import Interaction
 
 dotenv.load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -84,15 +83,14 @@ async def silly_embed(interaction, message: str, title: str = "Message"):
     except Exception as e:
         cat_fact = f"Meowerror: {e}"
     await silly_message(interaction, title, message, emb_color, footer=cat_fact)
+
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
-async def sync(interaction: Interaction):
 async def sync(interaction: discord.Interaction):
     if interaction.user.id == 400834586860322817:
         await client.tree.sync()
         await interaction.response.send_message('Command tree synced.')
     else:
         await interaction.response.send_message('You must be the owner to use this command!')
-        # Add an indented block of code here
     
 @client.tree.command(description='Bing Image Generator URL to Discord Embed in full resolution')
 @discord.app_commands.describe(link='Bing Image Generator URL')

@@ -92,7 +92,7 @@ async def sync(interaction: discord.Interaction):
         await interaction.response.send_message('Command tree synced.')
     else:
         await interaction.response.send_message('You must be the owner to use this command!')
-        # Add an indented block of code here
+    # Add an indented block of code here
     
 @client.tree.command(description='Bing Image Generator URL to Discord Embed in full resolution')
 @discord.app_commands.describe(link='Bing Image Generator URL')
