@@ -32,7 +32,7 @@ if not os.path.exists(f"{DIRECTORY}/images"):
 if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/.env"):
     with open(f"{DIRECTORY}/utilities/reverse_api/.env", 'w', encoding="utf-8") as env_f:
         general: str = getpass.getpass('Input general password, if all accounts share the same password (enter to skip): ')
-        env_f.write(f"GENERAL={general or ''}")
+        env_f.write(f"GENERAL={general if general else ''}")
     while True:
         username = input("\n/utilities/reverse_api/.env\nInput Microsoft username (enter to skip): ")
         if username.strip() == "":
@@ -54,7 +54,7 @@ if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/usernames.json"):
     with open("./utilities/reverse_api/usernames.json", 'w', encoding="utf-8") as uFile:
         usernames: dict = {"normal": [], "loaded": [], "unusable": [], "otp": []}
         json.dump(usernames, uFile, indent=4)
-        print("initialized /utilities/reverse_api/usernames.json, use this file for loading of accounts in the normal key")
+        print("initialised /utilities/reverse_api/usernames.json, use this file for loading of accounts in the normal key")
 
 if input("Create venv? (Y): ").lower().strip() in ["", "y"]:
     venv.create(f"{DIRECTORY}/venv", with_pip=True)
