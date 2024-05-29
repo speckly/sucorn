@@ -13,10 +13,13 @@ import asyncio
 import keyboard
 if sys.platform == 'win32':
     import ctypes
-    from run import read_prompt
     import pygetwindow as gw # linux users will not want to import this
-else:
-    from run_linux import read_prompt
+
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+
+def read_prompt():
+    with open("prompt.txt", encoding="utf-8") as f:
+        return f.read().replace("\n", " ").strip()
 
 def on_hotkey(ptr: list) -> None:
     """Author: Andrew Higgins
@@ -36,7 +39,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
     sucorn project data preparation phase
     This is the function to be executed per child process to automate the image creation process
     Command line arguments are parsed as a string so this function converts it"""
-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+    os.chdir(out_path)
     if sys.platform == 'win32':
         ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
     else:
@@ -54,7 +57,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
-        cmd = f"python BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir {out_path}" 
+        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
             combo = 0

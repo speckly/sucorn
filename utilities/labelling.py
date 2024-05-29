@@ -12,7 +12,7 @@ import os
 import argparse
 import shutil
 from tkinter import Tk, Canvas, Label, RIGHT
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, UnidentifiedImageError
 
 def map_path(abs_path: str) -> str:
     """
@@ -117,7 +117,11 @@ class ImageLabeler:
     def next_image(self):
         self.current_index += 1
         if self.current_index < self.files:
-            self.show_image()
+            try:
+                self.show_image()
+            except UnidentifiedImageError: # UnidentifiedImageError
+                print("skipping")
+                self.next_image()
         else:
             print("All images labeled. Exiting.")
             self.root.destroy()
@@ -126,7 +130,10 @@ class ImageLabeler:
         current_file = self.image_files[self.current_index]
         image_path = os.path.join(self.folder_path, current_file)
 
-        original_image = Image.open(image_path)
+        try:
+            original_image = Image.open(image_path)
+        except:
+            return
         aspect_ratio = original_image.width / original_image.height
 
         new_width = min(self.root.winfo_width(), int(self.root.winfo_height() * aspect_ratio))

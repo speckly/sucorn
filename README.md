@@ -38,16 +38,17 @@ python sucorn.py
 Load account names in the `normal` list in `usernames.json` and run this file. This will automatically get the session cookie for each account and store it into `cookies.json`. Credentials are taken from `.env`. The `loaded` list contains account names with the cookie acquired and stored
 
 ### utilities/reverse_api/run.py
-Creates n-number of instances that will use the reverse engineered API to generate images from `prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
+Creates n-number of instances that will use the reverse engineered API to generate images from `imagedir/prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
+If `imagedir` does not exist then `utilities/reverse_api/prompt.txt` will be used to create `imagedir/prompt.txt`
 ```bash
-python run.py --delay 10 --max 20
+python run.py imagedir --delay 10 --max 20
 ```
 Each instance here will have a cooldown of 10 seconds after downloading all images from the query before 
 
 Keys:
 - Tab: Brings the child processes to front
 - End: Terminates all child processes
-- Ctrl + Shift + R: Reloads prompt from `prompt.txt`
+- Ctrl + Shift + R: Reloads prompt from `imagedir/prompt.txt`
 
 ### utilities/automation.py
 > [!WARNING]
