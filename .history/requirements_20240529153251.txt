@@ -1,0 +1,15 @@
+discord
+python-dotenv
+matplotlib
+pandas
+pygetwindow
+keyboard
+aiohttp
+regex
+requests
+pyautogui
+html5lib
+selenium
+keyboard
+httpx
+bs4
