@@ -34,9 +34,7 @@ class ImageLabeler:
     its respective folder depending on the keyboard input
     0 is negative, 1 is positive, 2 is neutral
     """
-    def __init__(self, folder_path, options=None):
-        if options is None:
-            options = {}
+    def __init__(self, folder_path, options={}):
         self.folder_path = folder_path
         self.rewrite = options.get("rewrite")
         category = options.get("category")
