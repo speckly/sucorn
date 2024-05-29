@@ -34,9 +34,10 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
         raise OSError("This script is intended for Linux environments only")
 
     command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
-    return subprocess.Popen(
+    process = subprocess.Popen(
         spawn + [command],
     )
+    return process
 
 def organize_windows(dummy):
     columns = 5
@@ -89,7 +90,7 @@ if __name__ == "__main__":
             print(f"Created folder as it does not exist: {subfolder_path}")
     out_path = f'../../images/{args.folder}' # BUG: The trolling done here
 
-    COOKIE_FILE = f'{DIRECTORY}/test_cookies.json' if args.test else f'{DIRECTORY}/cookies.json'
+    COOKIE_FILE = f'{DIRECTORY}/cookies.json' if not args.test else f'{DIRECTORY}/test_cookies.json'
     if os.path.exists(COOKIE_FILE):
         with open(COOKIE_FILE, encoding="utf-8") as f:
             cookies = json.load(f)
@@ -97,13 +98,12 @@ if __name__ == "__main__":
         print("cookies.json does not exist, quitting since no cookies were found.")
         quit()
 
-    prompt = read_prompt()
     if len(prompt) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
         for account, token in cookies.items():
-            open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
+            open_console_window(account, token, read_prompt(), out_path, args.delay, args.max, venv=args.venv)
 
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')

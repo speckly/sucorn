@@ -97,13 +97,12 @@ if __name__ == "__main__":
         print("cookies.json does not exist, quitting since no cookies were found.")
         quit()
 
-    prompt = read_prompt()
     if len(prompt) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
         for account, token in cookies.items():
-            open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
+            open_console_window(account, token, read_prompt(), out_path, args.delay, args.max, venv=args.venv)
 
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')
