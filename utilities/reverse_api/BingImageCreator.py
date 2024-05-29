@@ -12,7 +12,7 @@ from typing import List
 from typing import Union
 
 import httpx
-import pkg_resources
+# import pkg_resources
 import regex
 import requests
 
@@ -464,7 +464,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print(pkg_resources.get_distribution("BingImageCreator").version)
+        # print(pkg_resources.get_distribution("BingImageCreator").version)
         sys.exit()
 
     # Load auth cookie

@@ -7,13 +7,16 @@ This file contains the workflow used per child process to automate the image cre
 import os
 import sys
 import time
-import ctypes
 import subprocess
 import json
 import asyncio
 import keyboard
-import pygetwindow as gw
-from run import read_prompt
+if sys.platform == 'win32':
+    import ctypes
+    from run import read_prompt
+    import pygetwindow as gw # linux users will not want to import this
+else:
+    from run_linux import read_prompt
 
 def on_hotkey(ptr: list) -> None:
     """Author: Andrew Higgins
@@ -34,7 +37,10 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
     This is the function to be executed per child process to automate the image creation process
     Command line arguments are parsed as a string so this function converts it"""
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
+    if sys.platform == 'win32':
+        ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
+    else:
+        sys.stdout.write(f"\x1b]2;sucorn API {account}\x07")
     count = combo = 0
     max_attempts = int(max_attempts)
     delay = float(delay)
@@ -90,7 +96,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         
     input(f"Terminated at {time.asctime()} due to {max_attempts} consecutive redirects. Press any key to quit ")
     if sys.platform.startswith('linux'):
-        subprocess.run(['xdotool', 'search', '--onlyvisible', '--classname', 'your_terminal_class', 'windowkill'], check=True) # TODO: Confirm this
+        subprocess.run(['exit'], check=True) # TODO: Confirm this
     elif sys.platform == 'darwin':
         subprocess.run(['osascript', '-e', 'tell application "Terminal" to close first window'], check=True) # TODO: Confirm this
     elif sys.platform == 'win32':

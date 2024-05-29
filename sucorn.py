@@ -7,7 +7,6 @@ BUG: Rate limits when using statistics"""
 import os
 import sys
 import datetime
-import threading
 import time
 
 from json import loads
@@ -15,7 +14,6 @@ from random import choice
 from requests import get
 import discord
 import dotenv
-import psutil
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{DIRECTORY}/features')
