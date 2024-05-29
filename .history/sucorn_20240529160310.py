@@ -185,17 +185,17 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         await silly_message(interaction, title="Invalid mode",
             message='Accepted modes are positive, negative, neutral, unlabelled')
         return
-    if not target:
+    if target == '':
         target = interaction.channel_id
     elif not isinstance(target, int) and not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
-
+    
     wdir = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
     if not os.path.exists(wdir):
         await silly_message(interaction, title=f"{wdir.replace(DIRECTORY, '')} does not exist")
         return
-
+    
     dump_channel = client.get_channel(int(target))
     if dump_channel is None:
         await silly_message(interaction, title="Channel is not a valid channel")
@@ -219,7 +219,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
                 color = 0x808080
         start_time = time.time()
         files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
-        if not files:
+        if files == []:
             await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
                 emb_color=0x808080, channel=dump_channel)
             return
