@@ -16,18 +16,37 @@ import pygetwindow as gw
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
+def read_prompt():
+    """Author: Andrew Higgins
+    https://github.com/speckly
+
+    sucorn project data preparation phase
+    Reads prompt"""
+    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
+    if os.path.exists(PROMPT_FILE):
+        with open(PROMPT_FILE, encoding="utf-8") as f:
+            prompt = ''.join(f.readlines()).replace('\n', '')
+    else:
+        prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
+        with open(PROMPT_FILE, encoding="utf-8") as f:
+            f.write(prompt)
+    return prompt
+
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int):
     """Author: Andrew Higgins
     https://github.com/speckly
 
     sucorn project data preparation phase
-    Spawns a child process"""
+    Spawns a child process
+    name: Email address, will truncate the domain and send it to the child process
+    account_token: Microsoft Session cookie"""
+
     if platform.system() == 'Windows':
         spawn = ['start', 'cmd', '/k']
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
-    return subprocess.Popen(
-        spawn + ['python', f'{DIRECTORY}//sub.py', name, account_token,
+    process = subprocess.Popen(
+        spawn + ['python', f'{DIRECTORY}/sub.py', name.split("@")[0], account_token,
             prompt, out_folder, str(delay), str(maximum)],
         shell=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE
@@ -45,7 +64,7 @@ def organize_windows(dummy):
     window_width = 450
     window_height = 240
 
-    windows = gw.getWindowsWithTitle('reverse_api')
+    windows = gw.getWindowsWithTitle('sucorn API')
 
     for i, window in enumerate(windows):
         window.minimize()
@@ -66,7 +85,7 @@ def terminate():
 
     sucorn project data preparation phase
     Terminates all the child processes"""
-    windows = gw.getWindowsWithTitle("reverse_api")
+    windows = gw.getWindowsWithTitle("sucorn API")
     for window in windows:
         ctypes.windll.user32.PostMessageW(window._hWnd, 0x0010, 0, 0)
     print("Terminated")
@@ -78,26 +97,21 @@ if __name__ == "__main__":
         help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=int, default=80,
         help='Maximum number of failed redirects before killing process (default is 80)')
-    parser.add_argument('-t', '--test', type=bool, default=False,
+    parser.add_argument('-t', '--test', action='store_true',
         help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
+    parser.add_argument('-l', '--log', action='store_true',
+        help='Logs all errors to /logs')
     args = parser.parse_args()
 
-    out_path = f"{DIRECTORY}//..//..//images//{args.folder}//"
+    out_path = f"{DIRECTORY}/../../images/{args.folder}/"
     for subfolder in ['positive', 'neutral', 'negative']:
-        subfolder_path = f"{out_path}//{subfolder}"
+        subfolder_path = f"{out_path}/{subfolder}"
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
     out_path = f'../../images/{args.folder}' # BUG: The trolling done here
 
-    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
-    if os.path.exists(PROMPT_FILE):
-        with open(PROMPT_FILE, encoding="utf-8") as f:
-            PROMPT = ''.join(f.readlines()).replace('\n', '')
-    else:
-        PROMPT = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
-        with open(PROMPT_FILE, encoding="utf-8") as f:
-            f.write(PROMPT)
+    prompt = read_prompt()
 
     COOKIE_FILE = f'{DIRECTORY}/cookies.json' if args.test is False else f'{DIRECTORY}/test_cookies.json'
     if os.path.exists(COOKIE_FILE):
@@ -107,15 +121,14 @@ if __name__ == "__main__":
         print("cookies.json does not exist, quitting since no cookies were found.")
         quit()
 
-    if len(PROMPT) > 480:
+    if len(prompt) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
         for account, token in cookies.items():
-            open_console_window(account, token, PROMPT, out_path, args.delay, args.max)
+            open_console_window(account, token, prompt, out_path, args.delay, args.max)
 
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')
 
         terminate()
-    
