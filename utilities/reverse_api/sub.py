@@ -10,8 +10,8 @@ import time
 import subprocess
 import json
 import asyncio
-import keyboard
 if sys.platform == 'win32':
+    import keyboard
     import ctypes
     import pygetwindow as gw # linux users will not want to import this
 
@@ -40,6 +40,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
     This is the function to be executed per child process to automate the image creation process
     Command line arguments are parsed as a string so this function converts it"""
     os.chdir(out_path)
+    os.chdir(out_path)
     if sys.platform == 'win32':
         ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
     else:
@@ -48,7 +49,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
     max_attempts = int(max_attempts)
     delay = float(delay)
     prompt_pointer = [prompt] # I LOVE POINTERS I LOVE MODIFYING BY REFERENCE
-    keyboard.add_hotkey('ctrl+shift+r', on_hotkey, args=(prompt_pointer,))
+    # keyboard.add_hotkey('ctrl+shift+r', on_hotkey, args=(prompt_pointer,))
 
     while combo < max_attempts:
         await asyncio.sleep(delay)
@@ -57,6 +58,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
+        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
         cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
