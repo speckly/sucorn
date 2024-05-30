@@ -28,14 +28,20 @@ def read_prompt():
     return prompt
 
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int, venv: bool = False):
+    name = name.split("@")[0]
     if platform.system() == 'Linux':
-        spawn = ['xfce4-terminal', '--hold', '-e']
+        spawn = ['xfce4-terminal', '--hold', '-T', f'sucorn API {name}', '-e']
     else:
         raise OSError("This script is intended for Linux environments only")
 
-    command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+    # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
+    # After 1 hour of holy hell, I figured that prompt assumes no double quotation marks, if you have them, your screwed i guess
+    command = f'sudo -u {os.getenv("SUDO_USER")} {f'source "{DIRECTORY}/../../venv/bin/activate" && ' if venv else ""}python "{DIRECTORY}/sub.py" {name} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+    # Drop sudo [f'su $SUDO_USER && {command}'] .replace("'", "'\\''")
+    # holy_hell = f'{command.replace('"', '\'').replace('\'', '\\\'')}'
+    # input(holy_hell)
     process = subprocess.Popen(
-        spawn + [command],
+        spawn + [command.replace("'", "\\'")],
     )
     return process
 
@@ -111,10 +117,10 @@ if __name__ == "__main__":
             quit()
     elif len(cookies.items()):
         prompt = prompt.replace('\n', ' ').strip()
-        print(f"Prompt: {prompt}")
         for account, token in cookies.items():
             open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
 
+        print(f"Prompt: {prompt}")
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')
 
