@@ -3,16 +3,13 @@ pronounced as [su-kon](https://fubuki.moe/mascots.html)
 
 A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
-- **deprecated** automatic collection of images using ```pyautogui```,
+- **deprecated** automatic collection of images using `pyautogui`,
 - automatic collection of images through the [BingImageCreator reverse-engineered API](https://github.com/acheong08/BingImageCreator/tree/main)
 - **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
-- automatic collection of session cookies using ```WebDriver```
-- displaying these images on Discord for remote labelling, from local storage as API saves to it
-- using Discord for persistent remote access of images by uploading blob instead of src which expires
-- downloading from Discord remote to local storage
-- images are organised by subfolders of different labels instead of renaming the filename, this is also for easier training of Keras classifier
-- **considering** use db 
-- labelling these images from both remote (Discord) and local (tkinter)
+- Automatic collection of Microsoft Session cookies using `WebDriver`
+- Displaying these images on Discord for remote labelling
+- Labelling these images from both remote (Discord) and local (tkinter) for training
+- Using Discord for easy, persistent remote access of images
 - use [pandas](https://pypi.org/project/pandas/) and [matplotlib](https://pypi.org/project/matplotlib/) for displaying statistics locally and on Discord
 - **WIP** training of Keras classifier
 - **WIP** training of Stable Diffusion LoRA (LoRA not included in this repo)
@@ -20,6 +17,8 @@ The goals of this project include
 # Setup
 > [!WARNING]
 > There is no .exe file because I am a [stupid smelly nerd](https://github.com/sherlock-project/sherlock/issues/2011)
+
+It is recommended that a venv is used as there are a lot of dependencies (50>)
 ```bash
 python setup.py
 ```
@@ -38,16 +37,21 @@ python sucorn.py
 
 Load account names in the `normal` list in `usernames.json` and run this file. This will automatically get the session cookie for each account and store it into `cookies.json`. Credentials are taken from `.env`. The `loaded` list contains account names with the cookie acquired and stored
 
-### utilities/reverse_api/run.py
-Creates n-number of instances that will use the reverse engineered API to generate images from `prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
+### utilities/reverse_api/run.py || run_linux.py
+> [!INFO]
+> Replaces all double quotation marks in prompt with single quotation marks in Linux, keyboard ctrl shift r does not work either
+
+Creates n-number of instances that will use the reverse engineered API to generate images from `imagedir/prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
+If `imagedir` does not exist then `utilities/reverse_api/prompt.txt` will be used to create `imagedir/prompt.txt`
 ```bash
-python run.py --delay 10 --max 20
+python run.py imagedir --delay 10 --max 20
 ```
 Each instance here will have a cooldown of 10 seconds after downloading all images from the query before 
 
 Keys:
 - Tab: Brings the child processes to front
 - End: Terminates all child processes
+- Ctrl + Shift + R: Reloads prompt from `imagedir/prompt.txt`
 
 ### utilities/automation.py
 > [!WARNING]
@@ -81,3 +85,4 @@ The following keys will label the image by moving it into its subfolder
 - 0 for negative
 - 1 for positive
 - 2 for neutral
+- ESC to quit
