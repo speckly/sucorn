@@ -45,9 +45,9 @@ if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/.env"):
             env_f.write(pair)
         print(f"Written {pair}")
 
-if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/prompt.txt"):
-    prompt: str = input("\n/reverse_api/prompt.txt\nInput prompt, can be changed later: ")
-    with open(f"{DIRECTORY}/utilities/reverse_api/prompt.txt", "w", encoding="utf-8") as f:
+if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/new_prompt.txt"):
+    prompt: str = input("\n/reverse_api/new_prompt.txt\nInput prompt, can be changed later: ")
+    with open(f"{DIRECTORY}/utilities/reverse_api/new_prompt.txt", "w", encoding="utf-8") as f:
         f.write(prompt)
 
 if not os.path.exists(f"{DIRECTORY}/utilities/reverse_api/usernames.json"):

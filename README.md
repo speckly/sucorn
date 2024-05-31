@@ -51,7 +51,7 @@ Each instance here will have a cooldown of 10 seconds after downloading all imag
 Keys:
 - Tab: Brings the child processes to front
 - End: Terminates all child processes
-- Ctrl + Shift + R: Reloads prompt from `imagedir/prompt.txt`
+- Ctrl + Shift + R: Reloads prompt from `imagedir/prompt.txt`. Currently unavailable
 
 ### utilities/automation.py
 > [!WARNING]
