@@ -17,12 +17,12 @@ import keyboard
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
-    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
+    PROMPT_FILE = f"{DIRECTORY}/new_prompt.txt"
     if os.path.exists(PROMPT_FILE):
         with open(PROMPT_FILE, encoding="utf-8") as f:
             prompt = f.read()
     else:
-        prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
+        prompt = input("new_prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
         with open(PROMPT_FILE, 'w', encoding="utf-8") as f:
             f.write(prompt)
     return prompt
@@ -34,9 +34,16 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
     else:
         raise OSError("This script is intended for Linux environments only")
 
+<<<<<<< HEAD
     command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
     return subprocess.Popen(
         spawn + [command],
+=======
+    # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
+    command = f'sudo -u {os.getenv("SUDO_USER")} {f'source "{DIRECTORY}/../../venv/bin/activate" && ' if venv else ""}python "{DIRECTORY}/sub.py" {name} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+    process = subprocess.Popen(
+        spawn + [command.replace("'", "\\'")],
+>>>>>>> 2d751c2aa55c94050b33f7be9f05e3e46f3689cc
     )
 
 def organize_windows(dummy):

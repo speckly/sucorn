@@ -11,7 +11,7 @@ import subprocess
 import json
 import asyncio
 if sys.platform == 'win32':
-    import keyboard
+    # import keyboard
     import ctypes
     import pygetwindow as gw # linux users will not want to import this
 
