@@ -120,7 +120,7 @@ if __name__ == "__main__":
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
-        prompt = prompt.replace('/n', ' ').strip()
+        prompt = prompt.replace('\n', ' ').strip()
         for account, token in cookies.items():
             open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
             open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
