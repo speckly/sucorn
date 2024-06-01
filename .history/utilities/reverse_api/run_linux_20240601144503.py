@@ -13,7 +13,6 @@ import subprocess
 import argparse
 import platform
 import keyboard
-import venv
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
@@ -27,21 +26,20 @@ def read_prompt():
         with open(PROMPT_FILE, 'w', encoding="utf-8") as f:
             f.write(prompt)
     return prompt
+
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int, venv: bool = False):
     if platform.system() != 'Linux':
         raise OSError("This script is intended for Linux environments only")
     name = name.split("@")[0]
     spawn = ['xfce4-terminal', '--hold', '-T', f'sucorn API {name}', '-e']
 
-    venv_path = f'{DIRECTORY}/../../venv/bin/activate' if venv else ""
-    command = f'{f"source {venv_path} && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
-    subprocess.Popen(
-        spawn + [command],
-    )
+pass
+command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+subprocess.Popen(
+    spawn + [command],
+)
+
 def open_console_window(name, account_token, prompt, out_folder, delay, maximum, venv=False):
-    # Define the "spawn" variable
-    spawn = ['xfce4-terminal', '--hold', '-T', f'sucorn API {name}', '-e']
-    
     # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
     command = f'sudo -u {os.getenv("SUDO_USER")} {f'source "{DIRECTORY}/../../venv/bin/activate" && ' if venv else ""}python "{DIRECTORY}/sub.py" {name} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
     process = subprocess.Popen(
