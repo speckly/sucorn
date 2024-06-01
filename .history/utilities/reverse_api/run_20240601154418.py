@@ -111,7 +111,7 @@ def terminate():
     for window in windows:
         window.close()
 
-
+d
 
     parser = argparse.ArgumentParser(
         prog="Sucorn DJ DALLE BOT",
