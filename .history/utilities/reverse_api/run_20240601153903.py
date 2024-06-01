@@ -13,7 +13,6 @@ import argparse
 import platform
 import keyboard
 import pygetwindow as gw
-import sys
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
@@ -111,18 +110,7 @@ def terminate():
     for window in windows:
         window.close()
 
-def is_admin():
-    """Check if the script is running with administrative privileges."""
-    try:
-        return os.getuid() == 0
-    except AttributeError:
-        return ctypes.windll.shell32.IsUserAnAdmin() != 0
-
 if __name__ == "__main__":
-    if not is_admin():
-        print("This script must be run as administrator.")
-        sys.exit(1)
-
     parser = argparse.ArgumentParser(
         prog="Sucorn DJ DALLE BOT",
         description="Sucorn project data preparation phase",
@@ -174,5 +162,5 @@ if __name__ == "__main__":
 
         keyboard.on_press_key('f5', organize_windows)  # Changed 'ins' to 'f5'
         keyboard.wait('end')
-
+c
         terminate()
