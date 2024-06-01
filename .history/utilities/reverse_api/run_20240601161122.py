@@ -10,6 +10,7 @@ import pygetwindow as gw
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
+    """Reads the prompt from the prompt.txt file"""
     PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
     if os.path.exists(PROMPT_FILE):
         with open(PROMPT_FILE, encoding="utf-8") as f:
@@ -21,16 +22,12 @@ def read_prompt():
     return prompt
 
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int):
-    spawn = []
+    """Spawns a child process"""
     if platform.system() == 'Windows':
         spawn = ['start', 'cmd', '/k']
     elif platform.system() == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
-    else:
-        print("Unsupported platform")
-        return
-
-    subprocess.Popen(
+    return subprocess.Popen(
         spawn
         + [
             'python',
@@ -43,9 +40,11 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
             str(maximum),
         ],
         shell=True,
+        creationflags=subprocess.CREATE_NEW_CONSOLE,
     )
 
 def organize_windows(dummy):
+    """Organizes the child processes or brings them to view"""
     columns = 5
     window_width = 450
     window_height = 240
@@ -66,22 +65,19 @@ def organize_windows(dummy):
         window.moveTo(x_position, y_position)
 
 def terminate():
+    """Terminates all the child processes"""
     windows = gw.getWindowsWithTitle("sucorn API")
     for window in windows:
         ctypes.windll.user32.PostMessageW(window._hWnd, 0x0010, 0, 0)
     print("Terminated")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='kitty farm')
-    parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
-    parser.add_argument('-d', '--delay', type=float, default=0,
-        help='Delay time in seconds (default is 0)')
-    parser.add_argument('-m', '--max', type=int, default=80,
-        help='Maximum number of failed redirects before killing process (default is 80)')
-    parser.add_argument('-t', '--test', action='store_true',
-        help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
-    parser.add_argument('-l', '--log', action='store_true',
-        help='Logs all errors to /logs')
+    parser = argparse.ArgumentParser(description='Sucorn project data preparation phase')
+    parser.add_argument('folder', type=str, help='Folder name, ./images/your_name_here')
+    parser.add_argument('-d', '--delay', type=float, default=0, help='Delay time in seconds (default is 0)')
+    parser.add_argument('-m', '--max', type=int, default=80, help='Maximum number of failed redirects before killing process (default is 80)')
+    parser.add_argument('-t', '--test', action='store_true', help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
+    parser.add_argument('-l', '--log', action='store_true', help='Logs all errors to /logs')
     args = parser.parse_args()
 
     out_path = f"{DIRECTORY}/../../images/{args.folder}"
