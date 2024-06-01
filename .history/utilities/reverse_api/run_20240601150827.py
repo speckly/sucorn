@@ -24,11 +24,11 @@ def read_prompt():
     Reads prompt"""
     PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
     if os.path.exists(PROMPT_FILE):
-        with open(PROMPT_FILE, 'r', encoding="utf-8") as f:
+        with open(PROMPT_FILE, encoding="utf-8") as f:
             prompt = ''.join(f.readlines()).replace('\n', '')
     else:
         prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
-        with open(PROMPT_FILE, 'w', encoding="utf-8") as f:
+        with open(PROMPT_FILE, encoding="utf-8") as f:
             f.write(prompt)
     return prompt
 
@@ -73,7 +73,7 @@ def organize_windows(dummy):
     window_width = 450
     window_height = 240
 
-    windows = gw.getWindowsWithTitle('reverse_api')
+    windows = gw.getWindowsWithTitle('sucorn API')
 
     for i, window in enumerate(windows):
         window.minimize()
@@ -94,26 +94,22 @@ def terminate():
 
     sucorn project data preparation phase
     Terminates all the child processes"""
-    windows = gw.getWindowsWithTitle('reverse_api')
-
+    windows = gw.getWindowsWithTitle("sucorn API")
     for window in windows:
-        window.close()
+        ctypes.windll.user32.PostMessageW(window._hWnd, 0x0010, 0, 0)
+    print("Terminated")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="Sucorn DJ DALLE BOT",
-        description="Sucorn project data preparation phase",
-        epilog="For more information, visit https://github.com/speckly"
-    )
-    parser.add_argument('folder', type=str, help='Name of the folder to store images in')
+    parser = argparse.ArgumentParser(description='kitty farm')
+    parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
     parser.add_argument('-d', '--delay', type=float, default=0,
-                        help='Delay time in seconds (default is 0)')
+        help='Delay time in seconds (default is 0)')
     parser.add_argument('-m', '--max', type=int, default=80,
-                        help='Maximum number of failed redirects before killing process (default is 80)')
+        help='Maximum number of failed redirects before killing process (default is 80)')
     parser.add_argument('-t', '--test', action='store_true',
-                        help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
+        help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     parser.add_argument('-l', '--log', action='store_true',
-                        help='Logs all errors to /logs')
+        help='Logs all errors to /logs')
     args = parser.parse_args()
 
     out_path = f"{DIRECTORY}/../../images/{args.folder}"
@@ -123,7 +119,7 @@ if __name__ == "__main__":
         with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
             p_file.write(prompt)
     else:
-        with open(f"{out_path}/prompt.txt", "r", encoding="utf-8") as p_file:
+        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
             prompt = p_file.read()
 
     for subfolder in ['positive', 'neutral', 'negative']:
