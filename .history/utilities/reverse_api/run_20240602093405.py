@@ -16,7 +16,7 @@ import pygetwindow as gw
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
-def read_prompt():
+def read_prompt():def read_prompt():
     """Author: Andrew Higgins
     https://github.com/speckly
 

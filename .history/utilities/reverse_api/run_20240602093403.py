@@ -17,21 +17,6 @@ import pygetwindow as gw
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
-    """Author: Andrew Higgins
-    https://github.com/speckly
-
-    sucorn project data preparation phase
-    Reads prompt"""
-    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
-    if os.path.exists(PROMPT_FILE):
-        with open(PROMPT_FILE, encoding="utf-8") as f:
-            prompt = ''.join(f.readlines()).replace('\n', '')
-    else:
-        prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
-        with open(PROMPT_FILE, mode="w", encoding="utf-8") as f:
-            f.write(prompt)
-    return prompt
-
 
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int):
     """Author: Andrew Higgins
