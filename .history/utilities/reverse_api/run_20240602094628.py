@@ -1,4 +1,4 @@
-"""Author: Andrew Higgins
+""Author: Andrew Higgins
 https://github.com/speckly
 
 sucorn project data preparation phase
