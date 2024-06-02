@@ -111,7 +111,7 @@ if __name__ == "__main__":
         with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
             p_file.write(prompt)
     else:
-        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
+        with open(f"{out_path}/prompt.txt", "r", encoding="utf-8") as p_file:
             prompt = p_file.read()
 
     for subfolder in ['positive', 'neutral', 'negative']:
