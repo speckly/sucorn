@@ -138,4 +138,4 @@ if __name__ == "__main__":
 keyboard.on_press_key('f5', organize_windows)  # Changed 'ins' to 'f5'
 keyboard.wait('end')
 
-terminate()
+        terminate()

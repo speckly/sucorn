@@ -136,6 +136,6 @@ if __name__ == "__main__":
         for account, token in cookies.items():
             open_console_window(account, token, prompt, out_path, args.delay, args.max)
 keyboard.on_press_key('f5', organize_windows)  # Changed 'ins' to 'f5'
-keyboard.wait('end')
+    keyboard.wait('end')
 
-terminate()
+        terminate()
