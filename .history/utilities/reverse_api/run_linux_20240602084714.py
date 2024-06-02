@@ -36,7 +36,13 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
 
     command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
     return subprocess.Popen(
+        spawn + [command],
+=======
+    # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
+    command = f'sudo -u {os.getenv("SUDO_USER")} {f'source "{DIRECTORY}/../../venv/bin/activate" && ' if venv else ""}python "{DIRECTORY}/sub.py" {name} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+    process = subprocess.Popen(
         spawn + [command.replace("'", "\\'")],
+>>>>>>> master
     )
 
 def organize_windows(dummy):
