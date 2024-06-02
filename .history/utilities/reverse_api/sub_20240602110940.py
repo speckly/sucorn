@@ -14,6 +14,10 @@ if sys.platform == 'win32':
     # import keyboard
     import ctypes
     import pygetwindow as gw # linux users will not want to import this
+else:
+    pass
+    # BUG: How to implement keyboard as sudo but write files as n
+
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
@@ -43,7 +47,6 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
     else:
         sys.stdout.write(f"\x1b]2;sucorn API {account}\x07")
-    
     count = combo = 0
     max_attempts = int(max_attempts)
     delay = float(delay)
@@ -57,9 +60,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
-        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ."
-        print(f"Executing command: {cmd}")  # Debugging: Print the command being executed
-
+        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
             combo = 0
