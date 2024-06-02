@@ -58,7 +58,7 @@ def terminate():
         subprocess.run(['wmctrl', '-ic', window_id], check=True)
     print("Terminated")
 
-def main():  # sourcery skip: extract-method
+def main():
     parser = argparse.ArgumentParser(description='kitty farm')
     parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
     parser.add_argument('-d', '--delay', type=float, default=0,
