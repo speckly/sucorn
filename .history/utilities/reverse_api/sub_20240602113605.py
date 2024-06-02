@@ -4,7 +4,6 @@ https://github.com/speckly
 sucorn project data preparation phase
 This file contains the workflow used per child process to automate the image creation process"""
 
-
 import os
 import sys
 import time
@@ -15,6 +14,10 @@ if sys.platform == 'win32':
     # import keyboard
     import ctypes
     import pygetwindow as gw # linux users will not want to import this
+else:
+    pass
+    # BUG: How to implement keyboard as sudo but write files as n
+
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
