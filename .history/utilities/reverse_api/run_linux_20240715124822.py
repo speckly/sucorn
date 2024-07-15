@@ -17,25 +17,31 @@ import keyboard
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 
 def read_prompt():
-    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
+    PROMPT_FILE = f"{DIRECTORY}/new_prompt.txt"
     if os.path.exists(PROMPT_FILE):
         with open(PROMPT_FILE, encoding="utf-8") as f:
-            prompt = ''.join(f.readlines()).replace('\n', '')
+            prompt = f.read()
     else:
-        prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
+        prompt = input("new_prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
         with open(PROMPT_FILE, 'w', encoding="utf-8") as f:
             f.write(prompt)
     return prompt
 
 def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int, venv: bool = False):
+    name = name.split("@")[0]
     if platform.system() == 'Linux':
-        spawn = ['xfce4-terminal', '--hold', '-e']
+        spawn = ['xfce4-terminal', '--hold', '-T', f'sucorn API {name}', '-e']
     else:
         raise OSError("This script is intended for Linux environments only")
 
-    command = f'{f"source {DIRECTORY}/../../venv/bin/activate && " if venv else ""}python "{DIRECTORY}/sub.py" {name.split("@")[0]} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
-    return subprocess.Popen(
-        spawn + [command],
+    # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
+    # After 1 hour of holy hell, I figured that prompt assumes no double quotation marks, if you have them, your screwed i guess
+    command = f'sudo -u {os.getenv("SUDO_USER")} {f'source "{DIRECTORY}/../../venv/bin/activate" && ' if venv else ""}python "{DIRECTORY}/sub.py" {name} "{account_token}" "{prompt}" "{out_folder}" {delay} {maximum}'
+    # Drop sudo [f'su $SUDO_USER && {command}'] .replace("'", "'\\''")
+    # holy_hell = f'{command.replace('"', '\'').replace('\'', '\\\'')}'
+    # input(holy_hell)
+    process = subprocess.Popen(
+        spawn + [command.replace("'", "\\'")],
     )
 
 def organize_windows(dummy):
@@ -81,13 +87,22 @@ if __name__ == "__main__":
         help='Use venv located in top level directory')
     args = parser.parse_args()
 
-    out_path = f"{DIRECTORY}/../../images/{args.folder}/"
+    out_path = f"{DIRECTORY}/../../images/{args.folder}"
+    if not os.path.exists(out_path):
+        os.mkdir(out_path)
+        os.system(f"sudo chown {os.getenv("SUDO_USER")} {out_path}")
+        prompt = read_prompt()
+        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
+            p_file.write(prompt)
+    else:
+        with open(f"{out_path}/prompt.txt", "r", encoding="utf-8") as p_file:
+            prompt = p_file.read()
+
     for subfolder in ['positive', 'neutral', 'negative']:
         subfolder_path = f"{out_path}/{subfolder}"
         if not os.path.exists(subfolder_path):
             os.makedirs(subfolder_path)
             print(f"Created folder as it does not exist: {subfolder_path}")
-    out_path = f'../../images/{args.folder}' # BUG: The trolling done here
 
     COOKIE_FILE = f'{DIRECTORY}/test_cookies.json' if args.test else f'{DIRECTORY}/cookies.json'
     if os.path.exists(COOKIE_FILE):
@@ -102,9 +117,12 @@ if __name__ == "__main__":
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
+        prompt = prompt.replace('\n', ' ').strip()
         for account, token in cookies.items():
             open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
+            open_console_window(account, token, prompt, out_path, args.delay, args.max, venv=args.venv)
 
+        print(f"Prompt: {prompt}")
         keyboard.on_press_key('ins', organize_windows)
         keyboard.wait('end')
 
