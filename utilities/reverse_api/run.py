@@ -32,7 +32,7 @@ def read_prompt():
             f.write(prompt)
     return prompt
 
-def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int):
+def open_console_window(name: str, account_token: str, prompt: str, out_folder: str, delay: float, maximum: int, platform: str):
     """Author: Andrew Higgins
     https://github.com/speckly
 
@@ -41,9 +41,9 @@ def open_console_window(name: str, account_token: str, prompt: str, out_folder: 
     name: Email address, will truncate the domain and send it to the child process
     account_token: Microsoft Session cookie"""
 
-    if platform.system() == 'Windows':
+    if platform == 'Windows':
         spawn = ['start', 'cmd', '/k']
-    elif platform.system() == "Darwin":
+    elif platform == "Darwin":
         spawn = ['open', '-a', 'Terminal.app']
     return subprocess.Popen(
         spawn
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
             p_file.write(prompt)
     else:
-        with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
+        with open(f"{out_path}/prompt.txt", "r", encoding="utf-8") as p_file:
             prompt = p_file.read()
 
     for subfolder in ['positive', 'neutral', 'negative']:
@@ -136,16 +136,16 @@ if __name__ == "__main__":
         print("cookies.json does not exist, quitting since no cookies were found.")
         quit()
 
-    
     if len(prompt) > 480:
         if input("Prompt is over 480, continue? (Y or N) ").lower().strip() == "n":
             quit()
     elif len(cookies.items()):
         prompt = prompt.replace('\n', ' ').strip()
+        pf = platform.system()
         for account, token in cookies.items():
-            open_console_window(account, token, prompt, out_path, args.delay, args.max)
+            open_console_window(account, token, prompt, out_path, args.delay, args.max, platform=pf)
 
-        keyboard.on_press_key('ins', organize_windows)
+        keyboard.on_press_key('ins' if pf != 'Darwin' else 'Cmd+Ctrl+I', organize_windows)
         keyboard.wait('end')
 
         terminate()

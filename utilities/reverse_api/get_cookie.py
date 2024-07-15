@@ -2,7 +2,16 @@
 https://github.com/speckly
 
 sucorn project data preparation phase
-This script is used to automate the login process into Microsoft Bing Image Creator."""
+This script is used to automate the login process into Microsoft Bing Image Creator.
+
+BUG: Too many requests
+ Traceback (most recent call last):
+  File "get_cookie.py", line 154, in <module>
+    cookie = get_cookie(session_driver, username, password)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "get_cookie.py", line 99, in get_cookie
+    u_cookie = driver.get_cookie("_U")["value"]
+               ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^"""
 
 import os
 import json
@@ -145,7 +154,7 @@ if __name__ == "__main__":
     JSON_FILE = f'{DIRECTORY}/cookies.json'
     for username in copy.deepcopy(usernames["normal"]): # Require modification of this list
         if GENERAL_PASS:
-            password = GENERAL_PASS
+            password = GENERAL_PASS # TODO: override this
         else:
             password = os.getenv(username.split("@")[0]) # Not case sensitive
             if not password:
