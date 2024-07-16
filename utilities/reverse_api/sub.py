@@ -73,6 +73,9 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
                 combo = 0
 
         print(f"{time.time()-s:.4f}s")
+    
+    # Termination
+    os.chdir(DIRECTORY)
 
     if os.path.exists('cookies.json'):
         with open('cookies.json', 'r', encoding="utf-8") as file:

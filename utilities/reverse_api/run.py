@@ -101,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--test', action='store_true',
         help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     parser.add_argument('-l', '--log', action='store_true',
-        help='Logs all errors to /logs')
+        help='Logs all errors to /logs') # TODO: implement
     args = parser.parse_args()
 
     out_path = f"{DIRECTORY}/../../images/{args.folder}"
