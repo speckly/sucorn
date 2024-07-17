@@ -84,14 +84,19 @@ if __name__ == "__main__":
         help='Use venv located in top level directory')
     args = parser.parse_args()
 
+    sudo_user = os.getenv("SUDO_USER")
+    if not sudo_user:
+        print("You need to be the superuser to use this (blame keyboard module)")
+        quit()
+
     out_path = f"{DIRECTORY}/../../images/{args.folder}"
     if not os.path.exists(out_path):
         os.mkdir(out_path)
-        os.system(f"sudo chown {os.getenv("SUDO_USER")} -R {out_path}")
+        os.system(f"sudo chown {sudo_user} -R {out_path}")
         prompt = read_prompt()
         with open(f"{out_path}/prompt.txt", "w", encoding="utf-8") as p_file:
             p_file.write(prompt)
-        os.system(f"sudo chown {os.getenv("SUDO_USER")} {out_path}/prompt.txt")  # unsure why recursive chown doesnt work here
+        os.system(f"sudo chown {sudo_user} {out_path}/prompt.txt")  # unsure why recursive chown doesnt work here
     else:
         with open(f"{out_path}/prompt.txt", "r", encoding="utf-8") as p_file:
             prompt = p_file.read()
