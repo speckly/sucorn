@@ -61,12 +61,23 @@ def organize_windows(dummy):
         subprocess.run(['wmctrl', '-ir', window_id, '-e', f'0,{x_position},{y_position},{window_width},{window_height}'], check=True)
 
 def terminate():
-    result = subprocess.run(['wmcKIE_FILE):
-    with open(COOKIE_FILE, encoding="utf-8") as f:
-        cookies = json.load(f)
-else:
-    print("cookies.json does not exist, quitting since no cookies were found.")
-    quit()th a testing cookie file named test_cookies.json (default is False)')
+    result = subprocess.run(['wmctrl', '-l'], stdout=subprocess.PIPE, check=True)
+    windows = [line for line in result.stdout.decode().split('\n') if 'sucorn API' in line]
+
+    for window in windows:
+        window_id = window.split()[0]
+        subprocess.run(['wmctrl', '-ic', window_id], check=True)
+    print("Terminated")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='kitty farm')
+    parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
+    parser.add_argument('-d', '--delay', type=float, default=0,
+        help='Delay time in seconds (default is 0)')
+    parser.add_argument('-m', '--max', type=int, default=80,
+        help='Maximum number of failed redirects before killing process (default is 80)')
+    parser.add_argument('-t', '--test', action='store_true',
+        help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     parser.add_argument('-l', '--log', action='store_true',
         help='Logs all errors to /logs')
     parser.add_argument('-v', '--venv', action='store_true',
