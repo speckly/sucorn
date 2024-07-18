@@ -22,12 +22,12 @@ def read_prompt():
 
     sucorn project data preparation phase
     Reads prompt"""
-    PROMPT_FILE = f"{DIRECTORY}/prompt.txt"
+    PROMPT_FILE = f"{DIRECTORY}/new_prompt.txt"
     if os.path.exists(PROMPT_FILE):
         with open(PROMPT_FILE, encoding="utf-8") as f:
             prompt = ''.join(f.readlines()).replace('\n', '')
     else:
-        prompt = input("prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
+        prompt = input("new_prompt.txt does not exist, enter your prompt here to be saved to prompt.txt -> ")
         with open(PROMPT_FILE, encoding="utf-8") as f:
             f.write(prompt)
     return prompt
