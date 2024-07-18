@@ -40,4 +40,4 @@ image_generator = ImageGen(
     None
 )
 
-image_generator.get_images(prompt)
+image_generator.get_images(prompt) # TODO: Output
