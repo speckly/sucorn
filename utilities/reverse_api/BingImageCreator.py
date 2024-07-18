@@ -15,6 +15,7 @@ import httpx
 # import pkg_resources
 import regex
 import requests
+from bs4 import BeautifulSoup
 
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
 # Generate random IP between range 13.104.0.0/14
@@ -43,6 +44,7 @@ error_noresults = "Could not get results"
 error_unsupported_lang = "\nthis language is currently not supported by bing"
 error_bad_images = "Bad images"
 error_no_images = "No images"
+error_waiting = "Taking longer than usual, check back in about 1 day"
 # Action messages
 sending_message = "Sending request..."
 wait_message = "Waiting for results..."
@@ -54,7 +56,6 @@ def debug(debug_file, text_var):
     with open(f"{debug_file}", "a", encoding="utf-8") as f:
         f.write(str(text_var))
         f.write("\n")
-
 
 class ImageGen:
     """
@@ -121,6 +122,12 @@ class ImageGen:
             raise Exception(
                 error_blocked_prompt,
             )
+        if "your images are on the way" in response.text.lower():
+            if self.debug_file:
+                self.debug(f"ERROR: {error_waiting}")
+            raise Exception(
+                error_waiting,
+            )
         if (
             "we're working hard to offer image creator in more languages"
             in response.text.lower()
@@ -135,6 +142,7 @@ class ImageGen:
             if response.status_code != 302:
                 if self.debug_file:
                     self.debug(f"ERROR: {error_redirect}")
+                    self.debug(BeautifulSoup(response.text, 'html.parser').get_text(separator=", ")) # NOTE: Please note as this exception is still broad
                 raise Exception(error_redirect)
         # Get redirect URL
         redirect_url = response.headers["Location"].replace("&nfy=1", "")
@@ -484,6 +492,7 @@ def main():
         # Create image generator
         image_generator = ImageGen(
             args.U,
+            None,
             args.debug_file,
             args.quiet,
             all_cookies=cookie_json,
@@ -509,3 +518,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+RCHHPGUSR

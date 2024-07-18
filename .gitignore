@@ -6,4 +6,5 @@ images/
 /utilities/reverse_api/cookies.json
 /utilities/reverse_api/test_cookies.json
 /utilities/reverse_api/new_prompt.txt
+/utilities/reverse_api/debug.log
 /venv

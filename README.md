@@ -94,3 +94,7 @@ The following keys will label the image by moving it into its subfolder
 - 1 for positive
 - 2 for neutral
 - ESC to quit
+
+# remove later
+
+`py BingImageCreator.py --cookie-file test_cookie.txt --debug-file debug.log --prompt "an astronaut on the moon"`
