@@ -42,7 +42,12 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
     sucorn project data preparation phase
     This is the function to be executed per child process to automate the image creation process
     Command line arguments are parsed as a string so this function converts it"""
-    os.chdir(out_path)
+    try:
+        os.chdir(out_path)
+    except Exception:
+        print(f"Bad path: {out_path}")
+        quit()
+
     if sys.platform == 'win32':
         ctypes.windll.kernel32.SetConsoleTitleW(f"{account} sucorn API")
     else:
@@ -60,7 +65,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
-        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
+        cmd = f"python '{DIRECTORY}/BingImageCreator.py' -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
             combo = 0
