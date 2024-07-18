@@ -18,6 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
+PARAMETERS = "&rt=4&FORM=GENCRE" # If rt4 fails then use rt3 or remove it
 # Generate random IP between range 13.104.0.0/14
 FORWARDED_IP = (
     f"13.{random.randint(104, 107)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
@@ -44,7 +45,7 @@ error_noresults = "Could not get results"
 error_unsupported_lang = "\nthis language is currently not supported by bing"
 error_bad_images = "Bad images"
 error_no_images = "No images"
-error_waiting = "Taking longer than usual, check back in about 1 day"
+error_waiting = "Taking longer than usual, check back in about 1 day, or change the rt URL parameter located on the top of BingImageCreator.py as instructed"
 # Action messages
 sending_message = "Sending request..."
 wait_message = "Waiting for results..."
@@ -102,7 +103,7 @@ class ImageGen:
         url_encoded_prompt = requests.utils.quote(prompt)
         payload = f"q={url_encoded_prompt}&qs=ds"
         # https://www.bing.com/images/create?q=<PROMPT>&rt=3&FORM=GENCRE
-        url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=4&FORM=GENCRE"
+        url = f"{BING_URL}/images/create?q={url_encoded_prompt}{PARAMETERS}"
         response = self.session.post(
             url,
             allow_redirects=False,
@@ -309,7 +310,7 @@ class ImageGenAsync:
             )
         if response.status_code != 302:
             # if rt4 fails, try rt3
-            url = f"{BING_URL}/images/create?q={url_encoded_prompt}&rt=4&FORM=GENCRE"
+            url = f"{BING_URL}/images/create?q={url_encoded_prompt}{PARAMETERS}"
             response = await self.session.post(
                 url,
                 follow_redirects=False,

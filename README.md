@@ -53,6 +53,9 @@ Keys:
 - End: Terminates all child processes
 - Ctrl + Shift + R: Reloads prompt from `utilities/reverse_api/new_prompt.txt`. Currently unavailable
 
+###### If it doesn't work
+Try changing the parameters located in `BingImageCreator.py` TODO: instructions here
+
 ### utilities/reverse_api/.env
 
 WIP
