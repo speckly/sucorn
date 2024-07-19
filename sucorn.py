@@ -173,7 +173,7 @@ async def statistics(interaction: discord.Interaction, target:str=''):
             await dump_channel.send(embed=emb, file=file)
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
-@discord.app_commands.describe(target='Target Channel', folder_name='Folder name images are in')
+@discord.app_commands.describe(target='Target Channel', folder_name='Folder name images are in', mode='positive, negative, neutral or unlabelled')
 async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''):
     """
     Author: Andrew Higgins

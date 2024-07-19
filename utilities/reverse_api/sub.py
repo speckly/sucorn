@@ -19,6 +19,7 @@ else:
     # BUG: How to implement keyboard as sudo but write files as n
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+PAUSE = 10 # For redirect failed or taking too long
 
 def read_prompt():
     with open("prompt.txt", encoding="utf-8") as f:
@@ -74,6 +75,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
             print(f"Failed: {exc}")
             if "Exception: Redirect failed" in exc or "Taking longer than usual":
                 combo += 1
+                time.sleep(PAUSE)
             else:
                 combo = 0
 
