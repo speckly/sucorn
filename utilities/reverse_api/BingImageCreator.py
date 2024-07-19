@@ -46,7 +46,7 @@ error_noresults = "Could not get results"
 error_unsupported_lang = "\nthis language is currently not supported by bing"
 error_bad_images = "Bad images"
 error_no_images = "No images"
-error_waiting = "Taking longer than usual, check back in about 1 day, or change the rt URL parameter located on the top of BingImageCreator.py as instructed in the comment"
+error_waiting = "Taking longer than usual" # check back in about 1 day, or change the rt URL parameter located on the top of BingImageCreator.py as instructed in the comment
 # Action messages
 sending_message = "Sending request..."
 wait_message = "Waiting for results..."

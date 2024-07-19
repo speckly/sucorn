@@ -96,8 +96,8 @@ if __name__ == "__main__":
     parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
     parser.add_argument('-d', '--delay', type=float, default=0,
         help='Delay time in seconds (default is 0)')
-    parser.add_argument('-m', '--max', type=int, default=80,
-        help='Maximum number of failed redirects before killing process (default is 80)')
+    parser.add_argument('-m', '--max', type=int, default=100,
+        help='Maximum number of failed redirects before killing process (default is 100)')
     parser.add_argument('-t', '--test', action='store_true',
         help='Runs the program with a testing cookie file named test_cookies.json (default is False)')
     parser.add_argument('-l', '--log', action='store_true',

@@ -65,20 +65,20 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
-        cmd = f"python '{DIRECTORY}/BingImageCreator.py' -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
+        cmd = f"python '{DIRECTORY}/BingImageCreator.py' -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ."
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
             combo = 0
         except subprocess.CalledProcessError as e:
             exc = e.stderr.decode().split("\n")[-2]
             print(f"Failed: {exc}")
-            if "Exception: Redirect failed" in exc:
+            if "Exception: Redirect failed" in exc or "Taking longer than usual":
                 combo += 1
             else:
                 combo = 0
 
         print(f"{time.time()-s:.4f}s")
-    
+
     # Termination
     os.chdir(DIRECTORY)
 
@@ -107,7 +107,7 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
             json.dump(usernames, file, indent=4)
     else:
         print("usernames.json not found, unable to move account to unusable category, run get_cookie to restore this file")
-        
+
     input(f"Terminated at {time.asctime()} due to {max_attempts} consecutive redirects. Press any key to quit ")
     if sys.platform.startswith('linux'):
         subprocess.run(['exit'], check=True) # TODO: Confirm this

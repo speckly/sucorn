@@ -78,32 +78,37 @@ def get_cookie(driver: webdriver, username: str, password: str):
         accept_btn = driver.find_element(By.ID, "acceptButton")
         accept_btn.click()
     except Exception:
-        # Locked case
-        next_btn = driver.find_element(By.ID, "StartAction")
-        next_btn.click()
+        
+        try:
+            next_btn = driver.find_element(By.ID, "StartAction")
+            next_btn.click()
 
-        select_element = driver.find_element(By.CSS_SELECTOR,
-        'select[id^="wlspispHIPCountrySelect"]')
-        select = Select(select_element)
-        select.select_by_value("SG")
+            # Locked case
+            select_element = driver.find_element(By.CSS_SELECTOR,
+            'select[id^="wlspispHIPCountrySelect"]')
+            select = Select(select_element)
+            select.select_by_value("SG")
 
-        phone = driver.find_element(By.CSS_SELECTOR, 'input[id^="wlspispHIPPhoneInput"]')
-        phone.send_keys(password)
+            phone = driver.find_element(By.CSS_SELECTOR, 'input[id^="wlspispHIPPhoneInput"]')
+            phone.send_keys(password)
 
-        send_code = driver.find_element(By.CSS_SELECTOR, 'a[id^="wlspispHipSendCode"]')
-        send_code.click()
+            send_code = driver.find_element(By.CSS_SELECTOR, 'a[id^="wlspispHipSendCode"]')
+            send_code.click()
 
-        input_code = driver.find_element(By.CSS_SELECTOR, 'input[id^="wlspispSolutionElement"]')
-        input_code.send_keys(input(f"OTP (Phone) for {username} -> "))
+            input_code = driver.find_element(By.CSS_SELECTOR, 'input[id^="wlspispSolutionElement"]')
+            input_code.send_keys(input(f"OTP (Phone) for {username} -> "))
 
-        submit = driver.find_element(By.ID, "ProofAction")
-        submit.click()
+            submit = driver.find_element(By.ID, "ProofAction")
+            submit.click()
 
-        finish = driver.find_element(By.ID, "FinishAction")
-        finish.click()
+            finish = driver.find_element(By.ID, "FinishAction")
+            finish.click()
 
-        accept_btn = driver.find_element(By.ID, "acceptButton")
-        accept_btn.click()
+            accept_btn = driver.find_element(By.ID, "acceptButton")
+            accept_btn.click()
+        except Exception:
+            input("Manual for now until i implement automation here, get to the end and enter") # Lets protect your account
+        
 
     u_cookie = driver.get_cookie("_U")["value"]
 
