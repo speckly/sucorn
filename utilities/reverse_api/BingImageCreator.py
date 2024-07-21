@@ -18,7 +18,7 @@ import requests
 from bs4 import BeautifulSoup
 
 BING_URL = os.getenv("BING_URL", "https://www.bing.com")
-PARAMETERS = "&rt=3&FORM=GENCRE" # If rt4 fails then use rt3 or remove it like "&FORM=GENCRE"
+PARAMETERS = "&rt=4&FORM=GENCRE" # If rt4 fails then use rt3 or remove it like "&FORM=GENCRE"
 
 # Generate random IP between range 13.104.0.0/14
 FORWARDED_IP = (
