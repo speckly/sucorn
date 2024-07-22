@@ -8,6 +8,7 @@ simple utility to remove bad images
 import os
 from PIL import Image
 from sys import argv
+from time import sleep
 
 def remove_corrupt_images(directory):
     # Ensure the directory exists
@@ -25,11 +26,16 @@ def remove_corrupt_images(directory):
             # Attempt to open the image file
             with Image.open(file_path) as img:
                 img.verify()
-        except (IOError, SyntaxError) as e:
+        except (IOError, SyntaxError):
             # If an error occurs, the image is corrupt or cannot be opened
             print(f"Removing corrupt image: {file}")
             os.remove(file_path)
 
 if __name__ == "__main__":
     directory = f'../images/{input("Input images directory: ") if len(argv) == 1 else argv[1]}'
-    remove_corrupt_images(directory)
+    SLEEP_DELAY = 0 if len(argv) != 3 else argv[2]
+    if not sleep_delay:
+        print(f"Removing every {sleep_delay} seconds")
+        while True:
+            sleep(120)
+            remove_corrupt_images(directory)
