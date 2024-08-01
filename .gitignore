@@ -1,6 +1,7 @@
 tests/
 .env
 images/
+videos/
 **/__pycache__/
 /utilities/reverse_api/usernames.json
 /utilities/reverse_api/cookies.json
