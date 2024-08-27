@@ -101,10 +101,14 @@ The following keys will label the image by moving it into its subfolder
 # utilities/reverse_imagen3/imagen3.py
 
 WIP because i just shat this out in like 1 hour
+
 Reversed API for Google's ImageFX also known as Imagen 3
+
 Find your Google Authorization token by pressing F12 on [ImageFx](https://aitestkitchen.withgoogle.com), navigate to the network tab and send a request (clicking on the generate button is the easiest way). The Authorization header will show on a packet as shown. Copy the value, excluding the `Bearer`
 
+![Screenshot_2024-08-28_02-39-51](https://github.com/user-attachments/assets/7a5e00d9-71ed-4eb1-a112-acba96681e3f)
 
+![Screenshot_2024-08-28_02-41-05](https://github.com/user-attachments/assets/aa70cf56-69a3-4703-be32-6918aca03b99)
 
 Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
 `auth=<YOURTOKENHERE>
