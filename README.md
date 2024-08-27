@@ -98,6 +98,13 @@ The following keys will label the image by moving it into its subfolder
 - 2 for neutral
 - ESC to quit
 
-# remove later
+# utilities/reverse_imagen3/imagen3.py
 
-`py BingImageCreator.py --cookie-file test_cookie.txt --debug-file debug.log --prompt "an astronaut on the moon"`
+WIP because i just shat this out in like 1 hour
+Reversed API for Google's ImageFX also known as Imagen 3
+Find your Google Authorization token by pressing F12 on [ImageFx](https://aitestkitchen.withgoogle.com), navigate to the network tab and send a request (clicking on the generate button is the easiest way). The Authorization header will show on a packet as shown. Copy the value, excluding the `Bearer`
+
+
+
+Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
+`auth=<YOURTOKENHERE>
