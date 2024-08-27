@@ -111,4 +111,4 @@ Find your Google Authorization token by pressing F12 on [ImageFx](https://aitest
 ![Screenshot_2024-08-28_02-41-05](https://github.com/user-attachments/assets/aa70cf56-69a3-4703-be32-6918aca03b99)
 
 Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
-`auth=<YOURTOKENHERE>
+`auth=<YOURTOKENHERE>`
