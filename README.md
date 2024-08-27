@@ -1,10 +1,11 @@
 # sucorn
 pronounced as [su-kon](https://fubuki.moe/mascots.html)
 
-A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
+A project to automate the collection of AI generated images on different platforms, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
 - **deprecated** automatic collection of images using `pyautogui`,
 - automatic collection of images through the [BingImageCreator reverse-engineered API](https://github.com/acheong08/BingImageCreator/tree/main)
+- automatic collection of images with Google's ImageFx
 - **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
 - Automatic collection of Microsoft Session cookies using `WebDriver`
 - Displaying these images on Discord for remote labelling
