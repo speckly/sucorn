@@ -113,3 +113,9 @@ Find your Google Authorization token by pressing F12 on [ImageFx](https://aitest
 
 Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
 `auth=<YOURTOKENHERE>`
+
+If a HTTP 401 is returned with the following message: `Request had invalid authentication credentials.`, it most likely means that the auth token has expired. Follow the steps above again.
+
+Occasionally a HTTP 400 with message: `Request contains an invalid argument` is returned. It could mean that inappropriate content has been generated and therefore is not sent back to the client.
+
+**TODO** automate collection
