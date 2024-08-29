@@ -1,10 +1,11 @@
 # sucorn
 pronounced as [su-kon](https://fubuki.moe/mascots.html)
 
-A project to automate the creation of AI generated images using Dall-E 3 hosted on Bing Image Creator, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
+A project to automate the collection of AI generated images on different platforms, and to classify which ones are good and which ones are bad, so that time spent during the ML/DL life cycle is reduced
 The goals of this project include
 - **deprecated** automatic collection of images using `pyautogui`,
 - automatic collection of images through the [BingImageCreator reverse-engineered API](https://github.com/acheong08/BingImageCreator/tree/main)
+- automatic collection of images with Google's ImageFx
 - **WIP** automatic collection of images through [stable diffusion's](https://github.com/CompVis/stable-diffusion) text2img, hopefully with automatic parameter tuning
 - Automatic collection of Microsoft Session cookies using `WebDriver`
 - Displaying these images on Discord for remote labelling
@@ -101,10 +102,14 @@ The following keys will label the image by moving it into its subfolder
 # utilities/reverse_imagen3/imagen3.py
 
 WIP because i just shat this out in like 1 hour
+
 Reversed API for Google's ImageFX also known as Imagen 3
+
 Find your Google Authorization token by pressing F12 on [ImageFx](https://aitestkitchen.withgoogle.com), navigate to the network tab and send a request (clicking on the generate button is the easiest way). The Authorization header will show on a packet as shown. Copy the value, excluding the `Bearer`
 
+![Screenshot_2024-08-28_02-39-51](https://github.com/user-attachments/assets/7a5e00d9-71ed-4eb1-a112-acba96681e3f)
 
+![Screenshot_2024-08-28_02-41-05](https://github.com/user-attachments/assets/aa70cf56-69a3-4703-be32-6918aca03b99)
 
 Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
-`auth=<YOURTOKENHERE>
+`auth=<YOURTOKENHERE>`
