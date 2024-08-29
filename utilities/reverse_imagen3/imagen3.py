@@ -48,7 +48,7 @@ class ImageGen:
         })
         
 
-    def get_images(self, prompt: str) -> list:
+    def get_images(self, prompt: str) -> int:
         """
         Fetches image encodings, requires auth
         Parameters:
@@ -106,8 +106,8 @@ class ImageGen:
             for image_panel in res_json["imagePanels"]:
                 print(f"There are {len(image_panel['generatedImages'])} images in this panel")
                 for generated_image in image_panel["generatedImages"]:
-                    self.save_image(generated_image["encodedImage"])
-        else:
+                    self.save_image(generated_image["encodedImage"], prompt)
+        elif response.status_code != 429:
             print(f"Failed with HTTP {response.status_code}:\n{response.text}")
             """usually this
             {
@@ -117,9 +117,14 @@ class ImageGen:
                     "status": "INVALID_ARGUMENT"
                 }
             }"""
+        else:
+            return 1
+        return 0
+
     def save_image(
         self,
         encodedImage: list,
+        prompt: str
     ) -> None:
         """
         Saves images to output directory
@@ -128,6 +133,10 @@ class ImageGen:
         """
         with contextlib.suppress(FileExistsError):
             os.mkdir(self.output_folder)
+            print("Created folder as it did not exist")
+            with open(os.path.join(self.output_folder, "prompt.txt"), "w") as file:
+                file.write(prompt)
+
         png_index = 0
         while os.path.exists(os.path.join(self.output_folder, f"{png_index}.png")):
             png_index += 1
@@ -136,11 +145,15 @@ class ImageGen:
         png_index += 1
 
 if __name__ == "__main__":
-    prompt = "an anime catgirl bouncing on a space hopper"
+    prompt = "a single anime girl with cat ears and tail bouncing around on a space hopper, girl is high up in the air, in a race" # TODO: use arguments
     load_dotenv()
-    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder="../../images/imagen3")
+    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder="../../images/imagen3/fr_1")
     cycle = 1
     while True:
         print(f"Cycle {cycle}")
-        test_generator.get_images(prompt=prompt)
+        terminate = test_generator.get_images(prompt=prompt)
+        if terminate:
+            print("HTTP 429 received, you have exceeded your daily quota, try again tomorrow")
+            break
         cycle += 1
+        # time.sleep(10)
