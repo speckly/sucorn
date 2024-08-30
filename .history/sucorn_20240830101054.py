@@ -80,7 +80,7 @@ async def silly_embed(interaction: discord.Interaction, message: str, title: str
 
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
 async def sync(interaction: discord.Interaction):
-    if interaction.user.id == 400834586860322817:
+    
         await client.tree.sync()
         await interaction.response.send_message('Command tree synced.')
     else:
@@ -124,7 +124,7 @@ async def statistics(interaction: discord.Interaction, target:str=''):
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id !=400834586860322817:
+    if interaction.user.id != 716821667539583026:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -201,7 +201,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id !=400834586860322817:
+    if interaction.user.id !=716821667539583026:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
