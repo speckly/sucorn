@@ -87,7 +87,8 @@ class ImageGen:
         {
             "imagePanels": [
                 {
-                "prompt": "An energetic anime-style white male character with short black hair is playfully bouncing on a large, brightly colored space hopper.Beside him, a cheerful blonde female character with long, flowing hair is also playfully bouncing on a large, brightly colored space hopper, they are high up in the air, in a race",
+                "prompt": "An energetic anime-style white male character with short black hair is playfully bouncing on a large, brightly colored space hopper.Beside him, a cheerful blonde female character with long, flowing hair is also playfully bouncing on a large, brightly colored space hopper, they are high up in the air, in a race
+",
                 "generatedImages": [
                     {
                     "encodedImage": "",
