@@ -12,23 +12,8 @@ import time
 from json import loads
 from random import choice
 from requests import get
-
-import importlib
-
-libs = {"discord": None, "dotenv": None, "playsound": None, "psutil": None}
-for lib in libs:
-    try:
-        libs[lib] = importlib.import_module(lib)
-    except ModuleNotFoundError:
-        if input(f"{lib} is required to run this program, execute pip install {lib}? (Y): ").lower().strip() in ["", "y"]:
-            installation = lib if lib != "dotenv" else "python-dotenv"
-            os.system(f"pip install {installation}")
-            libs[lib] = importlib.import_module(lib)
-        else:
-            sys.exit(0)
-
-discord, dotenv, playsound, psutil = libs["discord"], libs["dotenv"], libs["playsound"], libs["psutil"]
-del libs
+import discord
+import dotenv
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{DIRECTORY}/features')
@@ -52,10 +37,19 @@ def timestamp() -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 async def silly_message(interaction: discord.Interaction, title: str="", message: str=""
-                        , emb_color: hex = 0xff0000, channel = '', author: bool=True, footer: str='speckles') -> None:
-    with open(f"{DIRECTORY}/features/the_funnies.txt") as f:
+                        ,emb_color: hex = 0xff0000, channel: discord.channel = '',
+                        author: bool=True, footer: str='speckles') -> None:
+    """
+    Author: Andrew Higgins
+    https://github.com/speckly
+    
+    silly_message automatically sends a silly message 
+    in response to a Discord Interaction object/channel object.
+    
+    Usual arguments to a Discord Embed are expected in this function"""
+    with open(f"{DIRECTORY}/features/the_funnies.txt", encoding="utf-8") as f:
         the_funnies = [gif.rstrip('\n') for gif in f]
-        
+
     emb=discord.Embed(title=title, description=message,
             color=emb_color, timestamp=datetime.datetime.now())
     if author:
@@ -119,7 +113,6 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
 @client.tree.command(description='Owner only, generate statistics on the category')
 @discord.app_commands.describe()
 async def statistics(interaction: discord.Interaction, target:str=''):
-    # sourcery skip: low-code-quality
     if not target:
         target: int = interaction.channel_id
     elif not target.isnumeric():
@@ -131,7 +124,7 @@ async def statistics(interaction: discord.Interaction, target:str=''):
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id !=400834586860322817:
+    if interaction.user.id != 7168:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -154,7 +147,6 @@ async def statistics(interaction: discord.Interaction, target:str=''):
                                 channel=dump_channel, footer=cat_fact, author=False)
 
         try:
-            
             for stat in os.listdir(f"{DIRECTORY}/statistics"):
                 try:
                     cat_fact = loads(get("https://catfact.ninja/fact").content.decode("utf-8"))["fact"]
@@ -181,9 +173,13 @@ async def statistics(interaction: discord.Interaction, target:str=''):
             await dump_channel.send(embed=emb, file=file)
 
 @client.tree.command(description='Owner only, to nuke a channel with embedded images from the server')
-@discord.app_commands.describe(target='Target Channel', folder_name='Folder name that the images reside in')
-async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''): 
-    # Validation is done in ascending runtime complexity order
+@discord.app_commands.describe(target='Target Channel', folder_name='Folder name images are in')
+async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mode: str, target:str=''):
+    """
+    Author: Andrew Higgins
+    https://github.com/speckly
+    
+    Validation is done in ascending runtime complexity order"""
     mode = mode.strip().lower()
     if mode not in ['positive', 'negative', 'neutral', 'unlabelled']:
         await silly_message(interaction, title="Invalid mode",
@@ -194,18 +190,18 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
     elif not isinstance(target, int) and not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
-    
-    WDIR = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
-    if not os.path.exists(WDIR):
-        await silly_message(interaction, title=f"{WDIR.replace(DIRECTORY, '')} does not exist")
+
+    wdir = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
+    if not os.path.exists(wdir):
+        await silly_message(interaction, title=f"{wdir.replace(DIRECTORY, '')} does not exist")
         return
-    
-    DUMP_CHANNEL = client.get_channel(int(target))
-    if DUMP_CHANNEL == None:
+
+    dump_channel = client.get_channel(int(target))
+    if dump_channel is None:
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id != 400834586860322817:
+    if interaction.user.id !=716821667539583026:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -222,9 +218,10 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
             case 'unlabelled':
                 color = 0x808080
         start_time = time.time()
-        files = [file for file in os.listdir(WDIR) if file.endswith(".jpg") or file.endswith(".jpeg")]
-        if files == []:
-            await silly_message(interaction, title=f"Provided folder {WDIR.replace(DIRECTORY, '')} is empty", emb_color=0x808080, channel=DUMP_CHANNEL)
+        files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
+        if not files:
+            await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
+                emb_color=0x808080, channel=dump_channel)
             return
         for filename in files:
             try:
@@ -244,8 +241,9 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
 
                 await dump_channel.send(embed=emb, file=file)
             except Exception as error:
-                emb=discord.Embed(title="Error", description=f"Error logged: {error}", color=0xff0000, 
-                                  timestamp=datetime.datetime.now(), url="https://http.cat/status/500")
+                emb=discord.Embed(title="Error", description=f"Error logged: {error}",
+                    color=0xff0000, timestamp=datetime.datetime.now(),
+                    url="https://http.cat/status/500")
                 emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar)
                 emb.set_footer(text=cat_fact)
                 await dump_channel.send(embed=emb)
@@ -255,14 +253,14 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         minutes = (runtime_seconds % 3600) // 60
         remaining_seconds = runtime_seconds % 60
 
-        emb=discord.Embed(title="Nuking complete", 
-        description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
+        emb=discord.Embed(title="Nuking complete",
+            description=f"Sent {number} images\nRuntime: {hours:.0f} hours, {minutes:.0f} minutes, {remaining_seconds:.2f} seconds",
             color=0x00FF00, timestamp=datetime.datetime.now())
         emb.set_author(name=interaction.user.name, icon_url=interaction.user.display_avatar) # type: ignore
         emb.set_footer(text="speckles")
         emb.set_image(url="https://media.tenor.com/M0YNmGgIQF4AAAAd/guh-cat.gif")
         await interaction.followup.send(embed=emb)
-   
+
 # A Context Menu command is an app command that can be run on a member or on a message by
 # accessing a menu within the client, usually via right clicking.
 # It always takes an interaction as its first parameter and a Member or Message as its second parameter.

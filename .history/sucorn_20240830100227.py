@@ -113,7 +113,7 @@ async def embed_cat(interaction: discord.Interaction, link: str): #Optional[]
 @client.tree.command(description='Owner only, generate statistics on the category')
 @discord.app_commands.describe()
 async def statistics(interaction: discord.Interaction, target:str=''):
-    if target == '':
+    if not target:
         target: int = interaction.channel_id
     elif not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
@@ -185,23 +185,23 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         await silly_message(interaction, title="Invalid mode",
             message='Accepted modes are positive, negative, neutral, unlabelled')
         return
-    if target == '':
+    if not target:
         target = interaction.channel_id
     elif not isinstance(target, int) and not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
-    
+
     wdir = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
     if not os.path.exists(wdir):
         await silly_message(interaction, title=f"{wdir.replace(DIRECTORY, '')} does not exist")
         return
-    
+
     dump_channel = client.get_channel(int(target))
     if dump_channel is None:
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id != 494483880410349595:
+    
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -219,7 +219,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
                 color = 0x808080
         start_time = time.time()
         files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
-        if files == []:
+        if not files:
             await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
                 emb_color=0x808080, channel=dump_channel)
             return

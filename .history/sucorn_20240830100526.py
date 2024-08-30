@@ -80,7 +80,7 @@ async def silly_embed(interaction: discord.Interaction, message: str, title: str
 
 @client.tree.command(name='sync', description='Owner only, command tree sync only when needed')
 async def sync(interaction: discord.Interaction):
-    if interaction.user.id == 494483880410349595:
+    if interaction.user.id == 400834586860322817:
         await client.tree.sync()
         await interaction.response.send_message('Command tree synced.')
     else:
@@ -124,7 +124,7 @@ async def statistics(interaction: discord.Interaction, target:str=''):
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id != 494483880410349595:
+    if interaction.user.id != 7:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -185,23 +185,23 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
         await silly_message(interaction, title="Invalid mode",
             message='Accepted modes are positive, negative, neutral, unlabelled')
         return
-    if target == '':
+    if not target:
         target = interaction.channel_id
     elif not isinstance(target, int) and not target.isnumeric():
         await silly_message(interaction, title="Channel is not an integer.")
         return
-    
+
     wdir = f'{DIRECTORY}/images/{folder_name}/{mode if mode != "unlabelled" else ""}'
     if not os.path.exists(wdir):
         await silly_message(interaction, title=f"{wdir.replace(DIRECTORY, '')} does not exist")
         return
-    
+
     dump_channel = client.get_channel(int(target))
     if dump_channel is None:
         await silly_message(interaction, title="Channel is not a valid channel")
         return
 
-    if interaction.user.id != 494483880410349595:
+    if interaction.user.id !=716821667539583026:
         await silly_message(interaction, title="Not authorized to use this command")
         return
     else:
@@ -219,7 +219,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
                 color = 0x808080
         start_time = time.time()
         files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
-        if files == []:
+        if not files:
             await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
                 emb_color=0x808080, channel=dump_channel)
             return
