@@ -107,7 +107,7 @@ class ImageGen:
                 print(f"There are {len(image_panel['generatedImages'])} images in this panel")
                 for generated_image in image_panel["generatedImages"]:
                     self.save_image(generated_image["encodedImage"], prompt)
-        elif response.status_code != 429:
+        elif response.status_code != 429 and response.status_code != 401:
             print(f"Failed with HTTP {response.status_code}:\n{response.text}")
             """usually this
             {
@@ -118,7 +118,7 @@ class ImageGen:
                 }
             }"""
         else:
-            return 1
+            return response.status_code
         return 0
 
     def save_image(
@@ -152,8 +152,11 @@ if __name__ == "__main__":
     while True:
         print(f"Cycle {cycle}")
         terminate = test_generator.get_images(prompt=prompt)
-        if terminate:
+        if terminate == 429:
             print("HTTP 429 received, you have exceeded your daily quota, try again tomorrow")
+            break
+        else: #401
+            print("HTTP 401 received, your token might have expired")
             break
         cycle += 1
         # time.sleep(10)
