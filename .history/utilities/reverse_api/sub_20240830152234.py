@@ -63,7 +63,12 @@ async def main(account: str, token: str, prompt: str, out_path: str, delay: str,
         count += 1
         print(f"\n{account} Cycle {count}, Strike {combo}: ", end="")
         # Put here because of reloading
+<<<<<<< speckly-master
+        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
+        cmd = f"python {DIRECTORY}/BingImageCreator.py -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ." 
+=======
         cmd = f"python '{DIRECTORY}/BingImageCreator.py' -U {token} --prompt \"{prompt_pointer[0]}\" --output-dir ."
+>>>>>>> master
         try:
             subprocess.run(cmd, shell=True, check=True, stderr=subprocess.PIPE)
             combo = 0

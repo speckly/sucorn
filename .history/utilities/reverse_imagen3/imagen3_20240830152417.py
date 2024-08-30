@@ -6,9 +6,13 @@ from dotenv import load_dotenv
 import contextlib
 import base64
 import time
+<<<<<<< speckly-master
+
+=======
 import argparse
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+>>>>>>> master
 FORWARDED_IP = (
     f"13.{random.randint(104, 107)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 )
@@ -31,7 +35,7 @@ class ImageGen:
     """
     Image generation by ImageFX
     Parameters:
-        authorization: str, authorization token found in your Bearer <auth>
+        authorization: str, authoriation token found in your Bearer <auth>
     """
 
     def __init__(

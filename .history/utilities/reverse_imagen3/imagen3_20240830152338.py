@@ -6,9 +6,13 @@ from dotenv import load_dotenv
 import contextlib
 import base64
 import time
+<<<<<<< speckly-master
+
+=======
 import argparse
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+>>>>>>> master
 FORWARDED_IP = (
     f"13.{random.randint(104, 107)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 )
@@ -31,7 +35,11 @@ class ImageGen:
     """
     Image generation by ImageFX
     Parameters:
+<<<<<<< speckly-master
         authorization: str, authorization token found in your Bearer <auth>
+=======
+        authorization: str, authorisation token found in your Bearer <auth>
+>>>>>>> master
     """
 
     def __init__(
@@ -106,10 +114,17 @@ class ImageGen:
             res_json = response.json()
             print(f"There are {len(res_json['imagePanels'])} image panels")
             for image_panel in res_json["imagePanels"]:
+<<<<<<< speckly-master
+                print(f"There are {len(image_panel['generatedImages'])} images in this panel")
+                for generated_image in image_panel["generatedImages"]:
+                    self.save_image(generated_image["encodedImage"], prompt)
+        elif response.status_code != 429:
+=======
                 print(f"There are {len(image_panel['generatedImages'])} image(s) in this panel")
                 for generated_image in image_panel["generatedImages"]:
                     self.save_image(generated_image["encodedImage"], prompt)
         elif not (response.status_code == 429 or response.status_code == 401):
+>>>>>>> master
             print(f"Failed with HTTP {response.status_code}:\n{response.text}")
             """usually this
             {
@@ -120,7 +135,11 @@ class ImageGen:
                 }
             }"""
         else:
+<<<<<<< speckly-master
+            return 1
+=======
             return response.status_code
+>>>>>>> master
         return 0
 
     def save_image(
@@ -147,6 +166,20 @@ class ImageGen:
         png_index += 1
 
 if __name__ == "__main__":
+<<<<<<< speckly-master
+    prompt = "An energetic anime-style white male character with short black hair is playfully bouncing on a large, brightly colored space hopper.Beside him, a cheerful blonde female character with long, flowing hair is also playfully bouncing on a large, brightly colored space hopper,they are high up in the air, in a race" # TODO: use arguments
+    load_dotenv()
+    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder="../../images/imagen3/fr_1")
+    cycle = 1
+    while True:
+        print(f"Cycle {cycle}")
+        terminate = test_generator.get_images(prompt=prompt)
+        if terminate:
+            print("HTTP 429 received, you have exceeded your daily quota, try again tomorrow")
+            break
+        cycle += 1
+        # time.sleep(10)
+=======
     parser = argparse.ArgumentParser()
     parser.add_argument("output_folder", type=str, help="Output folder for images") # ../../images/imagen3/fr_1
     parser.add_argument("-d", "--delay", type=float, help="Delay between requests", default=0)
@@ -172,3 +205,4 @@ if __name__ == "__main__":
             break
         cycle += 1
         time.sleep(10)
+>>>>>>> master
