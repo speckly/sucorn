@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 import contextlib
 import base64
 import time
+import argparse
 
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FORWARDED_IP = (
     f"13.{random.randint(104, 107)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
 )
@@ -104,10 +106,10 @@ class ImageGen:
             res_json = response.json()
             print(f"There are {len(res_json['imagePanels'])} image panels")
             for image_panel in res_json["imagePanels"]:
-                print(f"There are {len(image_panel['generatedImages'])} images in this panel")
+                print(f"There are {len(image_panel['generatedImages'])} image(s) in this panel")
                 for generated_image in image_panel["generatedImages"]:
                     self.save_image(generated_image["encodedImage"], prompt)
-        elif response.status_code != 429 and response.status_code != 401:
+        elif not (response.status_code == 429 or response.status_code == 401):
             print(f"Failed with HTTP {response.status_code}:\n{response.text}")
             """usually this
             {
@@ -145,18 +147,28 @@ class ImageGen:
         png_index += 1
 
 if __name__ == "__main__":
-    prompt = "a single anime girl with cat ears and tail bouncing around on a space hopper, girl is high up in the air, in a race" # TODO: use arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("output_folder", type=str, help="Output folder for images") # ../../images/imagen3/fr_1
+    parser.add_argument("-d", "--delay", type=float, help="Delay between requests", default=0)
+
+    args = parser.parse_args()
+    delay = args.delay
+
+    # TODO: dynamic instances
+    with open(f"{DIRECTORY}/prompt.txt", "r") as p_file:
+        prompt = p_file.read().replace("\n", " ") # NOTE: doubt
+
     load_dotenv()
-    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder="../../images/imagen3/fr_1")
+    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder=args.output_folder)
     cycle = 1
     while True:
         print(f"Cycle {cycle}")
-        terminate = test_generator.get_images(prompt=prompt)
+        terminate = test_generator.get_images(prompt=prompt) # 0, 401 or 429
         if terminate == 429:
             print("HTTP 429 received, you have exceeded your daily quota, try again tomorrow")
             break
-        else: #401
+        elif terminate == 401:
             print("HTTP 401 received, your token might have expired")
             break
         cycle += 1
-        # time.sleep(10)
+        time.sleep(10)
