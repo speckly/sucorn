@@ -7,6 +7,7 @@ import contextlib
 import base64
 import time
 import argparse
+import sys
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FORWARDED_IP = (
@@ -48,7 +49,6 @@ class ImageGen:
         self.session.headers.update({
             'Authorization': f'Bearer {self.auth}'
         })
-        
 
     def get_images(self, prompt: str) -> int:
         """
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("output_folder", type=str, help="Output folder for images") # ../../images/imagen3/fr_1
     parser.add_argument("-d", "--delay", type=float, help="Delay between requests", default=0)
-
+    parser.add_argument("-n", "--name", type=str, help="Name of the variable to access in the .env", default="auth")
     args = parser.parse_args()
     delay = args.delay
 
@@ -159,8 +159,11 @@ if __name__ == "__main__":
         prompt = p_file.read().replace("\n", " ") # NOTE: doubt
 
     load_dotenv()
-    test_generator = ImageGen(authorization=os.getenv("auth"), debug_file=None, output_folder=args.output_folder)
+    name = args.name
+    test_generator = ImageGen(authorization=os.getenv(name), debug_file=None, output_folder=args.output_folder)
     cycle = 1
+    sys.stdout.write(f"\x1b]2;sucorn API {'' if name == 'auth' else name}\x07")
+    
     while True:
         print(f"Cycle {cycle}")
         terminate = test_generator.get_images(prompt=prompt) # 0, 401 or 429
@@ -171,4 +174,4 @@ if __name__ == "__main__":
             print("HTTP 401 received, your token might have expired")
             break
         cycle += 1
-        time.sleep(10)
+        time.sleep(delay)

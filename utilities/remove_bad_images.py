@@ -33,9 +33,11 @@ def remove_corrupt_images(directory):
 
 if __name__ == "__main__":
     directory = f'../images/{input("Input images directory: ") if len(argv) == 1 else argv[1]}'
-    SLEEP_DELAY = 0 if len(argv) != 3 else argv[2]
-    if not sleep_delay:
-        print(f"Removing every {sleep_delay} seconds")
-        while True:
-            sleep(120)
-            remove_corrupt_images(directory)
+    SLEEP_DELAY = 120 if len(argv) != 3 else argv[2]
+    count = 0
+    print(f"Removing every {SLEEP_DELAY} seconds")
+    while True:
+        remove_corrupt_images(directory)
+        print(f"Count: {count}")
+        sleep(SLEEP_DELAY)
+        count += 1

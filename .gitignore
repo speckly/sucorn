@@ -8,6 +8,7 @@ videos/
 /utilities/reverse_api/test_cookies.json
 /utilities/reverse_api/new_prompt.txt
 /utilities/reverse_api/debug.log
-/utilities/reverse_imagen3/tokens.txt
+/utilities/reverse_imagen3/auth.py
+/utilities/reverse_imagen3/clients
 # might want to change to tokens.json
 /venv
