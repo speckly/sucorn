@@ -218,7 +218,7 @@ async def nuclear_cat_new(interaction: discord.Interaction, folder_name: str, mo
             case 'unlabelled':
                 color = 0x808080
         start_time = time.time()
-        files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg")]
+        files = [file for file in os.listdir(wdir) if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png")]
         if files == []:
             await silly_message(interaction, title=f"Provided folder {wdir.replace(DIRECTORY, '')} is empty",
                 emb_color=0x808080, channel=dump_channel)
