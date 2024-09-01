@@ -110,15 +110,10 @@ class ImageGen:
                 for generated_image in image_panel["generatedImages"]:
                     self.save_image(generated_image["encodedImage"], prompt)
         elif not (response.status_code == 429 or response.status_code == 401):
-            print(f"Failed with HTTP {response.status_code}:\n{response.text}")
-            """usually this
-            {
-                "error": {
-                    "code": 400,
-                    "message": "Request contains an invalid argument.",
-                    "status": "INVALID_ARGUMENT"
-                }
-            }"""
+            if response.status_code == 400:
+                print("Bad images")
+            else:
+                print(f"Failed with HTTP {response.status_code}:\n{response.text}")
         else:
             return response.status_code
         return 0

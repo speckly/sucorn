@@ -64,7 +64,7 @@ if __name__ == "__main__":
         quit()
 
     with open(".env") as e_file:
-        names = [line.split("=")[0] for line in e_file.readlines()]
+        names = [line.split("=")[0] for line in e_file.readlines() if line.split("=")[0] != ""] # hmmm
     for name in names:
         open_console_window(args.folder, name, args.delay, venv=args.venv)
 
