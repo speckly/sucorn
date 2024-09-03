@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 def get_access_token(cookie_str: str) -> str:
     """thank you @theonehong on discord this really helped!!!!
-    TODO: find the response if a cookie has expired or is invalid"""
+    TODO: find the response if a cookie has expired or is invalid, apparently its 1 day?"""
 
     url = "https://aitestkitchen.withgoogle.com/api/auth/session"
     headers = {
