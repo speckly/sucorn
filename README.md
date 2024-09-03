@@ -39,7 +39,7 @@ python sucorn.py
 Load account names in the `normal` list in `usernames.json` and run this file. This will automatically get the session cookie for each account and store it into `cookies.json`. Credentials are taken from `.env`. The `loaded` list contains account names with the cookie acquired and stored
 
 ### utilities/reverse_api/run.py || run_linux.py
-> [!INFO]
+> [!NOTE]
 > Replaces all double quotation marks in prompt with single quotation marks in Linux, keyboard ctrl shift r does not work either
 
 Creates n-number of instances that will use the reverse engineered API to generate images from `imagedir/prompt.txt`. n-number of instances depends on how many pairs are found in `cookies.json`
@@ -99,26 +99,30 @@ The following keys will label the image by moving it into its subfolder
 - 2 for neutral
 - ESC to quit
 
-# utilities/reverse_imagen3/imagen3.py
+# utilities/reverse_imagen3/imagen3.py and get_auth.py
 
-WIP because i just shat this out in like 1 hour
+> [!INFO]
+> With effect from 3 September 2024, you no longer need to collect the Authentication header value, please follow the new steps below
 
 Reversed API for Google's ImageFX also known as Imagen 3
 
-Find your Google Authorization token by pressing F12 on [ImageFx](https://aitestkitchen.withgoogle.com), navigate to the network tab and send a request (clicking on the generate button is the easiest way). The Authorization header will show on a packet as shown. Copy the value, excluding the `Bearer`
+Login to [ImageFx](https://aitestkitchen.withgoogle.com), and then run 
+```bash
+python utilities/reverse_imagen3/get_auth.py <variable_name>
+```
+This will collect your cookies and store it in `.env` in the same directory as these files.
+The variable name is a way of differentiating between different cookie strings, therefore allowing the
+use of multiple accounts. See the example with `run_xfce4.py`. Suggest to name your variable name similar to the username you use for your Google account.
 
-![Screenshot_2024-08-28_02-39-51](https://github.com/user-attachments/assets/7a5e00d9-71ed-4eb1-a112-acba96681e3f)
+This will retrieve the cookie string from `.env` and use it to get an access token which can be used for generating images for the day. You can expect to generate about 50 images daily before getting a HTTP 429, stopping you from generating more for the day.
 
-![Screenshot_2024-08-28_02-41-05](https://github.com/user-attachments/assets/aa70cf56-69a3-4703-be32-6918aca03b99)
-
-**TODO** automate collection
-
-Create a file, `utilities/reverse_imagen3/.env` and write the following contents into it:
-`auth=<YOURTOKENHERE>`
-You can put as many variables here but if you use a name other than `auth`, you must pass in the name of the variable as an argument: `python imagen3.py <foldername> -n <name>`
+```bash
+python utilities/reverse_imagen3/imagen3.py <variable_name>
+```
 
 `sudo python run_xfce4.py <foldername>` (more versions coming soon) will create multiple instances depending on how many variables are found in `.env`
 
-If a HTTP 401 is returned with the following message: `Request had invalid authentication credentials.`, it most likely means that the auth token has expired. Follow the steps above again.
+If a HTTP 401 is returned with the following message: `Request had invalid authentication credentials.`, it most likely means that the access token has expired. Follow the steps above starting from `get_auth.py`.
+For now, you will have to manually remove the string from `.env`. TODO: automate this
 
 Occasionally a HTTP 400 with message: `Request contains an invalid argument` is returned. It could mean that inappropriate content has been generated and therefore is not sent back to the client.

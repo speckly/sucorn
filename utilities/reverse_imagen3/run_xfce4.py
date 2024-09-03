@@ -14,7 +14,7 @@ def open_console_window(out_folder: str, name: str, delay: float, venv: bool = F
         raise OSError("This script is intended for Linux environments only")
 
     # BUG: venv not working, thank goodness sub.py only needs 1 requirement, maybe put in sh shell?
-    command = f'sudo -u {os.getenv("SUDO_USER")} {f'{DIRECTORY}/../../venv/bin/' if venv else ""}python "{DIRECTORY}/imagen3.py" "{out_folder}" -d {delay} -n {name}'
+    command = f'sudo -u {os.getenv("SUDO_USER")} {f'{DIRECTORY}/../../venv/bin/' if venv else ""}python "{DIRECTORY}/imagen3.py" {name} -f "{out_folder}" -d {delay}'
     process = subprocess.Popen(
         spawn + [command.replace("'", "\\'")],
     )
@@ -51,7 +51,8 @@ def terminate():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='kitty farm AGAIN')
-    parser.add_argument('folder', type=str, help='folder name, ./images/your_name_here')
+    parser.add_argument('-f', '--folder', type=str, default=f'{DIRECTORY}/../../images',
+        help='folder name, default is top level folder/images')
     parser.add_argument('-d', '--delay', type=float, default=0,
         help='Delay time in seconds (default is 0)')
     parser.add_argument('-v', '--venv', action='store_true',

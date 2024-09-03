@@ -1,13 +1,38 @@
-import random
+"""Author: Andrew Higgins
+https://github.com/speckly
+
+single image case, hard to see for those more than 1
+{
+    "imagePanels": [
+        {
+        "prompt": "A whimsical anime catgirl with beautiful eyes and long, flowing pink hair, playfully bouncing on a brightly colored space hopper, anime style",
+        "generatedImages": [
+            {
+            "encodedImage": "",
+            "seed": 329995,
+            "mediaGenerationId": "CAMaJDNlNjk3YzkwLWZlMDItNGU4OS04MDBhLWNjZjZiMWE4MWY4NSIDQ0FFKiQ5NjE1MWM1MS0zZjAzLTQzN2ItYjY0Yi0xNzkzZmIyZTQzMjk",
+            "isMaskEditedImage": false,
+            "modelNameType": "IMAGEN_3",
+            "workflowId": "3e697c90-fe02-4e89-800a-ccf6b1a81f85"
+            }
+        ]
+        }
+    ]
+}
+"""
+
 import os
-from typing import Union
-import requests
-from dotenv import load_dotenv
+import random
 import contextlib
 import base64
 import time
 import argparse
+import ctypes
 import sys
+from typing import Union
+import requests
+from dotenv import load_dotenv
+from get_auth import get_access_token
 
 DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 FORWARDED_IP = (
@@ -24,8 +49,8 @@ HEADERS = {
     "x-forwarded-for": FORWARDED_IP,
 }
 
-# v1runimagefx comes first, what is aitestkitchen for then? "https://aitestkitchen.withgoogle.com/api/trpc/media.generateEnhancedPrompt"
-# edit: its for showing what the enhanced prompt is smh
+# "https://aitestkitchen.withgoogle.com/api/trpc/media.generateEnhancedPrompt"
+# for showing what the enhanced prompt is
 ENDPOINT = "https://aisandbox-pa.googleapis.com/v1:runImageFx"
 
 class ImageGen:
@@ -33,6 +58,7 @@ class ImageGen:
     Image generation by ImageFX
     Parameters:
         authorization: str, authorisation token found in your Bearer <auth>
+        lazy to document do it another time sorry
     """
 
     def __init__(
@@ -82,26 +108,8 @@ class ImageGen:
             timeout=200,
             json=body
         )
-        print(f"{time.time()-s}s server response")
-        """ single image case, hard to see for those more than 1
-        {
-            "imagePanels": [
-                {
-                "prompt": "A whimsical anime catgirl with beautiful eyes and long, flowing pink hair, playfully bouncing on a brightly colored space hopper, anime style",
-                "generatedImages": [
-                    {
-                    "encodedImage": "",
-                    "seed": 329995,
-                    "mediaGenerationId": "CAMaJDNlNjk3YzkwLWZlMDItNGU4OS04MDBhLWNjZjZiMWE4MWY4NSIDQ0FFKiQ5NjE1MWM1MS0zZjAzLTQzN2ItYjY0Yi0xNzkzZmIyZTQzMjk",
-                    "isMaskEditedImage": false,
-                    "modelNameType": "IMAGEN_3",
-                    "workflowId": "3e697c90-fe02-4e89-800a-ccf6b1a81f85"
-                    }
-                ]
-                }
-            ]
-        }
-        """
+        print(f"{time.time()-s:.4f}s server response")
+
         if response.status_code == 200:
             res_json = response.json()
             print(f"There are {len(res_json['imagePanels'])} image panels")
@@ -120,7 +128,7 @@ class ImageGen:
 
     def save_image(
         self,
-        encodedImage: list,
+        encoded_image: list,
         prompt: str
     ) -> None:
         """
@@ -131,34 +139,38 @@ class ImageGen:
         with contextlib.suppress(FileExistsError):
             os.mkdir(self.output_folder)
             print("Created folder as it did not exist")
-            with open(os.path.join(self.output_folder, "prompt.txt"), "w") as file:
+            with open(os.path.join(self.output_folder, "prompt.txt"), "w", encoding='utf-8') as file:
                 file.write(prompt)
 
         png_index = 0
         while os.path.exists(os.path.join(self.output_folder, f"{png_index}.png")):
             png_index += 1
         with open(os.path.join(self.output_folder, f"{png_index}.png"), "wb") as output_file:
-            output_file.write(base64.b64decode(encodedImage))
+            output_file.write(base64.b64decode(encoded_image))
         png_index += 1
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_folder", type=str, help="Output folder for images") # ../../images/imagen3/fr_1
+    parser.add_argument("name", type=str, help="Name of the variable to access in the .env")
+    parser.add_argument("-f", "--folder", type=str,
+        help="Output folder for images, default is images folder at the top level", default=f'{DIRECTORY}/../../images')
     parser.add_argument("-d", "--delay", type=float, help="Delay between requests", default=0)
-    parser.add_argument("-n", "--name", type=str, help="Name of the variable to access in the .env", default="auth")
     args = parser.parse_args()
     delay = args.delay
 
     # TODO: dynamic instances
-    with open(f"{DIRECTORY}/prompt.txt", "r") as p_file:
+    with open(f"{DIRECTORY}/prompt.txt", "r", encoding='utf-8') as p_file:
         prompt = p_file.read().replace("\n", " ") # NOTE: doubt
 
     load_dotenv()
     name = args.name
-    test_generator = ImageGen(authorization=os.getenv(name), debug_file=None, output_folder=args.output_folder)
+    test_generator = ImageGen(authorization=get_access_token(cookie_str=os.getenv(name)), debug_file=None, output_folder=args.folder)
     cycle = 1
-    sys.stdout.write(f"\x1b]2;sucorn API {'' if name == 'auth' else name}\x07")
-    
+    if sys.platform == 'win32':
+        ctypes.windll.kernel32.SetConsoleTitleW(f"{name} sucorn API")
+    else:
+        sys.stdout.write(f"\x1b]2;sucorn API {name}\x07")
+
     while True:
         print(f"Cycle {cycle}")
         terminate = test_generator.get_images(prompt=prompt) # 0, 401 or 429
@@ -170,3 +182,17 @@ if __name__ == "__main__":
             break
         cycle += 1
         time.sleep(delay)
+
+# Terminate case, remove the string from the .env file
+if not os.path.exists(f"{DIRECTORY}/.env"):
+    print(".env file does not exist. How did you even run this file")
+else:
+    # store temporarily, what if its really big hmmmmmmmmm
+    with open(f"{DIRECTORY}/.env", 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    with open(f"{DIRECTORY}/.env", 'w', encoding='utf-8') as file:
+        for line in lines:
+            if not line.strip().startswith(f"{name}="):
+                file.write(line)
+        print(f"Removed {name} from .env file.")

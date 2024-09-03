@@ -1,52 +1,59 @@
-"""until i properly figure out oauth2 (i think its just the lack of proper scope stopping me)
-i will be using this method"""
+import os
+import argparse
+import requests
+import browser_cookie3 as bc3
+from dotenv import load_dotenv
 
-# from selenium import webdriver
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-import json
+DIRECTORY = os.path.dirname(os.path.realpath(__file__))
+def get_access_token(cookie_str: str) -> str:
+    """thank you @theonehong on discord this really helped!!!!
+    TODO: find the response if a cookie has expired or is invalid"""
 
-chrome_options = Options()
-# chrome_options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0")
+    url = "https://aitestkitchen.withgoogle.com/api/auth/session"
+    headers = {
+        'cookie': cookie_str,
+        'referer': 'https://aitestkitchen.withgoogle.com/tools,/image-fx?utm_source=gdm&utm_medium=site',
+    }
+    response = requests.request("GET", url, headers=headers)
+    token = response.json()['access_token']
+    return token
 
-with open('clients/users.json') as j:
-    users = json.load(j)
-driver = Chrome(options=chrome_options)
+def cookie_string() -> str:
+    """Author: Andrew Higgins
+    Gets these cookies and returns them in a cookie string k=v;k=v;
+    __Host-next-auth.csrf-token
+    __Secure-next-auth.session-token"""
 
-for username, pwd in users['usable'].items():
-    try:
-        driver.get('https://aitestkitchen.withgoogle.com/tools/image-fx')
-        wait = WebDriverWait(driver, 5)
-        button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Sign in with Google']")))
-        button.click()
-        driver.implicitly_wait(5)
-        button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Sign in']")))
-        button.click()
+    cj: http.cookiejar.CookieJar = bc3.firefox(domain_name='aitestkitchen.withgoogle.com')
+    out: str = ""
+    for cookie in cj:
+        c_name: str = cookie.name
+        if c_name in ['__Host-next-auth.csrf-token', '__Secure-next-auth.session-token']:
+            out += f"{c_name}={cookie.value};"
+    return out
 
-        username_field = driver.find_element(By.ID, 'identifierId')
-        username_field.send_keys(username)
-        button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
-        button.click()
-        
-        password_field = driver.find_element(By.XPATH, "//input[@type='password']")
-        password_field.send_keys(pwd)
-        button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
-        button.click()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Get AI Test Kitchen cookies and stores them in .env')
+    parser.add_argument('name', type=str, help="Output variable name in .env containing the cookie string")
 
-        generate = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()=\"I'm feeling lucky\"]/..")))
-        generate.click()
+    args = parser.parse_args()
+    env_var: str = args.name
+    cookie_string: str = cookie_string()
 
-        # Automate the clear cache process
-        driver.get('chrome://settings/clearBrowserData')
-        driver.implicitly_wait(5)
-        driver.find_element_by_xpath("//settings-ui").send_keys(Keys.RETURN)
+    DOTENV_PATH = f'{DIRECTORY}/.env'
+    if os.path.exists(DOTENV_PATH):
+        load_dotenv(DOTENV_PATH)
 
-    except:
-        print("observe error")
-    input("remove this when deploying")
+        if os.getenv(env_var) is None:
+            with open(DOTENV_PATH, 'a', encoding='utf-8') as f:
+                f.write(f"{env_var}={cookie_string}\n")
+            print(f"Added {env_var} to .env file.")
+        else:
+            print(f"{env_var} already exists in .env file. No changes will be made.")
+    else:
+        with open(DOTENV_PATH, 'w', encoding='utf-8') as f:
+            f.write(f"{env_var}={cookie_string}\n")
+        print(f"Created .env file and added {env_var}.")
 
+    # access_token: str = get_access_token(cookie_string) # For demo purpose, not supposed to persist
+    # print(access_token)
