@@ -154,6 +154,7 @@ if __name__ == "__main__":
     parser.add_argument("name", type=str, help="Name of the variable to access in the .env")
     parser.add_argument("-f", "--folder", type=str,
         help="Output folder for images, default is images folder at the top level", default=f'{DIRECTORY}/../../images')
+    # TODO: handle above better
     parser.add_argument("-d", "--delay", type=float, help="Delay between requests", default=0)
     args = parser.parse_args()
     delay = args.delay
@@ -184,15 +185,16 @@ if __name__ == "__main__":
         time.sleep(delay)
 
 # Terminate case, remove the string from the .env file
-if not os.path.exists(f"{DIRECTORY}/.env"):
-    print(".env file does not exist. How did you even run this file")
-else:
-    # store temporarily, what if its really big hmmmmmmmmm
-    with open(f"{DIRECTORY}/.env", 'r', encoding='utf-8') as file:
-        lines = file.readlines()
+if input("Remove the account from the .env file?").strip().lower() in ["y", ""]:
+    if not os.path.exists(f"{DIRECTORY}/.env"):
+        print(".env file does not exist. How did you even run this file")
+    else:
+        # store temporarily, what if its really big hmmmmmmmmm
+        with open(f"{DIRECTORY}/.env", 'r', encoding='utf-8') as file:
+            lines = file.readlines()
 
-    with open(f"{DIRECTORY}/.env", 'w', encoding='utf-8') as file:
-        for line in lines:
-            if not line.strip().startswith(f"{name}="):
-                file.write(line)
-        print(f"Removed {name} from .env file.")
+        with open(f"{DIRECTORY}/.env", 'w', encoding='utf-8') as file:
+            for line in lines:
+                if not line.strip().startswith(f"{name}="):
+                    file.write(line)
+            print(f"Removed {name} from .env file.")
