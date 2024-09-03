@@ -101,7 +101,7 @@ The following keys will label the image by moving it into its subfolder
 
 # utilities/reverse_imagen3/imagen3.py and get_auth.py
 
-> [!INFO]
+> [!NOTE]
 > With effect from 3 September 2024, you no longer need to collect the Authentication header value, please follow the new steps below
 
 Reversed API for Google's ImageFX also known as Imagen 3
@@ -119,6 +119,8 @@ This will retrieve the cookie string from `.env` and use it to get an access tok
 ```bash
 python utilities/reverse_imagen3/imagen3.py <variable_name>
 ```
+
+![image](https://github.com/user-attachments/assets/afaf68b6-ba50-4a9c-af70-41d7dc19b9de)
 
 `sudo python run_xfce4.py <foldername>` (more versions coming soon) will create multiple instances depending on how many variables are found in `.env`
 
