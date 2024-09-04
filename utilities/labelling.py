@@ -176,23 +176,16 @@ def main():
             subfolder_path = os.path.join(folder_path, subfolder)
             if not os.path.exists(subfolder_path):
                 os.makedirs(subfolder_path)
-                print(f"Created folder as it does not exist: {subfolder_path}") 
+                print(f"Created folder as it does not exist: {subfolder_path}")
 
     if args.reset: # TODO: Update for new structure
         confirmation = input(f"Are you sure you wish to reset the labels of the following directory? {args.folder_name} (N) ")
         if confirmation.lower() != "y":
             print("Quitting")
             return
-        else:
-            for current_file in [f for f in os.listdir(folder_path) if f.lower().endswith('.jpg') or f.lower().endswith('.jpeg')]:
-                base_name, extension = os.path.splitext(current_file)
-                for replacements in ["_Positive", "_Negative", "_positive", "_negative"]:
-                    base_name = base_name.replace(replacements, "")
-                new_filename = base_name + extension
-                os.rename(os.path.join(folder_path, current_file), os.path.join(folder_path, new_filename))
-            print("Reset")
-            return
-    
+        # TODO: Update for new structure
+        return
+
     image_labeler = ImageLabeler(folder_path=folder_path, options=options)
     image_labeler.show_image()
     image_labeler.root.mainloop()

@@ -14,8 +14,11 @@ def get_access_token(cookie_str: str) -> str:
         'cookie': cookie_str,
         'referer': 'https://aitestkitchen.withgoogle.com/tools,/image-fx?utm_source=gdm&utm_medium=site',
     }
-    response = requests.request("GET", url, headers=headers)
-    token = response.json()['access_token']
+    response = requests.request("GET", url, headers=headers).json()
+    try:
+        token = response['access_token']
+    except KeyError:
+        print(f"Could not get access token: {response}")
     return token
 
 def cookie_string() -> str:
@@ -28,9 +31,9 @@ def cookie_string() -> str:
     out: str = ""
     for cookie in cj:
         c_name: str = cookie.name
-        if c_name in ['__Host-next-auth.csrf-token', '__Secure-next-auth.session-token']:
-            out += f"{c_name}={cookie.value};"
-    return out
+        if c_name == '__Secure-next-auth.session-token':
+            return f"{c_name}={cookie.value};"
+    return ""
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Get AI Test Kitchen cookies and stores them in .env')
@@ -39,6 +42,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
     env_var: str = args.name
     cookie_string: str = cookie_string()
+    if cookie_string == "":
+        print("Could not find session cookie")
+        quit()
 
     DOTENV_PATH = f'{DIRECTORY}/.env'
     if os.path.exists(DOTENV_PATH):
