@@ -18,7 +18,7 @@ def get_access_token(cookie_str: str) -> str:
     try:
         token = response['access_token']
     except KeyError:
-        print(f"Could not get access token: {response}")
+        return "" # handle in parent function call
     return token
 
 def cookie_string() -> str:

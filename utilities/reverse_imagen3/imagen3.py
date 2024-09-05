@@ -165,7 +165,11 @@ if __name__ == "__main__":
 
     load_dotenv()
     name = args.name
-    test_generator = ImageGen(authorization=get_access_token(cookie_str=os.getenv(name)), debug_file=None, output_folder=args.folder)
+    access_token = get_access_token(cookie_str=os.getenv(name))
+    if access_token == "":
+        print(f"Could not get access token: {name}")
+        quit()
+    test_generator = ImageGen(authorization=access_token, debug_file=None, output_folder=args.folder)
     cycle = 1
     if sys.platform == 'win32':
         ctypes.windll.kernel32.SetConsoleTitleW(f"{name} sucorn API")
