@@ -38,23 +38,24 @@ class ImageLabeler:
     0 is negative, 1 is positive, 2 is neutral
     """
     def __init__(self, folder_path, options={}):
-        self.folder_path = folder_path
-        self.rewrite = options.get("rewrite")
+        self.folder_path: str = folder_path
+        self.rewrite: bool = options.get("rewrite")
         category = options.get("category")
+        ALLOWED_EXTENSIONS: tuple = (".jpg", ".jpeg", ".png")
 
         if self.rewrite:
             self.image_files = [f"{map_path(dirpath)}{filename}"
                                 for dirpath, _, filenames in os.walk(folder_path)
                                 for filename in filenames
-                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
+                                if filename.lower().endswith(ALLOWED_EXTENSIONS)]
         elif category is not None:
             self.image_files = [f"{category}/{filename}"
                                 for filename in os.listdir(f"{folder_path}/{category}")
-                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
+                                if filename.lower().endswith(ALLOWED_EXTENSIONS)]
         else:
             self.image_files = [filename
                                 for filename in os.listdir(folder_path)
-                                if filename.lower().endswith('.jpg') or filename.lower().endswith('.jpeg')]
+                                if filename.lower().endswith(ALLOWED_EXTENSIONS)]
         self.files = len(self.image_files)
         if self.files == 0:
             print("All images labeled. Quitting")
@@ -119,7 +120,7 @@ class ImageLabeler:
         if self.current_index < self.files:
             try:
                 self.show_image()
-            except UnidentifiedImageError: # UnidentifiedImageError
+            except UnidentifiedImageError:
                 print("skipping")
                 self.next_image()
         else:
@@ -130,10 +131,8 @@ class ImageLabeler:
         current_file = self.image_files[self.current_index]
         image_path = os.path.join(self.folder_path, current_file)
 
-        try:
-            original_image = Image.open(image_path)
-        except:
-            return
+        # Handler for PIL.UnidentifiedImageError will be in the parent function call
+        original_image = Image.open(image_path)
         aspect_ratio = original_image.width / original_image.height
 
         new_width = min(self.root.winfo_width(), int(self.root.winfo_height() * aspect_ratio))

@@ -185,7 +185,7 @@ if __name__ == "__main__":
         time.sleep(delay)
 
 # Terminate case, remove the string from the .env file
-if input("Remove the account from the .env file?").strip().lower() in ["y", ""]:
+if input("Remove the account from the .env file? (Y) ").strip().lower() in ["y", ""]:
     if not os.path.exists(f"{DIRECTORY}/.env"):
         print(".env file does not exist. How did you even run this file")
     else:

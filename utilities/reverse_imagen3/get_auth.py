@@ -23,16 +23,40 @@ def get_access_token(cookie_str: str) -> str:
 
 def cookie_string() -> str:
     """Author: Andrew Higgins
-    Gets these cookies and returns them in a cookie string k=v;k=v;
-    __Host-next-auth.csrf-token
+    Gets this cookie and returns it in a cookie string k=v;
     __Secure-next-auth.session-token"""
 
-    cj: http.cookiejar.CookieJar = bc3.firefox(domain_name='aitestkitchen.withgoogle.com')
-    out: str = ""
-    for cookie in cj:
-        c_name: str = cookie.name
-        if c_name == '__Secure-next-auth.session-token':
-            return f"{c_name}={cookie.value};"
+    for cookie_fn in [
+        bc3.chrome,
+        bc3.chromium,
+        bc3.opera,
+        bc3.opera_gx,
+        bc3.brave,
+        bc3.edge,
+        bc3.vivaldi,
+        bc3.firefox,
+        bc3.librewolf,
+        bc3.safari,
+    ]:
+        try:
+            cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='aitestkitchen.withgoogle.com')
+
+            for cookie in cookies:
+                c_name: str = cookie.name
+                if c_name == '__Secure-next-auth.session-token':
+                    return f"{c_name}={cookie.value};"
+        except bc3.BrowserCookieError:
+            continue
+        except PermissionError as e:
+            print(
+                f"Permission denied while trying to load cookies from {cookie_fn.__name__}. {e}"
+            )
+        except Exception as e:
+            print(
+                f"Error happened while trying to load cookies from {cookie_fn.__name__}. {e}"
+            )
+
+    # target cookie is not found, log error in imagen3.py
     return ""
 
 if __name__ == '__main__':
