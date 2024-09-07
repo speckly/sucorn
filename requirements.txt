@@ -13,3 +13,4 @@ selenium
 keyboard
 httpx
 bs4
+browser_cookie3
