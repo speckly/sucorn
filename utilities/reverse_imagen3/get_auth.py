@@ -39,6 +39,8 @@ def cookie_string() -> str:
         bc3.safari,
     ]:
         try:
+            # BUG: https://github.com/borisbabic/browser_cookie3/issues/211
+            # Mitigate by hardcoding your path in self.cookie_file, TODO: document if issue raised
             cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='aitestkitchen.withgoogle.com')
 
             for cookie in cookies:
@@ -67,7 +69,7 @@ if __name__ == '__main__':
     env_var: str = args.name
     cookie_string: str = cookie_string()
     if cookie_string == "":
-        print("Could not find session cookie")
+        print("Could not find session cookie, if you are logged in, try signing out and in again") # google's shitty JS causes this
         quit()
 
     DOTENV_PATH = f'{DIRECTORY}/.env'
