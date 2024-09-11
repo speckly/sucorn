@@ -24,7 +24,8 @@ def get_access_token(cookie_str: str) -> str:
 def cookie_string() -> str:
     """Author: Andrew Higgins
     Gets this cookie and returns it in a cookie string k=v;
-    __Secure-next-auth.session-token"""
+    __Secure-next-auth.session-token
+    BUG: bc3 cant differentiate between firefox dev or diff containers"""
 
     for cookie_fn in [
         bc3.chrome,
