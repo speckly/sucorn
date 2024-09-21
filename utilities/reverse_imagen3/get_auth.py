@@ -70,7 +70,7 @@ if __name__ == '__main__':
     env_var: str = args.name
     cookie_string: str = cookie_string()
     if cookie_string == "":
-        print("Could not find session cookie, if you are logged in, try signing out and in again") # google's shitty JS causes this
+        print("Could not find session cookie, if you are logged in, try signing out and in again or closing your browser") # google's shitty JS causes this
         quit()
 
     DOTENV_PATH = f'{DIRECTORY}/.env'
