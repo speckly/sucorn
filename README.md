@@ -123,6 +123,7 @@ python utilities/reverse_imagen3/imagen3.py <variable_name>
 ![image](https://github.com/user-attachments/assets/afaf68b6-ba50-4a9c-af70-41d7dc19b9de)
 
 `sudo python run_xfce4.py <foldername>` (more versions coming soon) will create multiple instances depending on how many variables are found in `.env`
+A default of 8 images maximum will be returned per request
 
 If a HTTP 401 is returned with the following message: `Request had invalid authentication credentials.`, it most likely means that the access token has expired. Follow the steps above starting from `get_auth.py`.
 For now, you will have to manually remove the string from `.env`. TODO: automate this
