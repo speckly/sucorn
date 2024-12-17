@@ -9,12 +9,13 @@ def get_access_token(cookie_str: str) -> str:
     """thank you @theonehong on discord this really helped!!!!
     TODO: find the response if a cookie has expired or is invalid, apparently its 1 day?"""
 
-    url = "https://aitestkitchen.withgoogle.com/api/auth/session"
+    url = 'https://labs.google/fx/api/trpc/general.fetchUserToolAccess?input={"json":{"names":["IMAGE_FX_TT"]}}' # TODO: base URL has changed
     headers = {
         'cookie': cookie_str,
-        'referer': 'https://aitestkitchen.withgoogle.com/tools,/image-fx?utm_source=gdm&utm_medium=site',
+        'referer': 'https://labs.google/fx/api/trpc/general.fetchUserToolAccess',
     }
     response = requests.request("GET", url, headers=headers).json()
+
     try:
         token = response['access_token']
     except KeyError:
@@ -42,7 +43,7 @@ def cookie_string() -> str:
         try:
             # BUG: https://github.com/borisbabic/browser_cookie3/issues/211
             # Mitigate by hardcoding your path in self.cookie_file, TODO: document if issue raised
-            cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='aitestkitchen.withgoogle.com')
+            cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='labs.google')
 
             for cookie in cookies:
                 c_name: str = cookie.name

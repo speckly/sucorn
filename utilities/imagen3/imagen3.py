@@ -43,8 +43,8 @@ HEADERS = {
     "accept-language": "en-US,en;q=0.5",
     "cache-control": "max-age=0",
     "content-type": "application/json",
-    "referrer": "https://aitestkitchen.withgoogle.com/",
-    "origin": "https://aitestkitchen.withgoogle.com",
+    "referrer": "https://labs.google/",
+    "origin": "https://labs.google",
     "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.63",
     "x-forwarded-for": FORWARDED_IP,
 }
