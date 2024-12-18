@@ -43,8 +43,10 @@ def cookie_string() -> str:
         try:
             # BUG: https://github.com/borisbabic/browser_cookie3/issues/211
             # Mitigate by hardcoding your path in self.cookie_file, TODO: document if issue raised
-            import http.cookiejar
+<<<<<<< Tabnine <<<<<<<
+            import http.cookiejar#+
             cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='labs.google')
+>>>>>>> Tabnine >>>>>>># {"conversationId":"74cd913c-9c20-4826-9f23-50805d1f3f73","source":"instruct"}
 
             for cookie in cookies:
                 c_name: str = cookie.name

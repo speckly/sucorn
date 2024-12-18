@@ -43,7 +43,6 @@ def cookie_string() -> str:
         try:
             # BUG: https://github.com/borisbabic/browser_cookie3/issues/211
             # Mitigate by hardcoding your path in self.cookie_file, TODO: document if issue raised
-            import http.cookiejar
             cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='labs.google')
 
             for cookie in cookies:
