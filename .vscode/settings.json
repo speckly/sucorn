@@ -3,5 +3,8 @@
         "hmmmmmmmmm",
         "imagen",
         "librewolf"
+    ],
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "master"
     ]
 }
