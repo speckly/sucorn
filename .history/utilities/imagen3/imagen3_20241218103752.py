@@ -5,7 +5,7 @@ single image case, hard to see for those more than 1
 {
     "imagePanels": [
         {
-        "prompt": "A vibrant anime-style girl with long, flowing blonde hair and bright, expressive eyes, wearing stylish adventure-themed clothing in shades of brown, yellow, and black. Beside her is her vibrant anime-style husband with white skin and black hair. Both of them smile joyfully as they are bouncing on supermassive space hopper balls shaped like kangaroos. The kangaroo-like hopper balls are brown with a shiny rubber surface, reflecting light, and has a kangaroo face with a bridle, two handles sticking up like reins, and a rounded body with a pouch just like a real kangaroo. The girl is wearing a sporty pink outfit with purple accents, matching gloves, knee-high socks, and white sneakers, while her husband wears an athletic long sleeve shirt and athletic pants. Both of them grip the handles tightly, smiling excitedly as they bounce.",
+        "prompt": "A whimsical anime catgirl with beautiful eyes and long, flowing pink hair, playfully bouncing on a brightly colored space hopper, anime style",
         "generatedImages": [
             {
             "encodedImage": "",
@@ -57,7 +57,7 @@ class ImageGen:
     """
     Image generation by ImageFX
     Parameters:
-        authorization: str, authorization token found in your Bearer <auth>
+        authorization: str, authorisation token found in your Bearer <auth>
         lazy to document do it another time sorry
     """
 

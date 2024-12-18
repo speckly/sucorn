@@ -1,0 +1,27 @@
+import os
+from dotenv import load_dotenv
+from get_auth import get_access_token
+
+# Load environment variables
+load_dotenv()
+
+# Replace with the name of the environment variable storing the cookie
+env_var_name = "robloxisrad1@gmail.com"
+
+# Retrieve the cookie string from the environment variable
+cookie_str = os.getenv(env_var_name)
+
+# Print the cookie string for debugging
+print(f"Cookie string for {env_var_name}: {cookie_str}")
+
+# Retrieve the access token using the cookie string
+access_token = get_access_token(cookie_str=cookie_str)
+
+# Print the access token for debugging
+print(f"Access token for {env_var_name}: {access_token}")
+
+# Check if the access token is empty
+if access_token == "":
+    print(f"Could not get access token: {env_var_name}")
+else:
+    print(f"Successfully retrieved access token for {env_var_name}")

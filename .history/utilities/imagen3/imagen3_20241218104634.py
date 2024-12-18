@@ -57,7 +57,7 @@ class ImageGen:
     """
     Image generation by ImageFX
     Parameters:
-        authorization: str, authorization token found in your Bearer <auth>
+        authorization: str, authorisation token found in your Bearer <auth>
         lazy to document do it another time sorry
     """
 
