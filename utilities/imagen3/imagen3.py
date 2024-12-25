@@ -169,6 +169,7 @@ if __name__ == "__main__":
     if access_token == "":
         print(f"Could not get access token: {name}")
         quit()
+
     test_generator = ImageGen(authorization=access_token, debug_file=None, output_folder=args.folder)
     cycle = 1
     if sys.platform == 'win32':

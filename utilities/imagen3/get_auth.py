@@ -9,10 +9,10 @@ def get_access_token(cookie_str: str) -> str:
     """thank you @theonehong on discord this really helped!!!!
     TODO: find the response if a cookie has expired or is invalid, apparently its 1 day?"""
 
-    url = 'https://labs.google/fx/api/trpc/general.fetchUserToolAccess?input={"json":{"names":["IMAGE_FX_TT"]}}' # TODO: base URL has changed
+    url = 'https://labs.google/fx/api/auth/session'
     headers = {
         'cookie': cookie_str,
-        'referer': 'https://labs.google/fx/api/trpc/general.fetchUserToolAccess',
+        'referer': 'https://labs.google/fx/tools/image-fx',
     }
     response = requests.request("GET", url, headers=headers).json()
 
@@ -43,7 +43,7 @@ def cookie_string() -> str:
         try:
             # BUG: https://github.com/borisbabic/browser_cookie3/issues/211
             # Mitigate by hardcoding your path in self.cookie_file, TODO: document if issue raised
-            cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='labs.google')
+            cookies: http.cookiejar.CookieJar = cookie_fn(domain_name='labs.google')  
 
             for cookie in cookies:
                 c_name: str = cookie.name
