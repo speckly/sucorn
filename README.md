@@ -24,6 +24,9 @@ It is recommended that a venv is used as there are a lot of dependencies (50>)
 python setup.py
 ```
 
+If you do not require the bot, then you can just do
+`pip install -r requirements.txt`
+
 # Bot
 Requires your bot token in `.env`, follow the setup guide
 ```bash
